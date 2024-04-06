@@ -7,6 +7,7 @@ function App() {
         <>
             <h1>Hello world</h1>
             <Button>This is react-bootstrap button</Button>
+            <Button variant='danger'>Testing name change</Button>
         </>
     )
 }
