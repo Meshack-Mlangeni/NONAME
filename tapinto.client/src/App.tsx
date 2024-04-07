@@ -1,13 +1,15 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Outlet } from 'react-router-dom';
 import './App.css';
-import { Button } from 'react-bootstrap';
+import NavigationBar from './app/navbar/NavigationBar';
+import { Container } from 'react-bootstrap';
 
 function App() {
     return (
         <>
-            <h1>Hello world</h1>
-            <Button>This is react-bootstrap button</Button>
-            <Button variant='danger'>Testing name change</Button>
+            <NavigationBar />
+            <Container >
+                <Outlet />
+            </Container>
         </>
     )
 }
