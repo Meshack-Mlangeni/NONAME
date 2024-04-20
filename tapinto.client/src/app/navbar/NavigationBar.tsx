@@ -44,7 +44,7 @@ export default function NavigationBar() {
                 This Needs a Name 2
               </span>
             </a>
-            <Nav className="col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+            <Nav style={{fontSize: '10px'}} className="col-12 col-lg-auto my-2 justify-content-center my-md-0 fw-bold">
               <Nav.Link as={NavLink} to="home" className={handleNavBar('/home')}>
                 <HomeRounded className="bi d-block mx-auto mb-1" /> Home
               </Nav.Link>
