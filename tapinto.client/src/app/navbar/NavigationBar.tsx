@@ -19,7 +19,6 @@ import '../../App.css';
 export default function NavigationBar() {
   const navigate = useNavigate(); // to navigate using routers
   const location = useLocation(); //use location.pathname to get current path
-  const pname = location.pathname;
   const [Theme, setTheme] = useState<boolean>(true);
   const changeTheme = () => {
     setTheme(!Theme);
