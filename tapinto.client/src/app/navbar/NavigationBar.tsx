@@ -1,30 +1,30 @@
 import {
   DarkModeTwoTone,
   Diversity2Rounded,
-  HomeRounded,
-  InfoRounded,
-  KeyTwoTone,
   LightModeTwoTone,
-  SettingsRounded,
 } from "@mui/icons-material";
 import { useState } from "react";
 import { Container, Nav } from "react-bootstrap";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Separator } from "../../features/components/Separator";
 import handleTheme from "../../helpers/handleTheme";
-import handleNavBar from "../../helpers/handleNavbar";
 import '../../App.css';
+import { Chip, Avatar } from "@mui/material";
+import { handleNavBar } from "../../helpers/handleNavbar";
 
 
 export default function NavigationBar() {
   const navigate = useNavigate(); // to navigate using routers
   const location = useLocation(); //use location.pathname to get current path
   const [Theme, setTheme] = useState<boolean>(true);
+  const [isLogged, setLogged] = useState<boolean>(true);
   const changeTheme = () => {
     setTheme(!Theme);
     handleTheme(Theme, 500);
   };
-
+  const isFalseLogin = () => {
+    setLogged(!isLogged);
+  }
 
   return (
     <>
@@ -43,24 +43,22 @@ export default function NavigationBar() {
                 This Needs a Name 2
               </span>
             </a>
-            <Nav style={{fontSize: '10px'}} className="col-12 col-lg-auto my-2 justify-content-center my-md-0 fw-bold">
-              <Nav.Link as={NavLink} to="home" className={handleNavBar('/home')}>
-                <HomeRounded className="bi d-block mx-auto mb-1" /> Home
+            <Nav className="col-12 col-lg-auto my-2 justify-content-center my-md-0 fw-bold">
+              <Nav.Link as={NavLink} to="home" className={handleNavBar('/home')}>Home
               </Nav.Link>
               <Nav.Link as={NavLink} to="settings" className={handleNavBar('/settings')}>
-                <SettingsRounded className="bi d-block mx-auto mb-1" />
                 Settings
               </Nav.Link>
               <Nav.Link as={NavLink} to="about" className={handleNavBar('/about')}>
-                <InfoRounded className=" bi d-block mx-auto mb-1" />
                 About
               </Nav.Link>
-              <span style={{ color: "#313131" }} className="display-6">
+              <span className={Theme ? "text-danger" : "text-light"} style={{ fontSize:24 }} >
                 |
               </span>
-              <Nav.Link as={NavLink} to="account" className={handleNavBar('/account')}>
-                <KeyTwoTone className=" bi d-block mx-auto mb-1" />
-                Login
+              <Nav.Link as={NavLink} to="account" className={handleNavBar('/account')}
+                onClick={() => isFalseLogin()}
+              >
+                {(isLogged) ? "Login" : <Chip avatar={<Avatar>M</Avatar>} label="Avatar" />}
               </Nav.Link>
             </Nav>
             <br />
@@ -68,9 +66,9 @@ export default function NavigationBar() {
         </Container>
       </div>
 
-      {location.pathname === "/home" && (
+      {location.pathname.includes("home") && (
         <Container className="mb-3">
-          <Nav variant="underline" activeKey="link-1" defaultActiveKey="/home">
+          <Nav variant="underline" defaultActiveKey="posts">
             <Nav.Link
               className={Theme ? "text-dark" : "text-light"}
               onClick={changeTheme}
@@ -89,7 +87,8 @@ export default function NavigationBar() {
             <Nav.Item>
               <Nav.Link
                 className={Theme ? "text-dark" : "text-light"}
-                href="/home"
+                as={NavLink} to="/home/posts"
+                eventKey="posts"
               >
                 Posts
               </Nav.Link>
@@ -97,7 +96,8 @@ export default function NavigationBar() {
             <Nav.Item>
               <Nav.Link
                 className={Theme ? "text-dark" : "text-light"}
-                eventKey="link-1"
+                as={NavLink} to="/home/groups"
+                eventKey="groups"
               >
                 Groups
               </Nav.Link>
@@ -105,7 +105,8 @@ export default function NavigationBar() {
             <Nav.Item>
               <Nav.Link
                 className={Theme ? "text-dark" : "text-light"}
-                eventKey="disabled"
+                as={NavLink} to="/home/tests"
+                eventKey="tests"
               >
                 Tests
               </Nav.Link>
@@ -113,7 +114,8 @@ export default function NavigationBar() {
             <Nav.Item>
               <Nav.Link
                 className={Theme ? "text-dark" : "text-light"}
-                eventKey="disabled"
+                as={NavLink} to="/home/results"
+                eventKey="results"
               >
                 Results
               </Nav.Link>
