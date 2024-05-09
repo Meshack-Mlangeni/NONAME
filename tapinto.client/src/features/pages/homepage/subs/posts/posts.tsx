@@ -1,17 +1,19 @@
-import { Divider, Grid } from "@mui/material";
+import { Divider, Grid, useMediaQuery } from "@mui/material";
 import Post from "./post";
+import Bio from "../../bio";
 
 export default function Posts() {
+  const Tablet = useMediaQuery('(min-width:1000px)');
   return (
     <>
-      <Grid container spacing={2}>
-        <Grid item xs={8}>
+      <Grid container spacing={3}>
+        <Grid item xs={!Tablet ? 12 : 8}>
           <Post />
           <Divider orientation='horizontal' variant="middle" flexItem />
         </Grid>
-        <Grid item xs={4}>
-          <h6>All Groups</h6>
-        </Grid>
+        {Tablet && <Grid sx={{alignContent:'center'}} item xs={4}>
+          <Bio/>
+        </Grid>}
       </Grid>
     </>
   );

@@ -1,17 +1,20 @@
 import {
   DarkModeTwoTone,
   Diversity2Rounded,
+  HomeRounded,
+  InfoRounded,
+  KeyRounded,
   LightModeTwoTone,
+  SettingsRounded,
 } from "@mui/icons-material";
 import { useState } from "react";
 import { Container, Nav } from "react-bootstrap";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Separator } from "../../features/components/Separator";
 import handleTheme from "../../helpers/handleTheme";
-import '../../App.css';
-import { Chip, Avatar } from "@mui/material";
+import "../../App.css";
 import { handleNavBar } from "../../helpers/handleNavbar";
-
+import { Tooltip } from "@mui/joy";
 
 export default function NavigationBar() {
   const navigate = useNavigate(); // to navigate using routers
@@ -24,7 +27,7 @@ export default function NavigationBar() {
   };
   const isFalseLogin = () => {
     setLogged(!isLogged);
-  }
+  };
 
   return (
     <>
@@ -44,21 +47,69 @@ export default function NavigationBar() {
               </span>
             </a>
             <Nav className="col-12 col-lg-auto my-2 justify-content-center my-md-0 fw-bold">
-              <Nav.Link as={NavLink} to="home" className={handleNavBar('/home')}>Home
+              <Nav.Link
+                as={NavLink}
+                to="home"
+                className={handleNavBar("/home")}
+              >
+                <Tooltip
+                  title="Home"
+                  arrow
+                  color="neutral"
+                  placement="bottom"
+                  variant="solid"
+                >
+                  <HomeRounded />
+                </Tooltip>
               </Nav.Link>
-              <Nav.Link as={NavLink} to="settings" className={handleNavBar('/settings')}>
-                Settings
+              <Nav.Link
+                as={NavLink}
+                to="settings"
+                className={handleNavBar("/settings")}
+              >
+                <Tooltip
+                  title="Settings"
+                  arrow
+                  color="neutral"
+                  placement="bottom"
+                  variant="solid"
+                >
+                  <SettingsRounded />
+                </Tooltip>
               </Nav.Link>
-              <Nav.Link as={NavLink} to="about" className={handleNavBar('/about')}>
-                About
+              <Nav.Link
+                as={NavLink}
+                to="about"
+                className={handleNavBar("/about")}
+              >
+                <Tooltip
+                  title="About Us"
+                  arrow
+                  color="neutral"
+                  placement="bottom"
+                  variant="solid"
+                >
+                  <InfoRounded />
+                </Tooltip>
               </Nav.Link>
-              <span className={Theme ? "text-danger" : "text-light"} style={{ fontSize:24 }} >
+              <span className="text-primary" style={{ fontSize: 24 }}>
                 |
               </span>
-              <Nav.Link as={NavLink} to="account" className={handleNavBar('/account')}
+              <Nav.Link
+                as={NavLink}
+                to="account"
+                className={handleNavBar("/account")}
                 onClick={() => isFalseLogin()}
               >
-                {(isLogged) ? "Login" : <Chip avatar={<Avatar>M</Avatar>} label="Avatar" />}
+                <Tooltip
+                  title="Login/Register"
+                  arrow
+                  color="neutral"
+                  placement="bottom"
+                  variant="solid"
+                >
+                  <KeyRounded />
+                </Tooltip>
               </Nav.Link>
             </Nav>
             <br />
@@ -87,7 +138,8 @@ export default function NavigationBar() {
             <Nav.Item>
               <Nav.Link
                 className={Theme ? "text-dark" : "text-light"}
-                as={NavLink} to="/home/posts"
+                as={NavLink}
+                to="/home/posts"
                 eventKey="posts"
               >
                 Posts
@@ -96,7 +148,8 @@ export default function NavigationBar() {
             <Nav.Item>
               <Nav.Link
                 className={Theme ? "text-dark" : "text-light"}
-                as={NavLink} to="/home/groups"
+                as={NavLink}
+                to="/home/groups"
                 eventKey="groups"
               >
                 Groups
@@ -105,7 +158,8 @@ export default function NavigationBar() {
             <Nav.Item>
               <Nav.Link
                 className={Theme ? "text-dark" : "text-light"}
-                as={NavLink} to="/home/tests"
+                as={NavLink}
+                to="/home/tests"
                 eventKey="tests"
               >
                 Tests
@@ -114,7 +168,8 @@ export default function NavigationBar() {
             <Nav.Item>
               <Nav.Link
                 className={Theme ? "text-dark" : "text-light"}
-                as={NavLink} to="/home/results"
+                as={NavLink}
+                to="/home/results"
                 eventKey="results"
               >
                 Results
