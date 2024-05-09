@@ -16,5 +16,7 @@ npm install
 
 cd .\tapinto.client\
 npm start
+
+
 cd .\tapinto.Server\
 dotnet watch run
