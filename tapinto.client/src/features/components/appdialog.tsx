@@ -30,7 +30,7 @@ export default function Dialog({
   return (
     <React.Fragment>
       <Button
-        variant="soft"
+        variant='plain'
         sx={sx}
         startDecorator={<>{buttonIcon}</>}
         color="neutral"

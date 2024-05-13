@@ -4,6 +4,7 @@ import { Autocomplete, Chip } from "@mui/joy";
 import { useDispatch } from "react-redux";
 import { addLabel } from "../pages/homepage/subs/posts/postSlice";
 import { useAppSelector } from "../../app/store/store";
+import { toast } from "react-toastify";
 
 export default function Labels() {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ export default function Labels() {
       options={defaultlabels}
       onChange={(_, value) => {
         dispatch(addLabel(value));
+        toast.success(`Label added`);
       }}
       variant="soft"
       size="sm"

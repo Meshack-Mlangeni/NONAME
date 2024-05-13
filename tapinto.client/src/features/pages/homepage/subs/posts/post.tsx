@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from "react";
 import {
   Box,
@@ -22,6 +21,7 @@ import { Divider, useMediaQuery } from "@mui/material";
 import Dialog from "../../../../components/appdialog";
 import { useAppDispatch, useAppSelector } from "../../../../../app/store/store";
 import { increment, removeLabel } from "./postSlice";
+import PostTextField from "./postTextField";
 
 ///TODO input chips
 export default function Post() {
@@ -42,41 +42,15 @@ export default function Post() {
     <Card>
       <CardContent>
         <Box display="flex" alignItems="center">
-          <Input
+          {/* <Input
             sx={{ mt: 1 }}
             fullWidth
             startDecorator={
-              <>
-                {labels.map((lbl, idx) => (
-                  <Chip
-                    endDecorator={
-                      <ChipDelete
-                        onDelete={() => dispatch(removeLabel(lbl.name))}
-                      />
-                    }
-                    // @ts-expect-error
-                    color={lbl.color ?? "danger"}
-                    key={idx}
-                  >
-                    {lbl.name}
-                  </Chip>
-                ))}
-              </>
+             
             }
             placeholder="What's on your mind?"
-          />
-          <span className="text-primary ms-1 me-1" style={{ fontSize: 24 }}>
-            |
-          </span>
-          <Dialog
-            buttonIcon={<Add />}
-            sx={{ mt: 1 }}
-            buttonName="Label(s)"
-            isOpen={false}
-            title="Select Labels For Post"
-          >
-            <Labels />
-          </Dialog>
+          /> */}
+          <PostTextField/>
         </Box>
 
         <Box sx={{ mt: 1 }} display="flex" alignItems="center">
