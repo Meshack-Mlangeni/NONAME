@@ -39,7 +39,7 @@ export default function Post() {
   console.log(labels);
 
   return (
-    <Card sx={{ backgroundColor: "#FEFEFE" }}>
+    <Card>
       <CardContent>
         <Box display="flex" alignItems="center">
           <Input

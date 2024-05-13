@@ -9,13 +9,14 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import { Container, Nav } from "react-bootstrap";
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Separator } from "../../features/components/Separator";
 import handleTheme from "../../helpers/handleTheme";
 import "../../App.css";
 import { handleNavBar } from "../../helpers/handleNavbar";
 import { Badge, Tooltip } from "@mui/joy";
 import { useAppSelector } from "../store/store";
+import { ToastContainer } from "react-toastify";
 
 export default function NavigationBar() {
   const { numberOfPosts } = useAppSelector((state) => state.posts);
@@ -23,6 +24,8 @@ export default function NavigationBar() {
   const navigate = useNavigate(); // to navigate using routers
   const location = useLocation(); //use location.pathname to get current path
   const [Theme, setTheme] = useState<boolean>(true);
+
+  
   const [isLogged, setLogged] = useState<boolean>(true);
   const changeTheme = () => {
     setTheme(!Theme);
@@ -31,6 +34,14 @@ export default function NavigationBar() {
   const isFalseLogin = () => {
     setLogged(!isLogged);
   };
+  // const theme = createTheme({
+  //   palette: {
+  //     mode: 'light',
+  //     background: {
+  //       default: Theme ? "#121212" : "#eaeaea",
+  //     },
+  //   },
+  // });
 
   return (
     <>
@@ -221,6 +232,11 @@ export default function NavigationBar() {
           </Nav>
         </Container>
       )}
+
+      <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
+        <Container>
+          <Outlet />
+        </Container>
     </>
   );
 }
