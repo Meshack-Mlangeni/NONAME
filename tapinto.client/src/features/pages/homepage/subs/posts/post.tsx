@@ -31,7 +31,7 @@ export default function Post() {
 
   
   return (
-    <Card sx={{ backgroundColor: "#FEFEFE" }}>
+    <Card>
       <CardContent>
         <Box display="flex" alignItems="center">
           <Input
