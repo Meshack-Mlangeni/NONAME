@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import React from "react";
 import {
   Box,
@@ -7,6 +8,7 @@ import {
   IconButton,
   Input,
   Chip,
+  ChipDelete,
 } from "@mui/joy";
 import {
   Add,
@@ -18,9 +20,14 @@ import ShowTo from "./showpostto";
 import Labels from "../../../../components/labelctr";
 import { Divider, useMediaQuery } from "@mui/material";
 import Dialog from "../../../../components/appdialog";
+import { useAppDispatch, useAppSelector } from "../../../../../app/store/store";
+import { increment, removeLabel } from "./postSlice";
 
 ///TODO input chips
 export default function Post() {
+  const dispatch = useAppDispatch();
+  const { labels } = useAppSelector((state) => state.posts);
+
   const Mobile = useMediaQuery("(min-width:600px)");
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -29,7 +36,8 @@ export default function Post() {
     }
   };
 
-  
+  console.log(labels);
+
   return (
     <Card sx={{ backgroundColor: "#FEFEFE" }}>
       <CardContent>
@@ -38,7 +46,22 @@ export default function Post() {
             sx={{ mt: 1 }}
             fullWidth
             startDecorator={
-              <Chip color="success">Labels Go Here</Chip>
+              <>
+                {labels.map((lbl, idx) => (
+                  <Chip
+                    endDecorator={
+                      <ChipDelete
+                        onDelete={() => dispatch(removeLabel(lbl.name))}
+                      />
+                    }
+                    // @ts-expect-error
+                    color={lbl.color ?? "danger"}
+                    key={idx}
+                  >
+                    {lbl.name}
+                  </Chip>
+                ))}
+              </>
             }
             placeholder="What's on your mind?"
           />
@@ -58,7 +81,12 @@ export default function Post() {
 
         <Box sx={{ mt: 1 }} display="flex" alignItems="center">
           <div>
-            <Button size="sm" sx={{ mr: 1 }} variant="solid">
+            <Button
+              onClick={() => dispatch(increment(1))}
+              size="sm"
+              sx={{ mr: 1 }}
+              variant="solid"
+            >
               <Send /> &nbsp; Post
             </Button>
 
