@@ -1,19 +1,37 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Close } from "@mui/icons-material";
 import { Autocomplete, Chip } from "@mui/joy";
+import { useDispatch } from "react-redux";
+import { addLabel } from "../pages/homepage/subs/posts/postSlice";
+import { useAppSelector } from "../../app/store/store";
+import { toast } from "react-toastify";
 
 export default function Labels() {
-  const labels = [
+  const dispatch = useDispatch();
+  const { labels } = useAppSelector((state) => state.posts);
+  console.log(labels);
+
+  let defaultlabels = [
     { name: "Question", color: "success" },
     { name: "Need Help", color: "danger" },
     { name: "Suggestion", color: "warning" },
   ];
 
+  if (labels.length > 0) {
+    defaultlabels = defaultlabels.filter(
+      (dlbl) => labels.findIndex((lbl) => lbl.name === dlbl.name) < 0
+    );
+  }
+
   return (
     <Autocomplete
       multiple
       placeholder="Add label"
-      options={labels}
+      options={defaultlabels}
+      onChange={(_, value) => {
+        dispatch(addLabel(value));
+        toast.success(`Label added`);
+      }}
       variant="soft"
       size="sm"
       limitTags={2}

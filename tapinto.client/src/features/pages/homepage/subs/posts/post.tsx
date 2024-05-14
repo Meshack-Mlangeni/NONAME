@@ -7,6 +7,7 @@ import {
   IconButton,
   Input,
   Chip,
+  ChipDelete,
 } from "@mui/joy";
 import {
   Add,
@@ -18,9 +19,15 @@ import ShowTo from "./showpostto";
 import Labels from "../../../../components/labelctr";
 import { Divider, useMediaQuery } from "@mui/material";
 import Dialog from "../../../../components/appdialog";
+import { useAppDispatch, useAppSelector } from "../../../../../app/store/store";
+import { increment, removeLabel } from "./postSlice";
+import PostTextField from "./postTextField";
 
 ///TODO input chips
 export default function Post() {
+  const dispatch = useAppDispatch();
+  const { labels } = useAppSelector((state) => state.posts);
+
   const Mobile = useMediaQuery("(min-width:600px)");
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -29,36 +36,31 @@ export default function Post() {
     }
   };
 
-  
+  console.log(labels);
+
   return (
     <Card>
       <CardContent>
         <Box display="flex" alignItems="center">
-          <Input
+          {/* <Input
             sx={{ mt: 1 }}
             fullWidth
             startDecorator={
-              <Chip color="success">Labels Go Here</Chip>
+             
             }
             placeholder="What's on your mind?"
-          />
-          <span className="text-primary ms-1 me-1" style={{ fontSize: 24 }}>
-            |
-          </span>
-          <Dialog
-            buttonIcon={<Add />}
-            sx={{ mt: 1 }}
-            buttonName="Label(s)"
-            isOpen={false}
-            title="Select Labels For Post"
-          >
-            <Labels />
-          </Dialog>
+          /> */}
+          <PostTextField/>
         </Box>
 
         <Box sx={{ mt: 1 }} display="flex" alignItems="center">
           <div>
-            <Button size="sm" sx={{ mr: 1 }} variant="solid">
+            <Button
+              onClick={() => dispatch(increment(1))}
+              size="sm"
+              sx={{ mr: 1 }}
+              variant="solid"
+            >
               <Send /> &nbsp; Post
             </Button>
 

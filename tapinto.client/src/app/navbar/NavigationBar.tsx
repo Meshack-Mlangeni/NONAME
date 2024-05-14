@@ -14,12 +14,13 @@ import { Separator } from "../../features/components/Separator";
 import handleTheme from "../../helpers/handleTheme";
 import "../../App.css";
 import { handleNavBar } from "../../helpers/handleNavbar";
-import {
-  Tooltip,
-} from "@mui/joy";
+import { Badge, Tooltip } from "@mui/joy";
+import { useAppSelector } from "../store/store";
 import { ToastContainer } from "react-toastify";
 
 export default function NavigationBar() {
+  const { numberOfPosts } = useAppSelector((state) => state.posts);
+
   const navigate = useNavigate(); // to navigate using routers
   const location = useLocation(); //use location.pathname to get current path
   const [Theme, setTheme] = useState<boolean>(true);
@@ -155,7 +156,17 @@ export default function NavigationBar() {
                 to="/home/posts"
                 eventKey="posts"
               >
-                Posts
+                <Badge
+                  invisible={!numberOfPosts}
+                  showZero={false}
+                  size="sm"
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  Posts
+                </Badge>
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
@@ -165,7 +176,17 @@ export default function NavigationBar() {
                 to="/home/groups"
                 eventKey="groups"
               >
-                Groups
+                <Badge
+                  invisible={true}
+                  showZero={false}
+                  size="sm"
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  Groups
+                </Badge>
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
@@ -175,7 +196,17 @@ export default function NavigationBar() {
                 to="/home/tests"
                 eventKey="tests"
               >
-                Tests
+                <Badge
+                  invisible={true}
+                  showZero={false}
+                  size="sm"
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  Tests
+                </Badge>
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
@@ -185,7 +216,17 @@ export default function NavigationBar() {
                 to="/home/results"
                 eventKey="results"
               >
-                Results
+                <Badge
+                  invisible={true}
+                  showZero={false}
+                  size="sm"
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                  }}
+                >
+                  Results
+                </Badge>
               </Nav.Link>
             </Nav.Item>
           </Nav>
