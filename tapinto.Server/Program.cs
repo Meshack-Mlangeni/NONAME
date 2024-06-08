@@ -1,9 +1,14 @@
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using tapinto.Server.Data;
+using tapinto.Server.Models;
+
 namespace tapinto.Server
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +18,23 @@ namespace tapinto.Server
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("AppConnection"));
+            });
+
+            builder.Services.AddCors();
+            builder.Services.AddIdentityCore<User>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireDigit = true;
+            })
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>();
+            builder.Services.AddAuthentication();
+            builder.Services.AddAuthorization();
 
             var app = builder.Build();
 
@@ -32,7 +54,7 @@ namespace tapinto.Server
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");
-
+            await SeedData.EnsurePopulated(app);
             app.Run();
         }
     }
