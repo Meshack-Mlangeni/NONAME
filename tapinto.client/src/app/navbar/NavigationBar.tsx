@@ -9,14 +9,13 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import { Container, Nav } from "react-bootstrap";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Separator } from "../../features/components/Separator";
 import handleTheme from "../../helpers/handleTheme";
 import "../../App.css";
 import { handleNavBar } from "../../helpers/handleNavbar";
-import { Badge, Tooltip } from "@mui/joy";
+import { Avatar, Badge, Tooltip, Typography } from "@mui/joy";
 import { useAppSelector } from "../store/store";
-import { ToastContainer } from "react-toastify";
 
 export default function NavigationBar() {
   const { numberOfPosts } = useAppSelector((state) => state.posts);
@@ -24,8 +23,9 @@ export default function NavigationBar() {
   const navigate = useNavigate(); // to navigate using routers
   const location = useLocation(); //use location.pathname to get current path
   const [Theme, setTheme] = useState<boolean>(true);
+  const { user } = useAppSelector(state => state.account);
+  console.log("user: ", user)
 
-  
   const [isLogged, setLogged] = useState<boolean>(true);
   const changeTheme = () => {
     setTheme(!Theme);
@@ -43,11 +43,12 @@ export default function NavigationBar() {
   //   },
   // });
 
+  {true && console.log(user)}
   return (
     <>
       <div className="px-3 py-2 text-bg-dark">
         <Container>
-          <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+          <div className=" d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <a
               className="animated d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none"
               onClick={() => navigate("/home")}
@@ -57,7 +58,6 @@ export default function NavigationBar() {
                 style={{ fontSize: "20px", position: "relative", top: "-2px" }}
                 className="text-light fw-bold"
               >
-                This Needs a Name 2
               </span>
             </a>
             <Nav className="col-12 col-lg-auto my-2 justify-content-center my-md-0 fw-bold">
@@ -109,10 +109,15 @@ export default function NavigationBar() {
               <span className="text-primary" style={{ fontSize: 24 }}>
                 |
               </span>
-              <Nav.Link
+              {user ? (
+              <>
+              <Avatar size='sm'></Avatar>
+              <Typography>Hello, {user?.FirstName} {user?.LastName}</Typography>
+              </>
+              ) : (<Nav.Link
                 as={NavLink}
-                to="account"
-                className={handleNavBar("/account")}
+                to="login"
+                className={handleNavBar("/login")}
                 onClick={() => isFalseLogin()}
               >
                 <Tooltip
@@ -124,7 +129,7 @@ export default function NavigationBar() {
                 >
                   <KeyRounded />
                 </Tooltip>
-              </Nav.Link>
+              </Nav.Link>)}
             </Nav>
             <br />
           </div>
@@ -232,11 +237,6 @@ export default function NavigationBar() {
           </Nav>
         </Container>
       )}
-
-      <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
-        <Container>
-          <Outlet />
-        </Container>
     </>
   );
 }

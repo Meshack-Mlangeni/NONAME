@@ -3,7 +3,6 @@ import {
   Box,
   Chip,
   ChipDelete,
-  IconButton,
   Textarea,
   Typography,
 } from "@mui/joy";
@@ -21,7 +20,7 @@ export default function PostTextField() {
   const { labels } = useAppSelector((state) => state.posts);
   return (
     <Textarea
-      placeholder="Type in here…"
+      placeholder="What's on your mind..."
       value={text}
       onChange={(event) => setText(event.target.value)}
       minRows={1}
