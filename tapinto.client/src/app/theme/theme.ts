@@ -91,6 +91,11 @@ const Theme =extendTheme({
             "700": "#a16207",
             "800": "#854d0e",
             "900": "#713f12"
+          },
+          "background": {
+            "body": "#232323",
+            "surface": "#232323",
+            "popup": "#232323"
           }
         }
       }
