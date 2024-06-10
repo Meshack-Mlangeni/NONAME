@@ -1,25 +1,27 @@
-import { Container } from "react-bootstrap";
 import { Outlet, useLocation } from "react-router-dom";
 import "./App.css";
 import NavigationBar from "./app/navbar/NavigationBar";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import { Sheet } from "@mui/joy";
+import { CssBaseline, Grid, Sheet } from "@mui/joy";
 
 function App() {
   const appLocation = useLocation();
   return (
-    <>
+    <Sheet sx={ (theme) => ({height: "100dvh",  background: theme.palette.mode === "dark" ? "#171717" : "#F0F0F0"})} >
       <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
       {!appLocation.pathname.toLocaleLowerCase().includes("login") &&
         !appLocation.pathname.toLocaleLowerCase().includes("register") ?
-       (<Sheet  sx={{height: "100dvh"}}>
+        (<>
           <NavigationBar />
-          <Container>
-            <Outlet />
-          </Container>
-        </Sheet>) : (<Outlet />)}
-    </>
+          <Grid container sx={{ flexGrow: 1}}>
+            <Grid xs={12}>
+              <Outlet/>
+            </Grid>
+          </Grid>
+        </>) : (<Outlet />)}
+        <CssBaseline/>
+    </Sheet>
   );
 }
 

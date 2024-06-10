@@ -5,22 +5,16 @@ import {
   Button,
   CardContent,
   IconButton,
-  Input,
-  Chip,
-  ChipDelete,
 } from "@mui/joy";
 import {
-  Add,
   AttachFileOutlined,
   PhotoCameraOutlined,
   Send,
 } from "@mui/icons-material";
 import ShowTo from "./showpostto";
-import Labels from "../../../../components/labelctr";
 import { Divider, useMediaQuery } from "@mui/material";
-import Dialog from "../../../../components/appdialog";
 import { useAppDispatch, useAppSelector } from "../../../../../app/store/store";
-import { increment, removeLabel } from "./postSlice";
+import { increment } from "./postSlice";
 import PostTextField from "./postTextField";
 
 ///TODO input chips
