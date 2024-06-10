@@ -6,9 +6,9 @@ import HomePage from "../../features/pages/homepage/HomePage";
 import Posts from "../../features/pages/homepage/subs/posts/posts";
 import Tests from "../../features/pages/homepage/subs/tests/tests";
 import Results from "../../features/pages/homepage/subs/results/results";
-import Groups from "../../features/pages/homepage/subs/groups/groups";
 import Login from "../../features/pages/account/login";
 import Register from "../../features/pages/account/register";
+import School from "../../features/pages/homepage/subs/myschool/mySchool";
 
 
 export const routes = createBrowserRouter([
@@ -22,7 +22,7 @@ export const routes = createBrowserRouter([
         children: [
           { index: true, element: <Navigate to="/home/posts" replace /> },
           { path: "/home/posts", element: <Posts /> },
-          { path: "/home/groups", element: <Groups /> },
+          { path: "/home/myschool", element: <School /> },
           { path: "/home/tests", element: <Tests /> },
           { path: "/home/results", element: <Results /> },
         ]},
