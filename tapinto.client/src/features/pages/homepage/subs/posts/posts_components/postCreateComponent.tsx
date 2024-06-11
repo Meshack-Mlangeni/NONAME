@@ -11,11 +11,11 @@ import {
   PhotoCameraOutlined,
   Send,
 } from "@mui/icons-material";
-import ShowTo from "./showpostto";
+import ShowTo from "./postVisibilityComponent";
 import { Divider, useMediaQuery } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../../../../../app/store/store";
-import { increment } from "./postSlice";
-import PostTextField from "./postTextField";
+import { useAppDispatch, useAppSelector } from "../../../../../../app/store/store";
+import { increment } from "../postSlice";
+import PostTextField from "./postTextFieldComponent";
 
 ///TODO input chips
 export default function Post() {

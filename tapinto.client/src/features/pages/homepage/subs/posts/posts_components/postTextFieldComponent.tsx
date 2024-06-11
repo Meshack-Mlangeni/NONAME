@@ -7,11 +7,11 @@ import {
   Typography,
 } from "@mui/joy";
 import { useState } from "react";
-import Labels from "../../../../components/labelctr";
+import Labels from "../../../../../components/labelctr";
 import { Add } from "@mui/icons-material";
-import Dialog from "../../../../components/appdialog";
-import { useAppDispatch, useAppSelector } from "../../../../../app/store/store";
-import { removeLabel } from "./postSlice";
+import Dialog from "../../../../../components/appdialog";
+import { useAppDispatch, useAppSelector } from "../../../../../../app/store/store";
+import { removeLabel } from "../postSlice";
 import { toast } from "react-toastify";
 
 export default function PostTextField() {

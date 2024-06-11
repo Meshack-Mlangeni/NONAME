@@ -13,7 +13,7 @@ export default function Bio() {
         boxShadow: 'sm',
       }}
     >
-      <CardContent sx={{ alignItems: 'center', textAlign: 'center' }}>
+      <CardContent sx={{ justifyContent:"center", textAlign: 'center' }}>
         <Avatar src="/static/images/avatar/1.jpg" sx={{ '--Avatar-size': '4rem' }} />
         <Typography level="title-lg">Meshack Mlangeni</Typography>
         <Typography level="body-sm" sx={{ maxWidth: '24ch' }}>

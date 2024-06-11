@@ -2,9 +2,11 @@ import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { PostSlice } from "../../features/pages/homepage/subs/posts/postSlice";
 import { accountSlice } from "../../features/pages/account/accountSlice";
+import { AppSlice } from "./appSlice";
 
 export const store = configureStore({
     reducer:{
+        app: AppSlice.reducer,
         posts: PostSlice.reducer,
         account: accountSlice.reducer
     }

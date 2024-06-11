@@ -1,8 +1,9 @@
 import { Grid, useMediaQuery } from "@mui/material";
-import Post from "./post";
-import Bio from "./bio";
+import Post from "./posts_components/postCreateComponent";
+import Bio from "./posts_components/bioComponent";
 import { Box } from "@mui/joy";
-import MyGroups from "./ub_mygroups";
+import PostComponent from "./posts_components/postComponent";
+import MyGroups from "./posts_components/myGroupsComponent";
 
 export default function Posts() {
   const Tablet = useMediaQuery("(min-width:1100px)");
@@ -16,12 +17,13 @@ export default function Posts() {
         <Grid item xs={!Tablet ? 12 : 8}>
           <Box {...(Tablet) && { sx: { ml: 1, mr: 1 } }}>
             <Post />
+            <PostComponent />
           </Box>
         </Grid>
         {Tablet && (
-          <Grid sx={{ alignContent: "center" }} item xs={4}>
+          <Grid item xs={4}>
             <Box {...(Tablet) && { sx: { ml: 1, mr: 1 } }}>
-              <Bio />
+            <Bio />
               <MyGroups/>
             </Box>
           </Grid>
