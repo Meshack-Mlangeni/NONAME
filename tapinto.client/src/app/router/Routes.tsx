@@ -3,7 +3,7 @@ import App from "../../App";
 import Settings from "../../features/pages/settings/Settings";
 import AboutPage from "../../features/pages/about/AboutPage";
 import HomePage from "../../features/pages/homepage/HomePage";
-import Posts from "../../features/pages/homepage/subs/posts/posts";
+import Posts from "../../features/pages/homepage/subs/posts/mainPosts";
 import Tests from "../../features/pages/homepage/subs/tests/tests";
 import Results from "../../features/pages/homepage/subs/results/results";
 import Login from "../../features/pages/account/login";

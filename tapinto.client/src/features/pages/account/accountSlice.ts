@@ -5,18 +5,19 @@ import { agent } from "../../../app/axiosAgent/agent";
 import { toast } from "react-toastify";
 import { routes } from "../../../app/router/Routes";
 
-interface IAccount{ user: User | null;}
+interface IAccount { user: User | null; }
 const initialState: IAccount = { user: null, }
 
 export const loginAsync = createAsyncThunk<User, FieldValues>(
     "account/loginAsync",
     async (data, thunkApi) => {
-        try{ 
+        try {
             const user = await agent.account.login(data);
             localStorage.setItem("user", JSON.stringify(user));
             return user;
-        }catch(error: any){
-            return thunkApi.rejectWithValue({error: error.data});
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            return thunkApi.rejectWithValue({ error: error.data });
         }
     }
 )
@@ -24,8 +25,8 @@ export const loginAsync = createAsyncThunk<User, FieldValues>(
 export const accountSlice = createSlice({
     name: "account",
     initialState: initialState,
-    reducers:{
-        signOutUser: (state) =>{
+    reducers: {
+        signOutUser: (state) => {
             state.user = null;
             localStorage.removeItem("user");
             routes.navigate("account/login");
@@ -37,11 +38,9 @@ export const accountSlice = createSlice({
             toast.success("Welcome");
             routes.navigate("/home")
         });
-          builder.addCase(loginAsync.rejected, () => {
+        builder.addCase(loginAsync.rejected, () => {
             toast.error("Error logging in, contact admin!!");
         })
     },
 })
-
-// eslint-disable-next-line no-empty-pattern
-export const {signOutUser} = accountSlice.actions;
+export const { signOutUser } = accountSlice.actions;

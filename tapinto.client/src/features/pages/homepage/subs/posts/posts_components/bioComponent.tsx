@@ -8,17 +8,14 @@ export default function Bio() {
   return (
     <Card
       sx={{
-        width: 320,
-        maxWidth: '100%',
-        boxShadow: 'sm',
+        maxWidth: '100%'
       }}
     >
-      <CardContent sx={{ alignItems: 'center', textAlign: 'center' }}>
-        <Avatar src="/static/images/avatar/1.jpg" sx={{ '--Avatar-size': '4rem' }} />
+      <CardContent sx={{ justifyContent:"center", textAlign: 'center' }}>
+        <Avatar sx={{ '--Avatar-size': '4rem', mx:"auto" }} />
         <Typography level="title-lg">Meshack Mlangeni</Typography>
-        <Typography level="body-sm" sx={{ maxWidth: '24ch' }}>
-          Hello, this is my bio and I am a PRO member of MUI. I am a developer and I
-          love to code.
+        <Typography level="body-sm" >
+          I started learning React in January and I'm tired!
         </Typography>
         <Sheet
             sx={{
