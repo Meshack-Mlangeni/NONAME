@@ -91,6 +91,8 @@ export default function TabDesktopNavBar() {
                 <Tab
                   disableIndicator
                   orientation="vertical"
+                  component={NavLink}
+                  to={"/home"}
                   {...(index === 0 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>
@@ -101,6 +103,8 @@ export default function TabDesktopNavBar() {
                 <Tab
                   disableIndicator
                   orientation="vertical"
+                  component={NavLink}
+                  to={"/home/myschool/groups"} //not yet available
                   {...(index === 1 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>
@@ -111,6 +115,7 @@ export default function TabDesktopNavBar() {
                 <Tab
                   disableIndicator
                   orientation="vertical"
+                  component={NavLink} to={"/settings"}
                   {...(index === 2 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>
@@ -121,6 +126,7 @@ export default function TabDesktopNavBar() {
                 <Tab
                   disableIndicator
                   orientation="vertical"
+                  component={NavLink} to={"/home/profile"}
                   {...(index === 3 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>

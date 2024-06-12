@@ -13,10 +13,8 @@ export default function MyGroups() {
   return (
     <Card
       sx={{
-        width: 320,
         mt: 2,
         maxWidth: "100%",
-        boxShadow: "sm",
       }}
     >
       <CardContent>

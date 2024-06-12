@@ -15,6 +15,9 @@ const Theme = extendTheme({
           "700": "#0369a1",
           "800": "#075985",
           "900": "#0c4a6e"
+        },
+        "background": {
+          "body": "#F0F0F0"
         }
       }
     },
@@ -31,6 +34,9 @@ const Theme = extendTheme({
           "700": "#0369a1",
           "800": "#075985",
           "900": "#0c4a6e"
+        },
+        "background": {
+          "body": "#171717"
         }
       }
     }

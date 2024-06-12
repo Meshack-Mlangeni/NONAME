@@ -14,19 +14,24 @@ import {
   Sheet,
   LinearProgress,
   Divider,
+  Button,
   CardOverflow,
   AspectRatio,
 } from "@mui/joy";
 import React from "react";
+import PopQuizComponent from "./popQuizComponent";
+import { _PostType } from "./_PostType";
 
 interface IPostProps {
   hasLiveDiscussion?: boolean;
   Labels?: React.ReactNode;
+  PostType?: _PostType;
 }
 
 export default function PostComponent({
   hasLiveDiscussion = false,
   Labels,
+  PostType = _PostType.Post,
 }: IPostProps) {
   return (
     <Card sx={{ mt: 2, mb: 2 }}>
@@ -54,7 +59,7 @@ export default function PostComponent({
       </CardContent>
       {(Labels || hasLiveDiscussion) && (
         <CardContent orientation="horizontal">
-          {hasLiveDiscussion && (
+          {(PostType === _PostType.Discussion && (
             <Chip color="danger">
               Live Discussion
               <LinearProgress
@@ -64,59 +69,78 @@ export default function PostComponent({
                 size="sm"
               />
             </Chip>
-          )}
-          {Labels}
+          )) ||
+            Labels}
         </CardContent>
       )}
+      {/* //remove false to display image */}
+      {PostType !== _PostType.Poll ? (
+        <>
+          {false && (
+            <CardOverflow>
+              <AspectRatio>
+                <img src="../public/test.jpg" alt="" loading="lazy" />
+              </AspectRatio>
+            </CardOverflow>
+          )}
 
-      <CardOverflow>
-        <AspectRatio>
-          <img src="../public/test.jpg" alt="" loading="lazy" />
-        </AspectRatio>
-      </CardOverflow>
-
-      <CardContent sx={{ mt: 1 }} orientation="horizontal">
-        <Typography level="body-md">
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry.
-        </Typography>
-      </CardContent>
-      <CardContent sx={{ mt: 1 }} orientation="horizontal">
-        <Sheet
-          sx={{
-            alignContent: "space-evenly",
-            alignItems: "center",
-            justifyContent: "space-between",
-            borderRadius: "6px",
-            maxHeight: "110px",
-          }}
-          variant="soft"
-          color="primary"
-        >
-          <CardContent orientation="horizontal">
-            <IconButton color="primary">
-              <ExpandMoreRounded />
-            </IconButton>
-            <Typography color="primary" alignSelf={"center"} level="body-xs">
-              54 upvote(s)
+          <CardContent sx={{ mt: 1 }} orientation="horizontal">
+            <Typography level="body-md">
+              How can we balance this equation: P4O10 + H2O → H3PO4
             </Typography>
-            <IconButton color="primary">
-              <ExpandLessRounded />
-            </IconButton>
-            <Divider orientation="vertical" />
-            <IconButton color="primary">
+          </CardContent>
+
+          { PostType === _PostType.Post ?
+            <><CardContent sx={{ mt: 1 }} orientation="horizontal">
+            <Sheet
+              sx={{
+                alignContent: "space-evenly",
+                alignItems: "center",
+                justifyContent: "space-between",
+                borderRadius: "6px",
+                maxHeight: "110px",
+              }}
+              variant="soft"
+              color="primary"
+            >
+              <CardContent orientation="horizontal">
+                <IconButton color="primary">
+                  <ExpandLessRounded />
+                </IconButton>
+                <Typography
+                  color="primary"
+                  fontWeight={"md"}
+                  alignSelf={"center"}
+                  level="body-sm"
+                >
+                  54 upvote(s)
+                </Typography>
+                <IconButton color="primary">
+                  <ExpandMoreRounded />
+                </IconButton>
+              </CardContent>
+            </Sheet>
+
+            <Button variant="soft" color="primary">
               <Typography
                 color="primary"
-                sx={{ ml: 2, mr: 2 }}
+                fontWeight={"md"}
                 alignSelf={"center"}
-                level="body-xs"
+                level="body-sm"
               >
                 54 comment(s)
               </Typography>
-            </IconButton>
-          </CardContent>
-        </Sheet>
-      </CardContent>
+            </Button>
+          </CardContent></>
+        : <Button variant="soft" color="danger">Join Discussion Room</Button>  
+        }
+        </>
+      ) : (
+        <PopQuizComponent
+          question={"Who is the greatest player ever"}
+          answers={["CR7", "NEY", "Messi", "Hazard"]}
+        />
+      )}
     </Card>
   );
 }
