@@ -36,7 +36,7 @@ export default function SelectedDiscussion({onLeave}: Props) {
           </Button>
         </CardContent>
       </Card>
-      <Box sx={{ pt: 5, pb: 2 }}></Box>
+      <Box sx={{ pt: 2, pb: 2 }}></Box>
     </>
   );
 }
