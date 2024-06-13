@@ -13,7 +13,7 @@ namespace tapinto.Server.Models
         [Key]
         public int Id { get; set; }
         public string UserEmail { get; set; }
-        public string PostContent { get; set; }
+        public string Content { get; set; }
         public string Labels { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.Now;
         public int? GroupId { get; set; }

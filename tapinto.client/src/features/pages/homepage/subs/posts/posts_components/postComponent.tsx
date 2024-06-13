@@ -21,6 +21,7 @@ import {
 import React from "react";
 import PopQuizComponent from "./popQuizComponent";
 import { _PostType } from "./_PostType";
+import LiveDialog from "../../../../live/liveDialog";
 
 interface IPostProps {
   hasLiveDiscussion?: boolean;
@@ -57,22 +58,7 @@ export default function PostComponent({
           <MoreHoriz />
         </IconButton>
       </CardContent>
-      {(Labels || hasLiveDiscussion) && (
-        <CardContent orientation="horizontal">
-          {(PostType === _PostType.Discussion && (
-            <Chip color="danger">
-              Live Discussion
-              <LinearProgress
-                variant="plain"
-                color="danger"
-                determinate={false}
-                size="sm"
-              />
-            </Chip>
-          )) ||
-            Labels}
-        </CardContent>
-      )}
+      {Labels && <CardContent orientation="horizontal">{Labels}</CardContent>}
       {/* //remove false to display image */}
       {PostType !== _PostType.Poll ? (
         <>
@@ -90,50 +76,53 @@ export default function PostComponent({
             </Typography>
           </CardContent>
 
-          { PostType === _PostType.Post ?
-            <><CardContent sx={{ mt: 1 }} orientation="horizontal">
-            <Sheet
-              sx={{
-                alignContent: "space-evenly",
-                alignItems: "center",
-                justifyContent: "space-between",
-                borderRadius: "6px",
-                maxHeight: "110px",
-              }}
-              variant="soft"
-              color="primary"
-            >
-              <CardContent orientation="horizontal">
-                <IconButton color="primary">
-                  <ExpandLessRounded />
-                </IconButton>
-                <Typography
+          {PostType === _PostType.Post ? (
+            <>
+              <CardContent sx={{ mt: 1 }} orientation="horizontal">
+                <Sheet
+                  sx={{
+                    alignContent: "space-evenly",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderRadius: "6px",
+                    maxHeight: "110px",
+                  }}
+                  variant="soft"
                   color="primary"
-                  fontWeight={"md"}
-                  alignSelf={"center"}
-                  level="body-sm"
                 >
-                  54 upvote(s)
-                </Typography>
-                <IconButton color="primary">
-                  <ExpandMoreRounded />
-                </IconButton>
-              </CardContent>
-            </Sheet>
+                  <CardContent orientation="horizontal">
+                    <IconButton color="primary">
+                      <ExpandLessRounded />
+                    </IconButton>
+                    <Typography
+                      color="primary"
+                      fontWeight={"md"}
+                      alignSelf={"center"}
+                      level="body-sm"
+                    >
+                      54 upvote(s)
+                    </Typography>
+                    <IconButton color="primary">
+                      <ExpandMoreRounded />
+                    </IconButton>
+                  </CardContent>
+                </Sheet>
 
-            <Button variant="soft" color="primary">
-              <Typography
-                color="primary"
-                fontWeight={"md"}
-                alignSelf={"center"}
-                level="body-sm"
-              >
-                54 comment(s)
-              </Typography>
-            </Button>
-          </CardContent></>
-        : <Button variant="soft" color="danger">Join Discussion Room</Button>  
-        }
+                <Button variant="soft" color="primary">
+                  <Typography
+                    color="primary"
+                    fontWeight={"md"}
+                    alignSelf={"center"}
+                    level="body-sm"
+                  >
+                    54 comment(s)
+                  </Typography>
+                </Button>
+              </CardContent>
+            </>
+          ) : (
+            <LiveDialog />
+          )}
         </>
       ) : (
         <PopQuizComponent

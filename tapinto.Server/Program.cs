@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using tapinto.Server.Data;
 using tapinto.Server.Models;
+using tapinto.Server.Services;
 
 namespace tapinto.Server
 {
@@ -14,6 +15,8 @@ namespace tapinto.Server
 
             // Add services to the container.
 
+            builder.Services.AddSignalRCore();
+            builder.Services.AddSignalR();
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -55,6 +58,7 @@ namespace tapinto.Server
 
             app.MapFallbackToFile("/index.html");
             await SeedData.EnsurePopulated(app);
+            app.MapHub<LiveHub>("/live");
             app.Run();
         }
     }
