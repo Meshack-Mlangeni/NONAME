@@ -9,74 +9,71 @@ import MessageInput from "./messageInput";
 import { Avatar } from "@mui/joy";
 
 type MessagesPaneProps = {
-  chat: ChatProps;
+    chat: ChatProps;
 };
 
 export default function MessagesPanel(props: MessagesPaneProps) {
-  const { chat } = props;
-  const [chatMessages, setChatMessages] = React.useState(chat.messages);
-  const [textAreaValue, setTextAreaValue] = React.useState("");
+    const { chat } = props;
+    const [chatMessages, setChatMessages] = React.useState(chat.messages);
+    const [textAreaValue, setTextAreaValue] = React.useState("");
 
-  React.useEffect(() => {
-    setChatMessages(chat.messages);
-  }, [chat.messages]);
+    React.useEffect(() => {
+        setChatMessages(chat.messages);
+    }, [chat.messages]);
 
-  return (
-    <>
-      <Sheet
-        sx={{
-          height: "100dvh",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flex: 1,
-            minHeight: 0,
-            px: 3,
-            py: 4,
-            overflowY: "scroll",
-            flexDirection: "column-reverse",
-          }}
-        >
-          <Stack spacing={4} justifyContent="flex-end">
-            {chatMessages.map((message: MessageProps, index: number) => {
-              const isYou = message.sender === "You";
-              return (
-                <Stack
-                  key={index}
-                  direction="row"
-                  spacing={2}
-                  flexDirection={isYou ? "row-reverse" : "row"}
+    return (
+        <>
+            <Sheet
+                sx={(theme) => ({
+                    background: (theme.palette.mode === "dark") ? theme.colorSchemes.dark.palette.background.body : theme.colorSchemes.light.palette.background.body
+                })}
+            >
+                <Box
+                    sx={{
+                        display: "flex",
+                        flex: 1,
+                        minHeight: 0,
+                        px: 3,
+                        py: 4,
+                        flexDirection: "column-reverse",
+                    }}
                 >
-                  {message.sender !== "You" && <Avatar />}
-                  <Bubble variant={isYou ? "sent" : "received"} {...message} />
-                </Stack>
-              );
-            })}
-          </Stack>
-        </Box>
-        <MessageInput
-          textAreaValue={textAreaValue}
-          setTextAreaValue={setTextAreaValue}
-          onSubmit={() => {
-            const newId = chatMessages.length + 1;
-            const newIdString = newId.toString();
-            setChatMessages([
-              ...chatMessages,
-              {
-                id: newIdString,
-                sender: "You",
-                content: textAreaValue,
-                timestamp: "Just now",
-              },
-            ]);
-          }}
-        />
-        <Box sx={{ pt: 20, pb: 8 }}></Box>
-      </Sheet>
-    </>
-  );
+                    <Stack spacing={4} justifyContent="flex-end">
+                        {chatMessages.map((message: MessageProps, index: number) => {
+                            const isYou = message.sender === "You";
+                            return (
+                                <Stack
+                                    key={index}
+                                    direction="row"
+                                    spacing={2}
+                                    flexDirection={isYou ? "row-reverse" : "row"}
+                                >
+                                    {message.sender !== "You" && <Avatar />}
+                                    <Bubble variant={isYou ? "sent" : "received"} {...message} />
+                                </Stack>
+                            );
+                        })}
+                    </Stack>
+                </Box>
+                <MessageInput
+                    textAreaValue={textAreaValue}
+                    setTextAreaValue={setTextAreaValue}
+                    onSubmit={() => {
+                        const newId = chatMessages.length + 1;
+                        const newIdString = newId.toString();
+                        setChatMessages([
+                            ...chatMessages,
+                            {
+                                id: newIdString,
+                                sender: "You",
+                                content: textAreaValue,
+                                timestamp: "Just now",
+                            },
+                        ]);
+                    }}
+                />
+                <Box sx={{ pt: 20, pb: 8 }}></Box>
+            </Sheet>
+        </>
+    );
 }

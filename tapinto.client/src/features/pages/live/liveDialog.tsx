@@ -41,8 +41,7 @@ export default function LiveDialog() {
         }}
       >
         <ModalDialog layout={layout}>
-          <SelectedDiscussion onLeave={() => setLayout(undefined)} />
-          <MessagesPanel chat={chats[0]} />
+    
         </ModalDialog>
       </Modal>
     </React.Fragment>
