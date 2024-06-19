@@ -72,7 +72,7 @@ export default function MessagesPanel(props: MessagesPaneProps) {
                         ]);
                     }}
                 />
-                <Box sx={{ pt: 20, pb: 8 }}></Box>
+                <Box sx={{ pt: 4, pb: 4 }}></Box>
             </Sheet>
         </>
     );

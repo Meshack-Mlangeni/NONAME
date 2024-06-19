@@ -1,17 +1,32 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { agent } from "../../../../../app/axiosAgent/agent";
+import { Label } from "../../../../../models/label";
+import { toast } from "react-toastify";
+
+export const getLabelsAsync = createAsyncThunk<Label>(
+    "posts/getLabelsAsync",
+    async (_, thunkApi) => {
+        try {
+            const labels = await agent.posts.labels();
+            console.log("Labels in thunk: ", labels);
+            return labels;
+        } catch (error: any) {
+            return thunkApi.rejectWithValue({ error: error })
+        }
+    }
+);
 
 interface postType {
     numberOfPosts: number,
-    labels: {
-        name: string,
-        color: string
-    }[]
+    labels: Label[];
+    selectedLabels: Label[];
 }
 
 const initialState: postType = {
     numberOfPosts: 0,
-    labels: []
-}
+    labels: [],
+    selectedLabels: []
+};
 
 export const PostSlice = createSlice({
     name: 'posts',
@@ -21,12 +36,21 @@ export const PostSlice = createSlice({
             state.numberOfPosts += action.payload;
         },
         addLabel(state, action) {
-            state.labels = (action.payload)
+            state.selectedLabels = (action.payload);
         },
-        removeLabel (state, action) {
-            state.labels = state.labels.filter(lbl => lbl.name !== action.payload)
+        removeLabel(state, action) {
+            state.selectedLabels = state.selectedLabels.filter(lbl => lbl.name !== action.payload);
         }
+    },
+    extraReducers: (builder) => {
+        builder.addCase(getLabelsAsync.fulfilled, (state, action) => {
+            state.labels = action.payload;
+            console.log("Labels in builder: ", state.labels)
+        });
+        builder.addCase(getLabelsAsync.rejected, () => {
+            toast.error("There was an error fetching data")
+        });
     }
-})
+});
 
 export const { increment, addLabel, removeLabel } = PostSlice.actions;

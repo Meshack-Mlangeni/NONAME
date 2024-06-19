@@ -14,7 +14,7 @@ export default function Live() {
             sx={{ mb: 0.25 }}
         >
             <SelectedDiscussion onLeave={() => {
-                toast.success("You have left the chat");
+                toast.success("You have left the chat", { autoClose: 1000});
                 routes.navigate("/home");
             }}
                 contentOnDiscussion={" We are a community of developers prepping for coding interviews, participate, chat with others and get better at interviewing."} />

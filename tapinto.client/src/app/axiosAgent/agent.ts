@@ -27,6 +27,11 @@ const account = {
     register: (data: object) => requests.post('account/register', data)
 }
 
+const posts = {
+    labels: () => requests.get('activity/getlabels'),
+}
+
 export const agent = {
-    account
+    account,
+    posts
 };

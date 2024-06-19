@@ -55,6 +55,20 @@ namespace tapinto.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Labels",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Labels", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Schools",
                 columns: table => new
                 {
@@ -220,7 +234,7 @@ namespace tapinto.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PostContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Labels = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GroupId = table.Column<int>(type: "int", nullable: true)
@@ -310,6 +324,9 @@ namespace tapinto.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "GroupUsers");
+
+            migrationBuilder.DropTable(
+                name: "Labels");
 
             migrationBuilder.DropTable(
                 name: "Posts");

@@ -12,7 +12,7 @@ using tapinto.Server.Data;
 namespace tapinto.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240608202109_InitialMigration")]
+    [Migration("20240619200101_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -203,6 +203,25 @@ namespace tapinto.Server.Migrations
                     b.ToTable("GroupUsers");
                 });
 
+            modelBuilder.Entity("tapinto.Server.Models.Label", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Labels");
+                });
+
             modelBuilder.Entity("tapinto.Server.Models.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -211,13 +230,13 @@ namespace tapinto.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("Labels")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostContent")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Timestamp")

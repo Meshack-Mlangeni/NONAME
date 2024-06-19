@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using tapinto.Server.Models;
@@ -69,6 +65,17 @@ namespace tapinto.Server.Data
                    new(){ UserEmail = "meshackmlangeni@outlook.com", GroupId = 1 },
                    new(){ UserEmail = "njabulo261@gmail.com", GroupId = 1 },
                    new(){ UserEmail = "meshackmlangeni@outlook.com", GroupId = 2 },
+                ]);
+            }
+            context.SaveChanges();
+
+            if (!context.Labels.Any())
+            {
+                context.Labels.AddRange([
+                   new(){ Name="Help wanted", Color="primary" },
+                   new(){ Name="Suggestion", Color="warning" },
+                   new(){ Name="Quiz", Color="danger" },
+                   new(){ Name="Announcement", Color="danger" }
                 ]);
             }
             context.SaveChanges();

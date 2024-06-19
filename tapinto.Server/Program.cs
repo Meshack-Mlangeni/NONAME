@@ -50,6 +50,10 @@ namespace tapinto.Server
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseCors(opt =>
+            {
+                opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("https://localhost:5000");
+            });
 
             app.UseAuthorization();
 
