@@ -1,6 +1,15 @@
 import { DarkMode, LightMode } from "@mui/icons-material";
-import { Divider, Grid, Switch, Tab, TabList, Tabs, useColorScheme } from "@mui/joy";
+import {
+  Divider,
+  Grid,
+  Switch,
+  Tab,
+  TabList,
+  Tabs,
+  useColorScheme,
+} from "@mui/joy";
 import { NavLink, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function TabsNav() {
   const location = useLocation(); //use location.pathname to get current path
@@ -15,7 +24,10 @@ export default function TabsNav() {
               <TabList>
                 <Switch
                   size="lg"
-                  onChange={() => setMode(mode === "light" ? "dark" : "light")}
+                  onChange={() => {
+                    toast.info(`Theme has changed to: ${mode} mode`)
+                    setMode(mode === "light" ? "dark" : "light");
+                  }}
                   slotProps={{
                     input: { "aria-label": "Dark mode" },
                     thumb: {
