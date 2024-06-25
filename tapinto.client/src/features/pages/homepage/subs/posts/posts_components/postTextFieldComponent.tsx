@@ -6,6 +6,7 @@ import {
   ChipDelete,
   Divider,
   IconButton,
+  Sheet,
   Textarea,
 } from "@mui/joy";
 import Labels from "../../../../../components/labelctr";
@@ -28,8 +29,9 @@ import { toast } from "react-toastify";
 import { FieldValues, useForm } from "react-hook-form";
 import ShowTo from "./postVisibilityComponent";
 import { useMediaQuery } from "@mui/material";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PostTypeRadio from "./postTypeRadio";
+import PollComponent from "./pollComponent";
 
 export default function PostTextField() {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,8 +47,8 @@ export default function PostTextField() {
     register,
     handleSubmit,
     reset,
-    formState: { isValid, defaultValues },
-  } = useForm({ mode: "onChange" });
+    formState: { isValid },
+  } = useForm({ mode: "onTouched" });
   const onSubmit = (data: FieldValues) => {
     dispatch(createActivityAsync(data)).finally(() => {
       dispatch(resetLabels());
@@ -58,44 +60,110 @@ export default function PostTextField() {
     dispatch(getLabelsAsync());
   }, [dispatch]);
 
+  const [submitBtnText, setSubmitBtnText] = useState<string>("Create Post");
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <PostTypeRadio register={register} />
-        <Box display="flex" alignItems="center" sx={{ mb: 2 }}>
-          <Textarea
-            placeholder="What's on your mind..."
-            minRows={1}
-            maxRows={4}
-            {...register("postContent")}
-            startDecorator={
-              <Box sx={{ display: "flex", gap: 0.5, flex: 1 }}>
-                <Labels />
-                <>
-                  {selectedLabels.map((lbl, idx) => (
-                    <Chip
-                      endDecorator={
-                        <ChipDelete
-                          onDelete={() => {
-                            dispatch(removeLabel(lbl.name));
-                            toast.warn(`${lbl.name} label removed`);
-                          }}
-                        />
-                      }
-                      // @ts-expect-error
-                      color={lbl.color ?? "danger"}
-                      key={idx}
-                    >
-                      {lbl.name}
-                    </Chip>
-                  ))}
-                </>
-              </Box>
-            }
-            sx={{ minWidth: 300, width: "100%" }}
-          />
+        <PostTypeRadio
+          register={register}
+          setsubmitbtntext={setSubmitBtnText}
+        />
+        <Box display="flex" alignItems="center">
+          {submitBtnText.toLowerCase().includes("poll") ? (
+            <Sheet
+              variant="outlined"
+              color="neutral"
+              sx={{
+                p: 2,
+                width: "100%",
+                borderRadius: "sm",
+                boxShadow: "sm",
+              }}
+            >
+              <Textarea
+                placeholder={"Please type poll question..."}
+                minRows={1}
+                maxRows={4}
+                {...register("postContent", {
+                  required: "Cannot send an empty post",
+                })}
+                startDecorator={
+                  submitBtnText.toLowerCase().includes("post") && (
+                    <Box sx={{ display: "flex", gap: 0.5, flex: 1 }}>
+                      <Labels />
+                      <>
+                        {selectedLabels.map((lbl, idx) => (
+                          <Chip
+                            endDecorator={
+                              <ChipDelete
+                                onDelete={() => {
+                                  dispatch(removeLabel(lbl.name));
+                                  toast.warn(`${lbl.name} label removed`);
+                                }}
+                              />
+                            }
+                            // @ts-expect-error
+                            color={lbl.color ?? "danger"}
+                            key={idx}
+                          >
+                            {lbl.name}
+                          </Chip>
+                        ))}
+                      </>
+                    </Box>
+                  )
+                }
+                sx={{
+                  minWidth: 300,
+                  width: "100%",
+                  mb: 3,
+                }}
+              />
+              <PollComponent />
+            </Sheet>
+          ) : (
+            <Textarea
+              placeholder={"What's on your mind..."}
+              minRows={1}
+              maxRows={4}
+              {...register("postContent", {
+                required: "Cannot send an empty post",
+              })}
+              startDecorator={
+                submitBtnText.toLowerCase().includes("post") && (
+                  <Box sx={{ display: "flex", gap: 0.5, flex: 1 }}>
+                    <Labels />
+                    <>
+                      {selectedLabels.map((lbl, idx) => (
+                        <Chip
+                          endDecorator={
+                            <ChipDelete
+                              onDelete={() => {
+                                dispatch(removeLabel(lbl.name));
+                                toast.warn(`${lbl.name} label removed`);
+                              }}
+                            />
+                          }
+                          // @ts-expect-error
+                          color={lbl.color ?? "danger"}
+                          key={idx}
+                        >
+                          {lbl.name}
+                        </Chip>
+                      ))}
+                    </>
+                  </Box>
+                )
+              }
+              sx={{
+                minWidth: 300,
+                width: "100%",
+              }}
+            />
+          )}
         </Box>
-        <Box sx={{ mt: 1 }} display="flex" alignItems="center">
+        <Box sx={{ mt: 3 }} display="flex" alignItems="center">
           <div>
             <Button
               disabled={!isValid}
@@ -104,7 +172,7 @@ export default function PostTextField() {
               sx={{ mr: 1 }}
               variant="solid"
             >
-              <Send /> &nbsp; Post
+              <Send /> &nbsp; {submitBtnText}
             </Button>
 
             <input

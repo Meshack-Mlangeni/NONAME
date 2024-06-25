@@ -9,12 +9,25 @@ import {
   PollRounded,
   PostAddRounded,
 } from "@mui/icons-material";
+import Theme from "../../../../../../app/theme/theme";
+import { useState } from "react";
 
 interface RadioProps {
   register: UseFormRegister<FieldValues>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setsubmitbtntext: any;
 }
 
-export default function PostTypeRadio({ register }: RadioProps) {
+export default function PostTypeRadio({
+  register,
+  setsubmitbtntext,
+}: RadioProps) {
+  const data = [
+    ["Post", <PostAddRounded />],
+    ["Poll", <PollRounded />],
+    ["Discussion", <CommentRounded />],
+  ];
+  const [defaultValue, setDefaultValue] = useState<number>(0);
   return (
     <Box
       sx={{
@@ -26,27 +39,28 @@ export default function PostTypeRadio({ register }: RadioProps) {
     >
       <RadioGroup
         orientation="horizontal"
-        sx={(theme) => ({
-          minHeight: 38,
+        onChange={(e) =>
+          setsubmitbtntext(
+            ("Create " + data[+e.target.value as number][0]) as string
+          )
+        }
+        sx={{
+          minHeight: 40,
           padding: "4px",
-          border: `1px ${
-            theme.palette.mode === "dark" ? "#32383E" : "#F0F0F0"
-          } solid`,
           borderRadius: "12px",
-          bgcolor: "neutral.softBg",
-          "--RadioGroup-gap": "4px",
+          "--RadioGroup-gap": "10px",
           "--Radio-actionRadius": "8px",
-        })}
+        }}
       >
-        {[
-          ["Post", <PostAddRounded />],
-          ["Poll", <PollRounded />],
-          ["Discussion", <CommentRounded />],
-        ].map((item, index) => (
+        {data.map((item, index) => (
           <Radio
             key={index}
-            {...register("postType", { required: true })}
-            color=""
+            checked={index === defaultValue}
+            {...register("postType", {
+              required: true,
+              onChange: (e) => setDefaultValue(+e.target.defaultValue),
+            })}
+            color="neutral"
             value={
               item[0] === "Post"
                 ? (0 as PostType)
@@ -61,7 +75,7 @@ export default function PostTypeRadio({ register }: RadioProps) {
                 {item[0]}
               </>
             }
-            variant="plain"
+            variant="outlined"
             sx={{
               px: 2,
               alignItems: "center",
@@ -70,11 +84,12 @@ export default function PostTypeRadio({ register }: RadioProps) {
               action: ({ checked }) => ({
                 sx: {
                   ...(checked && {
-                    bgcolor: "#096E9B",
+                    border: `3px ${
+                      Theme.palette.mode === "dark"
+                        ? Theme.palette.primary[500]
+                        : Theme.palette.primary[500]
+                    } solid`,
                     boxShadow: "sm",
-                    "&:hover": {
-                      bgcolor: "#D1EEFD",
-                    },
                   }),
                 },
               }),
