@@ -16,7 +16,7 @@ axios.interceptors.response.use(async (response) => {
 })
 
 const requests = {
-    get: (url: string, params?: URLSearchParams) => axios.get(url, {params}).then(responseBody),
+    get: (url: string, params?: URLSearchParams) => axios.get(url, { params }).then(responseBody),
     post: (url: string, data: object) => axios.post(url, data).then(responseBody),
     put: (url: string, data: object) => axios.put(url, data).then(responseBody),
     delete: (url: string) => axios.delete(url).then(responseBody),
@@ -29,6 +29,7 @@ const account = {
 
 const posts = {
     labels: () => requests.get('activity/getlabels'),
+    posts: (data: object) => requests.put('activity/create', data),
 }
 
 export const agent = {

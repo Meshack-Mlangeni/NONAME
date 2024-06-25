@@ -19,6 +19,5 @@ namespace tapinto.Server.Models
         public int? GroupId { get; set; }
         [DeleteBehavior(DeleteBehavior.NoAction)]
         public Group Group { get; set; }
-        
     }
 }

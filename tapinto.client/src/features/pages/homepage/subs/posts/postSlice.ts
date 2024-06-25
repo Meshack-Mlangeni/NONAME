@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { agent } from "../../../../../app/axiosAgent/agent";
 import { Label } from "../../../../../models/label";
 import { toast } from "react-toastify";
+import { FieldValues } from "react-hook-form";
+import { Post } from "../../../../../models/post";
+import { store } from "../../../../../app/store/store";
 
 export const getLabelsAsync = createAsyncThunk<Label>(
     "posts/getLabelsAsync",
@@ -11,21 +15,37 @@ export const getLabelsAsync = createAsyncThunk<Label>(
             console.log("Labels in thunk: ", labels);
             return labels;
         } catch (error: any) {
-            return thunkApi.rejectWithValue({ error: error })
+            return thunkApi.rejectWithValue({ error: error.data })
         }
     }
 );
+
+export const createActivityAsync = createAsyncThunk<Post, FieldValues>(
+    "posts/createActivityAsync",
+    async (data, thunkApi) => {
+        try {
+            data.labels = store.getState().posts.selectedLabels.map(l => l.id).join(",");
+            console.log(data);
+            const post = await agent.posts.posts(data);
+            return post;
+        } catch (error: any) {
+            return thunkApi.rejectWithValue({ error: error.data })
+        }
+    }
+)
 
 interface postType {
     numberOfPosts: number,
     labels: Label[];
     selectedLabels: Label[];
+    allPosts: Post[]
 }
 
 const initialState: postType = {
     numberOfPosts: 0,
     labels: [],
-    selectedLabels: []
+    selectedLabels: [],
+    allPosts: []
 };
 
 export const PostSlice = createSlice({
@@ -40,6 +60,9 @@ export const PostSlice = createSlice({
         },
         removeLabel(state, action) {
             state.selectedLabels = state.selectedLabels.filter(lbl => lbl.name !== action.payload);
+        },
+        resetLabels(state) {
+            state.selectedLabels = [];
         }
     },
     extraReducers: (builder) => {
@@ -50,7 +73,15 @@ export const PostSlice = createSlice({
         builder.addCase(getLabelsAsync.rejected, () => {
             toast.error("There was an error fetching data")
         });
+
+        builder.addCase(createActivityAsync.fulfilled, (state, action) => {
+            state.allPosts.push(action.payload);
+            toast.success("Post successfully sent")
+        });
+        builder.addCase(createActivityAsync.rejected, () => {
+            toast.error("There was an error creating you post, please contact system adminitrator.")
+        });
     }
 });
 
-export const { increment, addLabel, removeLabel } = PostSlice.actions;
+export const { increment, addLabel, removeLabel, resetLabels } = PostSlice.actions;
