@@ -72,14 +72,18 @@ export default function PostTextField() {
         <Box display="flex" alignItems="center">
           {submitBtnText.toLowerCase().includes("poll") ? (
             <Sheet
-              variant="outlined"
+              variant="soft"
               color="neutral"
-              sx={{
+              sx={(theme) => ({
                 p: 2,
                 width: "100%",
                 borderRadius: "sm",
-                boxShadow: "sm",
-              }}
+                border: `2px ${
+                  theme.palette.mode === "dark"
+                    ? theme.palette.neutral[700]
+                    : theme.palette.neutral[300]
+                } dashed`,
+              })}
             >
               <Textarea
                 placeholder={"Please type poll question..."}
