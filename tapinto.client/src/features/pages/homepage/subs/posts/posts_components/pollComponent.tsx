@@ -3,13 +3,12 @@ import {
   Box,
   Button,
   Radio,
-  FormLabel,
   Input,
   RadioGroup,
   Sheet,
   Typography,
 } from "@mui/joy";
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface Answer {
   questionId: number;
