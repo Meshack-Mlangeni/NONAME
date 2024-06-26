@@ -10,8 +10,12 @@ namespace tapinto.Server.Data
         public DbSet<School> Schools { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<Post> Posts { get; set; }
-        public DbSet<GroupUserBridge> GroupUsers { get; set; }
         public DbSet<Label> Labels { get; set; }
+        public DbSet<GroupUserBridge> GroupUsers { get; set; }
+        public DbSet<Comments> Comments { get; set; }
+        public DbSet<PossibleAnswer> PossibleAnswers { get; set; }
+        public DbSet<ChatHistory> ChatHistory { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
     }
 }

@@ -155,6 +155,60 @@ namespace tapinto.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("tapinto.Server.Models.ChatHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("ChatHistory");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.Comments", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CommentContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("tapinto.Server.Models.Group", b =>
                 {
                     b.Property<int>("Id")
@@ -219,6 +273,51 @@ namespace tapinto.Server.Migrations
                     b.ToTable("Labels");
                 });
 
+            modelBuilder.Entity("tapinto.Server.Models.Like", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Likes");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.PossibleAnswer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Answer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("isAnswer")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PossibleAnswers");
+                });
+
             modelBuilder.Entity("tapinto.Server.Models.Post", b =>
                 {
                     b.Property<int>("Id")
@@ -235,6 +334,9 @@ namespace tapinto.Server.Migrations
 
                     b.Property<string>("Labels")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PostType")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -276,6 +378,9 @@ namespace tapinto.Server.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -315,6 +420,9 @@ namespace tapinto.Server.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
 
                     b.Property<int>("SchoolId")
                         .HasColumnType("int");
@@ -396,6 +504,28 @@ namespace tapinto.Server.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("tapinto.Server.Models.ChatHistory", b =>
+                {
+                    b.HasOne("tapinto.Server.Models.Post", "Post")
+                        .WithMany("Chats")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.Comments", b =>
+                {
+                    b.HasOne("tapinto.Server.Models.Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("tapinto.Server.Models.Group", b =>
                 {
                     b.HasOne("tapinto.Server.Models.School", "School")
@@ -417,6 +547,28 @@ namespace tapinto.Server.Migrations
                     b.Navigation("Group");
                 });
 
+            modelBuilder.Entity("tapinto.Server.Models.Like", b =>
+                {
+                    b.HasOne("tapinto.Server.Models.Post", "Post")
+                        .WithMany("Likes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.PossibleAnswer", b =>
+                {
+                    b.HasOne("tapinto.Server.Models.Post", "Post")
+                        .WithMany("Answers")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("tapinto.Server.Models.Post", b =>
                 {
                     b.HasOne("tapinto.Server.Models.Group", "Group")
@@ -430,6 +582,15 @@ namespace tapinto.Server.Migrations
             modelBuilder.Entity("tapinto.Server.Models.Group", b =>
                 {
                     b.Navigation("groupUserBridge");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.Post", b =>
+                {
+                    b.Navigation("Answers");
+
+                    b.Navigation("Chats");
+
+                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.School", b =>

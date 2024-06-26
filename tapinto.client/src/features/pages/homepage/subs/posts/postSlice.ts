@@ -4,7 +4,7 @@ import { agent } from "../../../../../app/axiosAgent/agent";
 import { Label } from "../../../../../models/label";
 import { toast } from "react-toastify";
 import { FieldValues } from "react-hook-form";
-import { Post } from "../../../../../models/post";
+import { Post, PostDto } from "../../../../../models/post";
 import { store } from "../../../../../app/store/store";
 
 export const getLabelsAsync = createAsyncThunk<Label>(
@@ -20,11 +20,12 @@ export const getLabelsAsync = createAsyncThunk<Label>(
     }
 );
 
-export const createActivityAsync = createAsyncThunk<Post, FieldValues>(
+export const createActivityAsync = createAsyncThunk<PostDto, FieldValues>(
     "posts/createActivityAsync",
     async (data, thunkApi) => {
         try {
             data.labels = store.getState().posts.selectedLabels.map(l => l.id).join(",");
+
             console.log(data);
             const post = await agent.posts.posts(data);
             return post;

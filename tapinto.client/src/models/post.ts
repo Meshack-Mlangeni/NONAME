@@ -1,13 +1,18 @@
+import { Answer } from "./answers";
+import { Chats } from "./chats";
 import { Comments } from "./comments";
 
-export interface Post {
-    Id: number;
-    GroupId: number;
-    PostType: number;
-    PostContent: string;
-    UserEmail: string;
-    Upvotes: number;
-    TimeStamp: Date;
-    Labels: string;
-    Comments: Comments[];
+
+export interface PostDto {
+    id: number;
+    groupId: number;
+    postType: number;
+    postContent: string;
+    userEmail: string;
+    upvotes: number;
+    timeStamp: string;
+    comments: Comments[];
+    chats: Chats[];
+    answers: Answer[];
+    labels: string;
 }
