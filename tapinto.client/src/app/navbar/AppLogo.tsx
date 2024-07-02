@@ -62,8 +62,10 @@ export default function AppLogo() {
         fontFamily={"Asahina Sans"}
         component="div"
         onDoubleClick={() => {
-          toast.success("Thank you for choosing MindMeta, Happy learning");
-          dispatch(setLoading(true));
+          if (!Loading) {
+            toast.success("Thank you for choosing MemoMeta, Happy learning");
+            dispatch(setLoading(true));
+          }
         }}
         sx={(theme) => ({
           flexGrow: 1,
