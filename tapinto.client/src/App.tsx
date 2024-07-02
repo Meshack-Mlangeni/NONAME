@@ -13,7 +13,7 @@ function App() {
   return (
     <>
       {Loading && (
-        <LinearProgress variant="plain" determinate={false} thickness={2} />
+        <LinearProgress variant="plain" determinate={false} thickness={5} />
       )}
       <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
       {!appLocation.pathname.toLocaleLowerCase().includes("login") &&
