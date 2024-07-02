@@ -1,4 +1,4 @@
-`MemoMeta | cd.nm NONAME`
+`MemoMeta | NONAME`
 
 To run frontend:
 
