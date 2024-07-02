@@ -1,22 +1,18 @@
-To Run the Project:
+`MemoMeta | cd.nm NONAME`
 
+To run frontend:
 
-cd .\tapinto.client\
-npm install
+> Navigate to frontend folder
 
-*opt 1:*
+> On terminal run **npm install** to install required libraries
 
-[using vs code] - Select project.cs
-                - Run project associated with this file
-                
-[visual studio] - Run without debug or Debug
+> Then **npm start** to run
 
-*opt 2:*
+**Frontend uses ReactBootrap Library, see:**
 
+> [MUI JoyUI](https://mui.com/joy-ui/getting-started/)
 
-cd .\tapinto.client\
-npm start
+> [React-Spring](https://www.react-spring.dev/) - For animation
 
+**BackEnd uses C# AspNet Core**
 
-cd .\tapinto.Server\
-dotnet watch run
