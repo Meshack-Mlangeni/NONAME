@@ -24,7 +24,7 @@ export default function AppLogo() {
     const { scale } = useSpring({
       immediate: disableAnimation,
       from: { scale: 1 },
-      to: { scale: 1.2 },
+      to: { scale: 1.1 },
       config: config.molasses,
       loop: true,
       delay: delay,
