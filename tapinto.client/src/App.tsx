@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { CssBaseline, Grid, LinearProgress } from "@mui/joy";
 import { useAppSelector } from "./app/store/store";
+import "./assets/fonts/AsahinaSans.ttf";
 
 function App() {
   const appLocation = useLocation();

@@ -1,1 +1,5 @@
-﻿
+﻿@font-face {
+  font-family: "Light"; /*Can be any text*/
+  src: local("AsahinaSans"),
+    url("./assets/fonts/AsahinaSans.ttf") format("truetype");
+}

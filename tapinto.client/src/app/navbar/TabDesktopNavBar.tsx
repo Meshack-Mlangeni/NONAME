@@ -19,6 +19,7 @@ import {
 import { NavLink } from "react-router-dom";
 import TabsNav from "./TabsNav";
 import NavSpacingComponent from "./NavSpacingComponent";
+import AppLogo from "./AppLogo";
 
 export default function TabDesktopNavBar() {
   const [index, setIndex] = React.useState(0);
@@ -44,14 +45,7 @@ export default function TabDesktopNavBar() {
             pr: 2,
           }}
         >
-          <Typography
-            color="primary"
-            level="h3"
-            component="div"
-            sx={{ flexGrow: 1, fontWeight: "lg" }}
-          >
-            NNY
-          </Typography>
+          <AppLogo/>
 
           <Box
             color="primary"
@@ -115,7 +109,8 @@ export default function TabDesktopNavBar() {
                 <Tab
                   disableIndicator
                   orientation="vertical"
-                  component={NavLink} to={"/settings"}
+                  component={NavLink}
+                  to={"/settings"}
                   {...(index === 2 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>
@@ -126,7 +121,8 @@ export default function TabDesktopNavBar() {
                 <Tab
                   disableIndicator
                   orientation="vertical"
-                  component={NavLink} to={"/home/profile"}
+                  component={NavLink}
+                  to={"/home/profile"}
                   {...(index === 3 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>

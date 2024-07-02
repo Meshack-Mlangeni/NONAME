@@ -13,6 +13,7 @@ import { useAppDispatch } from "../../../app/store/store";
 import { loginAsync } from "./accountSlice";
 import { Sheet, Switch, useColorScheme } from "@mui/joy";
 import { DarkMode, LightMode } from "@mui/icons-material";
+import AppLogo from "../../../app/navbar/AppLogo";
 //generously borrowed from MUI sign up template
 
 export default function Login() {
@@ -57,7 +58,7 @@ export default function Login() {
             }}
           >
             <Box sx={{ gap: 2, display: "flex", alignItems: "center" }}>
-              <Typography level="h3">NONAME YET</Typography> &nbsp;
+              <AppLogo/> &nbsp;
               <Button component={NavLink} to="/home">
                 Guest mode
               </Button>
