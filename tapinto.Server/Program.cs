@@ -1,6 +1,11 @@
 
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
+using tapinto.Server.Controllers;
 using tapinto.Server.Data;
 using tapinto.Server.Models;
 using tapinto.Server.Services;
@@ -20,7 +25,29 @@ namespace tapinto.Server
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen( s =>
+            {
+                var jwtSecurityScheme = new OpenApiSecurityScheme
+                {
+                    BearerFormat = "JWT",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Description = "Put **_ONLY_** your JWT Bearer token **_IN_THE_FIELD_** below!",
+                    Reference = new OpenApiReference
+                    {
+                        Id = JwtBearerDefaults.AuthenticationScheme,
+                        Type = ReferenceType.SecurityScheme
+                    }
+                };
+                s.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
+                s.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        jwtSecurityScheme, Array.Empty<string>()
+                    }
+                });
+            });
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("AppConnection"));
@@ -36,7 +63,23 @@ namespace tapinto.Server
             })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AppDbContext>();
-            builder.Services.AddAuthentication();
+            var secretKey = builder.Configuration.GetValue<string>("secretKey");
+
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme
+                ).AddJwtBearer(opts =>
+            {
+                opts.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey ?? string.Empty)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = false,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            builder.Services.AddScoped<AuthController>();    
             builder.Services.AddAuthorization();
 
             var app = builder.Build();
@@ -48,13 +91,14 @@ namespace tapinto.Server
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI( s => s.ConfigObject.AdditionalItems["persistAuthorization"] = true);
             }
             app.UseCors(opt =>
             {
                 opt.AllowAnyHeader().AllowAnyMethod().AllowCredentials().WithOrigins("https://localhost:5000");
             });
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
