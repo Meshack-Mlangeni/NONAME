@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client.Platforms.Features.DesktopOs.Kerberos;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using tapinto.Server.DataTransferObjects;
 using tapinto.Server.Models;
 
 namespace tapinto.Server.Controllers
@@ -18,16 +14,16 @@ namespace tapinto.Server.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
-       
-        public AuthController(IConfiguration configuration , UserManager<User> userManager)
+
+        public AuthController(IConfiguration configuration, UserManager<User> userManager)
         {
             _userManager = userManager;
             _configuration = configuration;
         }
-      
+
         [HttpPost]
 
-        public async Task<Token> Auntheticate(User user )
+        public async Task<Token> Auntheticate(User user)
         {
             //verify credential
             if (user != null)
@@ -52,19 +48,18 @@ namespace tapinto.Server.Controllers
                 return new Token
                 {
                     accessToken = CreateToken(claims, expiresAt),
-                    expiresAt = expiresAt,
                 };
-                
+
             }
 
             ModelState.AddModelError("Unauthorized", "Missing credentials");
             return null;
-               
+
         }
 
         private string CreateToken(IEnumerable<Claim> claims, DateTime expiresAt)
         {
-            var secretKey = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("secretKey")?? "");
+            var secretKey = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("secretKey") ?? "");
 
             var jwt = new JwtSecurityToken(
                 claims: claims,
