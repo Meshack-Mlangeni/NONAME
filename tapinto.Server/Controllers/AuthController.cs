@@ -28,6 +28,7 @@ namespace tapinto.Server.Controllers
             //verify credential
             if (user != null)
             {
+                //to.do more claims to be added as the project progresses
                 //create security context
                 var claims = new List<Claim>()
                 {

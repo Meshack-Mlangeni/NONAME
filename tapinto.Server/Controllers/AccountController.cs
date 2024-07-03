@@ -15,9 +15,6 @@ namespace tapinto.Server.Controllers
         private readonly AppDbContext context;
         private readonly UserManager<User> _userManager;
         private readonly AuthController _authController;
-       
-
-
 
         public AccountController(ILogger<AccountController> logger, AppDbContext _context,
             UserManager<User> userManager, AuthController authController)
