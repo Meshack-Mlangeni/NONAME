@@ -18,7 +18,8 @@ export default function Posts() {
         <Grid item xs={!Tablet ? 12 : 8}>
           <Box {...(Tablet && { sx: { ml: 1, mr: 1 } })}>
             <Post />
-            <PostComponent PostType={_PostType.Poll}
+            <PostComponent
+              PostType={_PostType.Post}
               Labels={
                 <>
                   <Chip color="danger">Quiz</Chip>

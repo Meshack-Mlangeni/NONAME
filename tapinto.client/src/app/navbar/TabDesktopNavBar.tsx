@@ -20,8 +20,10 @@ import { NavLink } from "react-router-dom";
 import TabsNav from "./TabsNav";
 import NavSpacingComponent from "./NavSpacingComponent";
 import AppLogo from "./AppLogo";
+import { useAppSelector } from "../store/store";
 
 export default function TabDesktopNavBar() {
+  const { user } = useAppSelector((state) => state.account);
   const [index, setIndex] = React.useState(0);
   return (
     <>
@@ -45,7 +47,7 @@ export default function TabDesktopNavBar() {
             pr: 2,
           }}
         >
-          <AppLogo/>
+          <AppLogo />
 
           <Box
             color="primary"
@@ -136,25 +138,27 @@ export default function TabDesktopNavBar() {
 
           <Typography component="div" sx={{ flexGrow: 1 }} />
           <Box>
-            <Dropdown>
-              <MenuButton
-                startDecorator={<Key />}
-                color="primary"
-                variant="solid"
-              >
-                Account
-              </MenuButton>
-              <Menu>
-                <MenuItem component={NavLink} to="/login">
-                  <Login />
-                  Login
-                </MenuItem>
-                <MenuItem component={NavLink} to="/register">
-                  <AppRegistration />
-                  Register
-                </MenuItem>
-              </Menu>
-            </Dropdown>
+            {!user && (
+              <Dropdown>
+                <MenuButton
+                  startDecorator={<Key />}
+                  color="primary"
+                  variant="solid"
+                >
+                  Account
+                </MenuButton>
+                <Menu>
+                  <MenuItem component={NavLink} to="/login">
+                    <Login />
+                    Login
+                  </MenuItem>
+                  <MenuItem component={NavLink} to="/register">
+                    <AppRegistration />
+                    Register
+                  </MenuItem>
+                </Menu>
+              </Dropdown>
+            )}
           </Box>
         </Box>
         <TabsNav />

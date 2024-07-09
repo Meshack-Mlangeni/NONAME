@@ -1,10 +1,13 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { store } from "../store/store";
 
 axios.defaults.baseURL = "http://localhost:5169/api";
 axios.defaults.withCredentials = true;
 const responseBody = (response: AxiosResponse) => response.data;
 
 axios.interceptors.request.use(config => {
+    const token = store.getState().account.user?.token;
+    if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
 })
 
@@ -24,7 +27,8 @@ const requests = {
 
 const account = {
     login: (data: object) => requests.post('account/login', data),
-    register: (data: object) => requests.post('account/register', data)
+    register: (data: object) => requests.post('account/register', data),
+    currentUser: () => requests.get("account/currentUser")
 }
 
 const posts = {

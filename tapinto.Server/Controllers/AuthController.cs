@@ -32,8 +32,8 @@ namespace tapinto.Server.Controllers
                 //create security context
                 var claims = new List<Claim>()
                 {
+                    new Claim(ClaimTypes.Name,user.UserName),
                     new Claim(ClaimTypes.Email,user.Email),
-                    new Claim(ClaimTypes.Name,user.UserName)
                 };
 
                 var roles = await _userManager.GetRolesAsync(user);
@@ -43,7 +43,7 @@ namespace tapinto.Server.Controllers
                     claims.Add(new Claim(ClaimTypes.Role, role));
                 }
 
-                var expiresAt = DateTime.UtcNow.AddMinutes(15);
+                var expiresAt = DateTime.UtcNow.AddDays(2);
 
 
                 return new Token
@@ -63,6 +63,7 @@ namespace tapinto.Server.Controllers
             var secretKey = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("secretKey") ?? "");
 
             var jwt = new JwtSecurityToken(
+                issuer: null,
                 claims: claims,
                 notBefore: DateTime.UtcNow,
                 expires: expiresAt,

@@ -15,6 +15,7 @@ import Labels from "../../../../../components/labelctr";
 import {
   Add,
   AttachFileOutlined,
+  LoginTwoTone,
   PhotoCameraOutlined,
   Send,
 } from "@mui/icons-material";
@@ -103,8 +104,8 @@ export default function PostTextField() {
     ["Poll", <PollRounded />],
     ["Discussion", <CommentRounded />],
   ];
-
-  return (
+  const { user } = useAppSelector((state) => state.account);
+  return user ? (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box
@@ -408,5 +409,9 @@ export default function PostTextField() {
         </Box>
       </form>
     </>
+  ) : (
+    <Typography>
+      <LoginTwoTone /> &nbsp;&nbsp;&nbsp; You have to sign in to post something
+    </Typography>
   );
 }

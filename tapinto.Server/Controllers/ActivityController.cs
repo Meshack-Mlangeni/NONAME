@@ -8,12 +8,11 @@ namespace tapinto.Server.Controllers
     public class ActivityController : BaseApiController
     {
         private readonly AppDbContext context;
-        private readonly ILogger logger;
 
-        public ActivityController(AppDbContext _context, ILogger _logger)
+
+        public ActivityController(AppDbContext _context)
         {
             context = _context;
-            logger = _logger;
         }
 
         [HttpPut("create")]
@@ -31,7 +30,6 @@ namespace tapinto.Server.Controllers
             }
             catch (Exception e)
             {
-                logger.LogError(e.Message);
                 return BadRequest(post);
             }
         }

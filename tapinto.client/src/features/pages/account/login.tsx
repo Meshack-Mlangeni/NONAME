@@ -25,7 +25,7 @@ export default function Login() {
   const dispatch = useAppDispatch();
 
   const onLoginSubmit = async (data: FieldValues) => {
-    dispatch(loginAsync(data));
+    await dispatch(loginAsync(data));
   };
   const { mode, setMode } = useColorScheme();
   return (

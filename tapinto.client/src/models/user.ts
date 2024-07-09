@@ -1,9 +1,7 @@
-import { Group } from "./group";
-
-export interface User{
+export interface User {
     UserId: number;
     FirstName: string;
     LastName: string;
     Email: string;
-    Groups: Group[];
+    token: string;
 }

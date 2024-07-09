@@ -73,7 +73,7 @@ namespace tapinto.Server.Controllers
 
         [Authorize]
         [HttpGet("currentUser")]
-        public async Task<ActionResult<UserDto>> GetUser()
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             var userDto = new UserDto(user);
@@ -81,6 +81,5 @@ namespace tapinto.Server.Controllers
             userDto.Token = Token.accessToken;
             return userDto;
         }
-
     }
 }

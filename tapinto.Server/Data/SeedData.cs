@@ -45,7 +45,7 @@ namespace tapinto.Server.Data
             if (!context.Schools.Any())
             {
                 context.Schools.AddRange([
-                   new(){ SchoolName = "Mzimela High School", UserEmail= "meshackmlangeni@outlook.com"},
+                   new(){ SchoolName = "Mzimela High School", UserEmail= "meshackmlangeni@hotmail.com"},
                 ]);
             }
             context.SaveChanges();
@@ -53,7 +53,7 @@ namespace tapinto.Server.Data
             if (!context.Groups.Any())
             {
                 context.Groups.AddRange([
-                   new(){ GroupName = "Grade 12z", SchoolId = 1 , UserEmail="meshackmlangeni@outlook.com"},
+                   new(){ GroupName = "Grade 12z", SchoolId = 1 , UserEmail="meshackmlangeni@hotmail.com"},
                     new(){ GroupName = "Merien", SchoolId = 1 , UserEmail="njabulo261@gmail.com"},
                 ]);
             }
@@ -62,9 +62,9 @@ namespace tapinto.Server.Data
             if (!context.GroupUsers.Any())
             {
                 context.GroupUsers.AddRange([
-                   new(){ UserEmail = "meshackmlangeni@outlook.com", GroupId = 1 },
+                   new(){ UserEmail = "meshackmlangeni@hotmail.com", GroupId = 1 },
                    new(){ UserEmail = "njabulo261@gmail.com", GroupId = 1 },
-                   new(){ UserEmail = "meshackmlangeni@outlook.com", GroupId = 2 },
+                   new(){ UserEmail = "meshackmlangeni@hotmail.com", GroupId = 2 },
                 ]);
             }
             context.SaveChanges();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { agent } from "../../../../../app/axiosAgent/agent";
@@ -12,7 +13,6 @@ export const getLabelsAsync = createAsyncThunk<Label>(
     async (_, thunkApi) => {
         try {
             const labels = await agent.posts.labels();
-            console.log("Labels in thunk: ", labels);
             return labels;
         } catch (error: any) {
             return thunkApi.rejectWithValue({ error: error.data })
@@ -25,8 +25,6 @@ export const createActivityAsync = createAsyncThunk<PostDto, FieldValues>(
     async (data, thunkApi) => {
         try {
             data.labels = store.getState().posts.selectedLabels.map(l => l.id).join(",");
-
-            console.log(data);
             const post = await agent.posts.posts(data);
             return post;
         } catch (error: any) {
@@ -68,8 +66,8 @@ export const PostSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(getLabelsAsync.fulfilled, (state, action) => {
+            // @ts-expect-error
             state.labels = action.payload;
-            console.log("Labels in builder: ", state.labels)
         });
         builder.addCase(getLabelsAsync.rejected, () => {
             toast.error("There was an error fetching data")

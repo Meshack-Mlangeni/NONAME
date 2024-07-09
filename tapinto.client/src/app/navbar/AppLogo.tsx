@@ -39,8 +39,9 @@ export default function AppLogo() {
           position: "relative",
           height: 40,
           width: 40,
-          top: -4,
-          fontFamily: "AsahinaSans",
+          top: -8,
+          left: 2,
+          fontFamily: "Rockybilly",
           transform: scale.to((s) => `scale(${s})`),
         }}
       />
@@ -59,7 +60,6 @@ export default function AppLogo() {
     <>
       <Typography
         level="h4"
-        fontFamily={"Asahina Sans"}
         component="div"
         onDoubleClick={() => {
           if (!Loading) {
@@ -68,13 +68,17 @@ export default function AppLogo() {
           }
         }}
         sx={(theme) => ({
+          position: "relative",
+          top: "5px",
+          fontFamily: "Rockybilly",
+          fontSize: "14px",
           flexGrow: 1,
           color: `${theme.palette.text.primary}`,
         })}
       >
-        MEMO
+        Mind
         <HeartbeatAnimation src={"../logo2.png"} alt={"App Logo"} />
-        META
+        Meta
       </Typography>
     </>
   );

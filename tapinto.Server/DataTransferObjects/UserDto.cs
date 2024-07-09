@@ -15,6 +15,7 @@ namespace tapinto.Server.DataTransferObjects
             LastName = user.LastName;
             Email = user.Email;
         }
+        public UserDto() { }
         public string UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
