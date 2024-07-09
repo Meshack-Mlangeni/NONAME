@@ -16,3 +16,4 @@ To run frontend:
 
 **BackEnd uses C# AspNet Core**
 
+> More about the project? Enroll in this course from Udemy: [AspNet with React(Typescript)](https://www.udemy.com/course/learn-to-build-an-e-commerce-store-with-dotnet-react-redux/)
