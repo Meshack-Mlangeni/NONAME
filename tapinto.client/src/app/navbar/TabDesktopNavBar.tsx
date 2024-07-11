@@ -7,7 +7,14 @@ import Tab, { tabClasses } from "@mui/joy/Tab";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import Search from "@mui/icons-material/Search";
 import Person from "@mui/icons-material/Person";
-import { AppRegistration, Key, Login, Settings } from "@mui/icons-material";
+import {
+  AccountBoxOutlined,
+  AppRegistration,
+  Key,
+  Login,
+  Logout,
+  Settings,
+} from "@mui/icons-material";
 import {
   Sheet,
   Typography,
@@ -20,10 +27,12 @@ import { NavLink } from "react-router-dom";
 import TabsNav from "./TabsNav";
 import NavSpacingComponent from "./NavSpacingComponent";
 import AppLogo from "./AppLogo";
-import { useAppSelector } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { signOutUser } from "../../features/pages/account/accountSlice";
 
 export default function TabDesktopNavBar() {
   const { user } = useAppSelector((state) => state.account);
+  const dispatch = useAppDispatch();
   const [index, setIndex] = React.useState(0);
   return (
     <>
@@ -138,7 +147,7 @@ export default function TabDesktopNavBar() {
 
           <Typography component="div" sx={{ flexGrow: 1 }} />
           <Box>
-            {!user && (
+            {!user ? (
               <Dropdown>
                 <MenuButton
                   startDecorator={<Key />}
@@ -158,6 +167,28 @@ export default function TabDesktopNavBar() {
                   </MenuItem>
                 </Menu>
               </Dropdown>
+            ) : (
+              <>
+                <Dropdown>
+                  <MenuButton color="primary" variant="solid">
+                    Hello, {user.firstName}
+                  </MenuButton>
+                  <Menu>
+                    <MenuItem component={NavLink} to="/login">
+                      <AccountBoxOutlined />
+                      Account
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/register"
+                      onClick={() => dispatch(signOutUser())}
+                    >
+                      <Logout />
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </Dropdown>
+              </>
             )}
           </Box>
         </Box>

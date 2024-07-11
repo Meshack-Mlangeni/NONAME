@@ -39,7 +39,7 @@ export default function AppLogo() {
           position: "relative",
           height: 40,
           width: 40,
-          top: -8,
+          top: 0,
           left: 2,
           fontFamily: "Rockybilly",
           transform: scale.to((s) => `scale(${s})`),
@@ -69,9 +69,9 @@ export default function AppLogo() {
         }}
         sx={(theme) => ({
           position: "relative",
-          top: "5px",
+          top: "0px",
           fontFamily: "Rockybilly",
-          fontSize: "14px",
+          fontSize: "24px",
           flexGrow: 1,
           color: `${theme.palette.text.primary}`,
         })}

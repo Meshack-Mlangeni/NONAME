@@ -21,12 +21,14 @@ export const loginAsync = createAsyncThunk<User, FieldValues>(
         }
     }
 )
+
 export const fetchLoggedInUser = createAsyncThunk<User>(
     "account/fetchLoggedInUser",
     async (_, thunkAPI) => {
         thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem("user")!)))
         try {
             const user = await agent.account.currentUser()
+            console.log(user);
             localStorage.setItem("user", JSON.stringify(user));
             return user;
         } catch (error: any) {
@@ -47,7 +49,7 @@ export const accountSlice = createSlice({
         signOutUser: (state) => {
             state.user = null;
             localStorage.removeItem("user");
-            routes.navigate("account/login");
+            routes.navigate("/login");
         },
         setUser: (state, action) => {
             state.user = action.payload;
@@ -64,7 +66,6 @@ export const accountSlice = createSlice({
         });
         builder.addCase(fetchLoggedInUser.fulfilled, (state, action) => {
             state.user = action.payload;
-            toast.success("Welcome");
             routes.navigate("/home")
         });
         builder.addCase(fetchLoggedInUser.rejected, (state) => {

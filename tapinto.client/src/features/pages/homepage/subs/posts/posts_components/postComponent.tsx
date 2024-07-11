@@ -44,7 +44,9 @@ export default function PostComponent({
             MM
           </Avatar>
           <div>
-            <Typography level="body-sm">Mncedisi Mlangeni</Typography>
+            <Typography sx={{ fontWeight: "md" }} level="body-md">
+              Mncedisi Mlangeni
+            </Typography>
             <Typography level="body-xs">15 Min Ago</Typography>
           </div>
         </Box>

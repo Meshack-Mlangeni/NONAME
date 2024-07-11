@@ -1,4 +1,6 @@
 export interface Group{
-    GroupId: number;
-    GroupName: string;
+    groupId: number;
+    groupName: string;
+    schoolName: string;
+    userEmail: string;
 }

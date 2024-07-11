@@ -14,6 +14,7 @@ namespace tapinto.Server.DataTransferObjects
             FirstName = user.FirstName;
             LastName = user.LastName;
             Email = user.Email;
+            Bio = user.Bio;
         }
         public UserDto() { }
         public string UserId { get; set; }
@@ -21,5 +22,9 @@ namespace tapinto.Server.DataTransferObjects
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Token { get; set; }
+        public string School { get; set; }
+        public string Bio { get; set; }
+        public GroupDto[] Groups { get; set; }
+
     }
 }

@@ -410,7 +410,7 @@ export default function PostTextField() {
       </form>
     </>
   ) : (
-    <Typography>
+    <Typography level="body-lg">
       <LoginTwoTone /> &nbsp;&nbsp;&nbsp; You have to sign in to post something
     </Typography>
   );

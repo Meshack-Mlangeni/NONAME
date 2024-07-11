@@ -43,7 +43,7 @@ namespace tapinto.Server.Controllers
                     claims.Add(new Claim(ClaimTypes.Role, role));
                 }
 
-                var expiresAt = DateTime.UtcNow.AddDays(2);
+                var expiresAt = DateTime.UtcNow.AddDays(1);
 
 
                 return new Token
