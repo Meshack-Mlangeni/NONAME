@@ -14,6 +14,7 @@ namespace tapinto.Server.Data
                 LastName = "Mlangeni",
                 Verified = true,
                 SchoolId = 1,
+                Bio="One of those guys that got f*cked up by life at some point",
                 Email = "meshackmlangeni@hotmail.com",
                 UserName = "Admin"
             },

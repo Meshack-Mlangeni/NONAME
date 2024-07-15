@@ -3,6 +3,8 @@ import { store } from "../store/store";
 
 axios.defaults.baseURL = "http://localhost:5169/api";
 axios.defaults.withCredentials = true;
+axios.defaults.timeout = 30000; //Allow 30 second timeout
+
 const responseBody = (response: AxiosResponse) => response.data;
 
 axios.interceptors.request.use(config => {

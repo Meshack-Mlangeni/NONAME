@@ -10,6 +10,8 @@ import Person from "@mui/icons-material/Person";
 import { Settings } from "@mui/icons-material";
 import TabsNav from "./TabsNav";
 import NavSpacingComponent from "./NavSpacingComponent";
+import AppLogo from "./AppLogo";
+import { Typography } from "@mui/joy";
 
 export default function MobileNavBar() {
   const [index, setIndex] = React.useState(0);
@@ -50,6 +52,9 @@ export default function MobileNavBar() {
             },
           })}
         >
+          <Typography sx={{ textAlign: "center", mb: 0.5, mt: 0.5 }}>
+            <AppLogo />
+          </Typography>
           <TabList
             variant="plain"
             size="sm"
@@ -100,7 +105,7 @@ export default function MobileNavBar() {
         </Tabs>
         <TabsNav />
       </Box>
-      <NavSpacingComponent />
+      <NavSpacingComponent spacing={{pb: 10, pt: 2}}/>
     </>
   );
 }

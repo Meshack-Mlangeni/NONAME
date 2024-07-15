@@ -21,10 +21,12 @@ import {
 import { FieldValues, useForm } from "react-hook-form";
 import { loginAsync } from "../../../../account/accountSlice";
 import AppLogo from "../../../../../../app/navbar/AppLogo";
-import { Diversity1Rounded, EmailRounded } from "@mui/icons-material";
+import { EmailRounded, Verified } from "@mui/icons-material";
+import { setLoading } from "../../../../../../app/store/appSlice";
 
 export default function Bio() {
   const { user } = useAppSelector((state) => state.account);
+  console.log(user);
   const dispatch = useAppDispatch();
   const {
     register,
@@ -32,7 +34,9 @@ export default function Bio() {
     formState: { errors, isValid, isSubmitting },
   } = useForm({ mode: "onTouched" });
   const onLoginSubmit = async (data: FieldValues) => {
+    dispatch(setLoading(true));
     await dispatch(loginAsync(data));
+    dispatch(setLoading(false));
   };
   return (
     <Card
@@ -45,7 +49,10 @@ export default function Bio() {
           <>
             <Avatar sx={{ "--Avatar-size": "4rem", mx: "auto" }} />
             <Typography level="h4">
-              {user?.firstName} {user?.lastName}
+              {user?.firstName} {user?.lastName}{" "}
+              {user.verified && (
+                <Verified sx={{ fontSize: "sm" }} color="success" />
+              )}
             </Typography>
             <Link
               sx={{ fontWeight: "md", alignSelf: "center" }}
@@ -79,7 +86,9 @@ export default function Bio() {
                 <Typography level="body-xs" fontWeight="lg">
                   Groups
                 </Typography>
-                <Typography fontWeight="lg">00</Typography>
+                <Typography fontWeight="lg">
+                  {user.groups.length ?? 0}
+                </Typography>
               </div>
               <div>
                 <Typography level="body-xs" fontWeight="lg">

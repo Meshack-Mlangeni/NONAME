@@ -8,5 +8,6 @@ export interface User {
     token: string;
     bio: string;
     school: string;
+    verified: boolean;
     groups: Group[];
 }

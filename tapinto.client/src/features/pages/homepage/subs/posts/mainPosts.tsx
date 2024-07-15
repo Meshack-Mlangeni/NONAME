@@ -19,6 +19,8 @@ export default function Posts() {
           <Box {...(Tablet && { sx: { ml: 1, mr: 1 } })}>
             <Post />
             <PostComponent
+              post_content="How can we balance this equation: P4O10 + H2O → H3PO4"
+              likes={998}
               PostType={_PostType.Post}
               Labels={
                 <>
