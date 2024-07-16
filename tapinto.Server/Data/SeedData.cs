@@ -41,6 +41,7 @@ namespace tapinto.Server.Data
                 if ((await roleManager.FindByNameAsync(role)) == null)
                     await roleManager.CreateAsync(new(role));
             }
+
             context.SaveChanges();
 
             if (!context.Schools.Any())
