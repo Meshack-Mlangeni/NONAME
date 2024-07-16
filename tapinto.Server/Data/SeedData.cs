@@ -80,6 +80,7 @@ namespace tapinto.Server.Data
                    new(){ Name="Announcement", Color="danger" }
                 ]);
             }
+
             context.SaveChanges();
 
             if (!userManager.Users.Any())
