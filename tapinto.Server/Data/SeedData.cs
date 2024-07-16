@@ -88,7 +88,8 @@ namespace tapinto.Server.Data
                     if ((await userManager.FindByEmailAsync(user.Email)) == null)
                         if ((await userManager.CreateAsync(user, password)).Succeeded)
                             await userManager.AddToRolesAsync(user, user.Email.Contains("njabulo") ? ["Teacher"] : ["Admin", "Student"]);
-            context.SaveChanges();
+           
+           context.SaveChanges();
         }
     }
 }
