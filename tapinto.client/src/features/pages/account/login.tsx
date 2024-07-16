@@ -14,6 +14,7 @@ import { loginAsync } from "./accountSlice";
 import { Sheet, Switch, useColorScheme } from "@mui/joy";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import AppLogo from "../../../app/navbar/AppLogo";
+import { setLoading } from "../../../app/store/appSlice";
 //generously borrowed from MUI sign up template
 
 export default function Login() {
@@ -25,7 +26,9 @@ export default function Login() {
   const dispatch = useAppDispatch();
 
   const onLoginSubmit = async (data: FieldValues) => {
+    dispatch(setLoading(true));
     await dispatch(loginAsync(data));
+    dispatch(setLoading(false));
   };
   const { mode, setMode } = useColorScheme();
   return (
@@ -58,7 +61,7 @@ export default function Login() {
             }}
           >
             <Box sx={{ gap: 2, display: "flex", alignItems: "center" }}>
-              <AppLogo/> &nbsp;
+              <AppLogo /> &nbsp;
               <Button component={NavLink} to="/home">
                 Guest mode
               </Button>

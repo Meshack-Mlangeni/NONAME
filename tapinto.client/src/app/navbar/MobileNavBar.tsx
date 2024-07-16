@@ -5,9 +5,8 @@ import Tabs from "@mui/joy/Tabs";
 import TabList from "@mui/joy/TabList";
 import Tab, { tabClasses } from "@mui/joy/Tab";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import Search from "@mui/icons-material/Search";
 import Person from "@mui/icons-material/Person";
-import { Settings } from "@mui/icons-material";
+import { SchoolRounded, Settings } from "@mui/icons-material";
 import TabsNav from "./TabsNav";
 import NavSpacingComponent from "./NavSpacingComponent";
 import AppLogo from "./AppLogo";
@@ -77,8 +76,8 @@ export default function MobileNavBar() {
               {...(index === 1 && { color: "primary" })}
             >
               <ListItemDecorator sx={{ mb: "1px" }}>
-                <Search />
-                &nbsp;Groups
+                <SchoolRounded />
+                &nbsp;School
               </ListItemDecorator>
             </Tab>
             <Tab
@@ -105,7 +104,7 @@ export default function MobileNavBar() {
         </Tabs>
         <TabsNav />
       </Box>
-      <NavSpacingComponent spacing={{pb: 10, pt: 2}}/>
+      <NavSpacingComponent spacing={{ pb: 10, pt: 2 }} />
     </>
   );
 }

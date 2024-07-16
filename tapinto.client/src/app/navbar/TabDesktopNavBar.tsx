@@ -5,7 +5,6 @@ import Tabs from "@mui/joy/Tabs";
 import TabList from "@mui/joy/TabList";
 import Tab, { tabClasses } from "@mui/joy/Tab";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import Search from "@mui/icons-material/Search";
 import Person from "@mui/icons-material/Person";
 import {
   AccountBoxOutlined,
@@ -13,6 +12,7 @@ import {
   Key,
   Login,
   Logout,
+  SchoolRounded,
   Settings,
 } from "@mui/icons-material";
 import {
@@ -109,12 +109,12 @@ export default function TabDesktopNavBar() {
                   disableIndicator
                   orientation="vertical"
                   component={NavLink}
-                  to={"/home/myschool/groups"} //not yet available
+                  to={"/home/myschool"} //not yet available
                   {...(index === 1 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>
-                    <Search />
-                    &nbsp;Groups
+                    <SchoolRounded />
+                    &nbsp;School
                   </ListItemDecorator>
                 </Tab>
                 <Tab
