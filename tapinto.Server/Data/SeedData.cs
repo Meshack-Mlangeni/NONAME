@@ -43,7 +43,7 @@ namespace tapinto.Server.Data
             }
             context.SaveChanges();
 
-            if  (!context.Schools.Any())
+            if (!context.Schools.Any())
             {
                 context.Schools.AddRange([
                    new(){ SchoolName = "Mzimela High School", UserEmail= "meshackmlangeni@hotmail.com"},
