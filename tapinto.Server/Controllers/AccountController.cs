@@ -32,8 +32,7 @@ namespace tapinto.Server.Controllers
 
             if (user != null && await _userManager.CheckPasswordAsync(user, loginDto.Password))
             {
-
-                var userDto = new UserDto(user);
+                var userDto = await GetUserDto(user);
                 var token = await _authController.Auntheticate(user);
                 userDto.Token = token.accessToken;
 
@@ -73,14 +72,27 @@ namespace tapinto.Server.Controllers
 
         [Authorize]
         [HttpGet("currentUser")]
-        public async Task<ActionResult<UserDto>> GetUser()
+        public async Task<ActionResult<UserDto>> GetCurrentUser()
         {
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
-            var userDto = new UserDto(user);
+            var userDto = await GetUserDto(user);
             var Token = await _authController.Auntheticate(user);
             userDto.Token = Token.accessToken;
             return userDto;
         }
 
+        private async Task<UserDto> GetUserDto(User user)
+        {
+            var userSchool = await context.Schools.Where(u => u.Id == user.SchoolId).Select(x => x.SchoolName).FirstOrDefaultAsync();
+            var groups = await context.GroupUsers.Where(gu => gu.UserEmail == user.Email)
+                .Include(o => o.Group)
+                .Select(g => new GroupDto(g.Group) { SchoolName = userSchool })
+                .ToArrayAsync();
+            return new UserDto(user)
+            {
+                School = userSchool,
+                Groups = groups
+            };
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace tapinto.Server.Models
         public string LastName { get; set; }
         public int SchoolId { get; set; }
         public bool Verified { get; set; }
-        //public string Bio { get; set; } = null;
+        public string Bio { get; set; } = null;
+        public double Rating { get; set; } = 0.0;
     }
 }

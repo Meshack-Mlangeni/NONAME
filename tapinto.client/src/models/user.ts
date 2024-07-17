@@ -1,9 +1,13 @@
 import { Group } from "./group";
 
-export interface User{
-    UserId: number;
-    FirstName: string;
-    LastName: string;
-    Email: string;
-    Groups: Group[];
+export interface User {
+    userId: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    token: string;
+    bio: string;
+    school: string;
+    verified: boolean;
+    groups: Group[];
 }

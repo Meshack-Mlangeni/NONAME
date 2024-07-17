@@ -20,6 +20,7 @@ import {
 } from "@mui/joy";
 import { FieldValues, useForm } from "react-hook-form";
 import { DarkMode, LightMode } from "@mui/icons-material";
+import AppLogo from "../../../app/navbar/AppLogo";
 //generously borrowed from MUI sign up template
 
 export default function Register() {
@@ -31,7 +32,7 @@ export default function Register() {
   const onRegisterSubmit = (data: FieldValues) => {
     console.log(data);
   };
-  const {mode, setMode} = useColorScheme();
+  const { mode, setMode } = useColorScheme();
   return (
     <Sheet>
       <Box
@@ -62,7 +63,7 @@ export default function Register() {
             }}
           >
             <Box sx={{ gap: 2, display: "flex", alignItems: "center" }}>
-              <Typography level="h3">NONAME YET</Typography> &nbsp;
+              <AppLogo /> &nbsp;
               <Button component={NavLink} to="/home">
                 Guest mode
               </Button>

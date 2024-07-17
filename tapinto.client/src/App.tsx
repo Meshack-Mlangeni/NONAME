@@ -4,16 +4,31 @@ import NavigationBar from "./app/navbar/NavigationBar";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import { CssBaseline, Grid, LinearProgress } from "@mui/joy";
-import { useAppSelector } from "./app/store/store";
+import { useAppDispatch, useAppSelector } from "./app/store/store";
+import "./assets/fonts/AsahinaSans.ttf";
+import { useCallback, useEffect } from "react";
+import { setLoading } from "./app/store/appSlice";
+import { fetchLoggedInUser } from "./features/pages/account/accountSlice";
 
 function App() {
   const appLocation = useLocation();
   const { Loading } = useAppSelector((state) => state.app);
+  const dispatch = useAppDispatch();
+
+  const initApp = useCallback(async () => {
+    try {
+      await dispatch(fetchLoggedInUser());
+    } catch (error) {
+      console.log(error);
+    }
+  }, [dispatch]);
+
+  useEffect(() => {
+    initApp().then(() => setLoading(false));
+  }, [initApp]);
+
   return (
     <>
-      {Loading && (
-        <LinearProgress variant="plain" determinate={false} thickness={2} />
-      )}
       <ToastContainer position="bottom-right" hideProgressBar theme="colored" />
       {!appLocation.pathname.toLocaleLowerCase().includes("login") &&
       !appLocation.pathname.toLocaleLowerCase().includes("register") ? (

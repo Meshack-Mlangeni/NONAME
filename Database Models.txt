@@ -1,0 +1,37 @@
+!!! EDIT FILE AND PUSH CHANGES !!!
+
+[ ?? - needs research / help wanted]
+[ CS - Comming soon]
+
+[Roles (Teacher | Student | Admin)]
+User		-> IdentityUser	-> FirstName
+				-> LastName
+				-> Bio
+				-> Verified
+				-> SchoolId
+				-> Score [To measure relevence/ can be used to verify user / Range[0-10]]
+
+School		-> SchoolId
+		-> SchoolName
+		-> UserEmail [Admin/Principal/Teacher]
+
+Group		-> GroupId
+		-> GroupName
+		-> SchoolId [Should belong to 1 school]
+		-> UserEmail [Admin/Teachers only]
+
+[BridgeEntity]
+UserGroup	-> UserGroupId
+		-> UserEmail
+		-> [FK] GroupId 
+
+Post		-> [Post | PopQuiz | Discussion | Ad [CS] | Announcement [CS]]
+		-> PostId
+		-> Content [text]
+		-> ImageUrl [using s3 buckets??, storing in db will reduce perfomance]
+		
+
+Comments	-> [fk] Post
+Discussions	-> [fk] Post
+		-> [fk] User
+	

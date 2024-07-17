@@ -9,7 +9,7 @@ import Results from "../../features/pages/homepage/subs/results/results";
 import Login from "../../features/pages/account/login";
 import Register from "../../features/pages/account/register";
 import School from "../../features/pages/homepage/subs/myschool/mySchool";
-
+import Live from "../../features/pages/live/live";
 
 export const routes = createBrowserRouter([
   {
@@ -17,7 +17,8 @@ export const routes = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <Navigate to="/login" replace /> },
-      { path: "/home",
+      {
+        path: "/home",
         element: <HomePage />,
         children: [
           { index: true, element: <Navigate to="/home/posts" replace /> },
@@ -25,7 +26,9 @@ export const routes = createBrowserRouter([
           { path: "/home/myschool", element: <School /> },
           { path: "/home/tests", element: <Tests /> },
           { path: "/home/results", element: <Results /> },
-        ]},
+          { path: "/home/live", element: <Live /> },
+        ],
+      },
       { path: "/settings", element: <Settings /> },
       { path: "/about", element: <AboutPage /> },
       { path: "/login", element: <Login /> },

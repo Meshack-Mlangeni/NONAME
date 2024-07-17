@@ -1,6 +1,16 @@
-import { DarkMode, LightMode } from "@mui/icons-material";
-import { Divider, Grid, Switch, Tab, TabList, Tabs, useColorScheme } from "@mui/joy";
+import { DarkMode, LightMode, Lock } from "@mui/icons-material";
+import {
+  Divider,
+  Grid,
+  Switch,
+  Tab,
+  TabList,
+  Tabs,
+  useColorScheme,
+} from "@mui/joy";
 import { NavLink, useLocation } from "react-router-dom";
+import PasswordModal from "../../helpers/helper_components/PasswordModal";
+import React from "react";
 
 export default function TabsNav() {
   const location = useLocation(); //use location.pathname to get current path
@@ -15,7 +25,9 @@ export default function TabsNav() {
               <TabList>
                 <Switch
                   size="lg"
-                  onChange={() => setMode(mode === "light" ? "dark" : "light")}
+                  onChange={() => {
+                    setMode(mode === "light" ? "dark" : "light");
+                  }}
                   slotProps={{
                     input: { "aria-label": "Dark mode" },
                     thumb: {
@@ -32,18 +44,19 @@ export default function TabsNav() {
                 <Tab component={NavLink} to={"/home/posts"} title={"Posts"}>
                   Posts
                 </Tab>
-                <Tab
-                  component={NavLink}
-                  to={"/home/myschool"}
-                  title={"My School"}
-                >
-                  My School
+                <Tab component={NavLink} to={"/home/groups"} title={"Groups"}>
+                  Groups
                 </Tab>
                 <Tab component={NavLink} to={"/home/tests"} title={"Tests"}>
                   Tests
                 </Tab>
-                <Tab component={NavLink} to={"/home/results"} title={"Results"}>
-                  Results
+
+                <Tab title={"Results"}>
+                  <a onClick={() => console.log("asd")}>
+                    <Lock />
+                    &nbsp; Results
+                  </a>
+                  <PasswordModal />
                 </Tab>
               </TabList>
             </Tabs>

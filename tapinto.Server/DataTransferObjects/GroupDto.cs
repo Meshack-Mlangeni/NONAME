@@ -13,11 +13,10 @@ namespace tapinto.Server.DataTransferObjects
             GroupId = group.Id;   
             GroupName = group.GroupName;   
             UserEmail = group.UserEmail;   
-            SchoolId = group.SchoolId;   
         }
         public int GroupId { get; set; }
         public string GroupName { get; set; }
         public string UserEmail { get; set; }
-        public int SchoolId { get; set; }
+        public string SchoolName { get; set; }
     }
 }

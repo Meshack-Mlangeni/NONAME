@@ -18,7 +18,10 @@ export default function Posts() {
         <Grid item xs={!Tablet ? 12 : 8}>
           <Box {...(Tablet && { sx: { ml: 1, mr: 1 } })}>
             <Post />
-            <PostComponent PostType={_PostType.Discussion}
+            <PostComponent
+              post_content="How can we balance this equation: P4O10 + H2O → H3PO4"
+              likes={998}
+              PostType={_PostType.Post}
               Labels={
                 <>
                   <Chip color="danger">Quiz</Chip>

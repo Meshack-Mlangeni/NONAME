@@ -5,9 +5,16 @@ import Tabs from "@mui/joy/Tabs";
 import TabList from "@mui/joy/TabList";
 import Tab, { tabClasses } from "@mui/joy/Tab";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import Search from "@mui/icons-material/Search";
 import Person from "@mui/icons-material/Person";
-import { AppRegistration, Key, Login, Settings } from "@mui/icons-material";
+import {
+  AccountBoxOutlined,
+  AppRegistration,
+  Key,
+  Login,
+  Logout,
+  SchoolRounded,
+  Settings,
+} from "@mui/icons-material";
 import {
   Sheet,
   Typography,
@@ -19,8 +26,13 @@ import {
 import { NavLink } from "react-router-dom";
 import TabsNav from "./TabsNav";
 import NavSpacingComponent from "./NavSpacingComponent";
+import AppLogo from "./AppLogo";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { signOutUser } from "../../features/pages/account/accountSlice";
 
 export default function TabDesktopNavBar() {
+  const { user } = useAppSelector((state) => state.account);
+  const dispatch = useAppDispatch();
   const [index, setIndex] = React.useState(0);
   return (
     <>
@@ -44,14 +56,7 @@ export default function TabDesktopNavBar() {
             pr: 2,
           }}
         >
-          <Typography
-            color="primary"
-            level="h3"
-            component="div"
-            sx={{ flexGrow: 1, fontWeight: "lg" }}
-          >
-            NNY
-          </Typography>
+          <AppLogo />
 
           <Box
             color="primary"
@@ -104,18 +109,19 @@ export default function TabDesktopNavBar() {
                   disableIndicator
                   orientation="vertical"
                   component={NavLink}
-                  to={"/home/myschool/groups"} //not yet available
+                  to={"/home/myschool"} //not yet available
                   {...(index === 1 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>
-                    <Search />
-                    &nbsp;Groups
+                    <SchoolRounded />
+                    &nbsp;School
                   </ListItemDecorator>
                 </Tab>
                 <Tab
                   disableIndicator
                   orientation="vertical"
-                  component={NavLink} to={"/settings"}
+                  component={NavLink}
+                  to={"/settings"}
                   {...(index === 2 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>
@@ -126,7 +132,8 @@ export default function TabDesktopNavBar() {
                 <Tab
                   disableIndicator
                   orientation="vertical"
-                  component={NavLink} to={"/home/profile"}
+                  component={NavLink}
+                  to={"/home/profile"}
                   {...(index === 3 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>
@@ -140,25 +147,49 @@ export default function TabDesktopNavBar() {
 
           <Typography component="div" sx={{ flexGrow: 1 }} />
           <Box>
-            <Dropdown>
-              <MenuButton
-                startDecorator={<Key />}
-                color="primary"
-                variant="solid"
-              >
-                Account
-              </MenuButton>
-              <Menu>
-                <MenuItem component={NavLink} to="/login">
-                  <Login />
-                  Login
-                </MenuItem>
-                <MenuItem component={NavLink} to="/register">
-                  <AppRegistration />
-                  Register
-                </MenuItem>
-              </Menu>
-            </Dropdown>
+            {!user ? (
+              <Dropdown>
+                <MenuButton
+                  startDecorator={<Key />}
+                  color="primary"
+                  variant="solid"
+                >
+                  Account
+                </MenuButton>
+                <Menu>
+                  <MenuItem component={NavLink} to="/login">
+                    <Login />
+                    Login
+                  </MenuItem>
+                  <MenuItem component={NavLink} to="/register">
+                    <AppRegistration />
+                    Register
+                  </MenuItem>
+                </Menu>
+              </Dropdown>
+            ) : (
+              <>
+                <Dropdown>
+                  <MenuButton color="primary" variant="solid">
+                    Hello, {user.firstName}
+                  </MenuButton>
+                  <Menu>
+                    <MenuItem component={NavLink} to="/login">
+                      <AccountBoxOutlined />
+                      Account
+                    </MenuItem>
+                    <MenuItem
+                      component={NavLink}
+                      to="/register"
+                      onClick={() => dispatch(signOutUser())}
+                    >
+                      <Logout />
+                      Logout
+                    </MenuItem>
+                  </Menu>
+                </Dropdown>
+              </>
+            )}
           </Box>
         </Box>
         <TabsNav />
