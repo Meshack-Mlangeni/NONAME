@@ -87,8 +87,12 @@ namespace tapinto.Server.Controllers
             var user = await userManager.FindByNameAsync(User.Identity.Name);
             if (user != null)
             {
-                var groupsInUsersSchool = context.Groups.Include(s => s.School).Where(g => g.SchoolId == user.SchoolId).ToList();
-                return Ok(groupsInUsersSchool.Select(g => new GroupDto(g)).ToList());
+                var groupsInUsersSchool = context.Groups.Include(s => s.School).Where(g => g.SchoolId == user.SchoolId).Include(g => g.groupUserBridge).ToList();
+                return Ok(groupsInUsersSchool.Select(g => new GroupDto(g){
+                    Users = g.groupUserBridge
+                    .Select(ue => ue.UserEmail)
+                    .Select(t => new UserDto(context.Users.FirstOrDefault(u => u.Email == t))).ToArray()
+                }).ToList());
             }
             return BadRequest();
         }

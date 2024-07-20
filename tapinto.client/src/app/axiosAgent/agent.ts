@@ -33,13 +33,14 @@ const account = {
     currentUser: () => requests.get("account/currentUser")
 }
 
-const posts = {
+const activity = {
     labels: () => requests.get("activity/getlabels"),
     create: (data: object) => requests.put("activity/create", data),
-    getposts: () => requests.get("activity/getall")
+    getallactivity: () => requests.get("activity/getall"),
+    getallschoolgroups: () => requests.get("activity/getallgroups")
 }
 
 export const agent = {
     account,
-    posts
+    activity
 };

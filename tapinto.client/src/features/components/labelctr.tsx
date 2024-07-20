@@ -8,7 +8,7 @@ import Dialog from "./appdialog";
 
 export default function Labels() {
   const dispatch = useAppDispatch();
-  const { labels } = useAppSelector((state) => state.posts);
+  const { labels } = useAppSelector((state) => state.activities);
   let selectedLabels: Label[] = [];
 
   return (

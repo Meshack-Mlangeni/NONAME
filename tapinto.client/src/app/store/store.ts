@@ -5,9 +5,9 @@ import { accountSlice } from "../../features/pages/account/accountSlice";
 import { AppSlice } from "./appSlice";
 
 export const store = configureStore({
-    reducer:{
+    reducer: {
         app: AppSlice.reducer,
-        posts: PostSlice.reducer,
+        activities: PostSlice.reducer,
         account: accountSlice.reducer
     }
 });

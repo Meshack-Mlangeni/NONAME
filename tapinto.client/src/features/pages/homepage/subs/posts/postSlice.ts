@@ -8,12 +8,13 @@ import { FieldValues } from "react-hook-form";
 import { PostDto } from "../../../../../models/post";
 import { AppRootState, store } from "../../../../../app/store/store";
 import { setLoading } from "../../../../../app/store/appSlice";
+import { Group } from "../../../../../models/group";
 
 export const getLabelsAsync = createAsyncThunk<Label>(
-    "posts/getLabelsAsync",
+    "activities/getLabelsAsync",
     async (_, thunkApi) => {
         try {
-            const labels = await agent.posts.labels();
+            const labels = await agent.activity.labels();
             return labels;
         } catch (error: any) {
             return thunkApi.rejectWithValue({ error: error.data })
@@ -22,11 +23,11 @@ export const getLabelsAsync = createAsyncThunk<Label>(
 );
 
 export const createActivityAsync = createAsyncThunk<PostDto, FieldValues>(
-    "posts/createActivityAsync",
+    "activities/createActivityAsync",
     async (data, thunkApi) => {
         try {
-            data.labels = store.getState().posts.selectedLabels.map(l => l.id).join(",");
-            const post = await agent.posts.create(data);
+            data.labels = store.getState().activities.selectedLabels.map(l => l.id).join(",");
+            const post = await agent.activity.create(data);
             return post;
         } catch (error: any) {
             return thunkApi.rejectWithValue({ error: error.data })
@@ -35,13 +36,27 @@ export const createActivityAsync = createAsyncThunk<PostDto, FieldValues>(
 )
 
 export const getallActivityAsync = createAsyncThunk(
-    "post/getallActivityAsync",
+    "activities/getallActivityAsync",
     async (_, thunkAPI) => {
         try {
             thunkAPI.dispatch(setLoading(true));
-            const posts = await agent.posts.getposts();
+            const posts = await agent.activity.getallactivity();
             thunkAPI.dispatch(setLoading(false));
             return posts;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.data })
+        }
+    }
+)
+
+export const getAllSchoolUserGroupsAsync = createAsyncThunk(
+    "activities/getAllSchoolUserGroupsAsync",
+    async (_, thunkAPI) => {
+        try {
+            thunkAPI.dispatch(setLoading(true));
+            const allGroups = await agent.activity.getallschoolgroups();
+            thunkAPI.dispatch(setLoading(false));
+            return allGroups;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({ error: error.data })
         }
@@ -53,14 +68,16 @@ interface postType {
     numberOfPosts: number,
     labels: Label[];
     selectedLabels: Label[];
+    groups: Group[];
 }
 
 export const PostSlice = createSlice({
-    name: 'posts',
+    name: 'activities',
     initialState: postAdapter.getInitialState<postType>({
         numberOfPosts: 0,
         labels: [],
         selectedLabels: [],
+        groups: [],
     }),
     reducers: {
         increment(state, action) {
@@ -92,6 +109,10 @@ export const PostSlice = createSlice({
             toast.error("There was an error creating you post, please contact system adminitrator.")
         });
         //Get all posts
+        builder.addCase(getallActivityAsync.pending, () => {
+            toast.info("Fetching posts...")
+        });
+
         builder.addCase(getallActivityAsync.rejected, () => {
             toast.error("There was an error fetching data")
         });
@@ -99,8 +120,20 @@ export const PostSlice = createSlice({
         builder.addCase(getallActivityAsync.fulfilled, (state, action) => {
             postAdapter.setAll(state, action.payload);
         });
+        //Get all groups in the school the user is in
+        builder.addCase(getAllSchoolUserGroupsAsync.rejected, () => {
+            toast.error("There was an error fetching data")
+        });
+        builder.addCase(getAllSchoolUserGroupsAsync.pending, () => {
+            toast.info("Fetching user groups data...")
+        });
+
+        builder.addCase(getAllSchoolUserGroupsAsync.fulfilled, (state, action) => {
+            state.groups = [...action.payload];
+            toast.success("Groups fetched successfully")
+        });
     }
 });
 
 export const { increment, addLabel, removeLabel, resetLabels } = PostSlice.actions;
-export const postSelector = postAdapter.getSelectors((state: AppRootState) => state.posts);
+export const postSelector = postAdapter.getSelectors((state: AppRootState) => state.activities);

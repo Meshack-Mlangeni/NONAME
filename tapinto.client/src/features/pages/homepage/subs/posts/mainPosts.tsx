@@ -13,7 +13,7 @@ import { NavLink } from "react-router-dom";
 export default function Posts() {
   const Tablet = useMediaQuery("(min-width:1100px)");
   const posts = useAppSelector(postSelector.selectAll);
-  const { labels } = useAppSelector((state) => state.posts);
+  const { labels } = useAppSelector((state) => state.activities);
   return (
     <Box
       {...(!Tablet

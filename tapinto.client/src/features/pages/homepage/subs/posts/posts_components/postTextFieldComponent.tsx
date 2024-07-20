@@ -74,7 +74,7 @@ export default function PostTextField() {
 
   const Mobile = useMediaQuery("(min-width:600px)");
   const dispatch = useAppDispatch();
-  const { selectedLabels } = useAppSelector((state) => state.posts);
+  const { selectedLabels } = useAppSelector((state) => state.activities);
   const {
     register,
     handleSubmit,

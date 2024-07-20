@@ -12,6 +12,7 @@ import { fetchLoggedInUser } from "./features/pages/account/accountSlice";
 import { routes } from "./app/router/Routes";
 import {
   getallActivityAsync,
+  getAllSchoolUserGroupsAsync,
   getLabelsAsync,
 } from "./features/pages/homepage/subs/posts/postSlice";
 
@@ -24,6 +25,7 @@ function App() {
       await dispatch(fetchLoggedInUser()).then(async (data) => {
         if (data) {
           await dispatch(getallActivityAsync());
+          await dispatch(getAllSchoolUserGroupsAsync());
         }
         await dispatch(getLabelsAsync());
         routes.navigate("/home/posts");

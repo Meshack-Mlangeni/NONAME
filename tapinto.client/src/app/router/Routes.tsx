@@ -10,6 +10,7 @@ import Login from "../../features/pages/account/login";
 import Register from "../../features/pages/account/register";
 import School from "../../features/pages/homepage/subs/myschool/mySchool";
 import Live from "../../features/pages/live/live";
+import Groups from "../../features/pages/homepage/subs/groups/Groups";
 
 export const routes = createBrowserRouter([
   {
@@ -21,6 +22,7 @@ export const routes = createBrowserRouter([
         element: <HomePage />,
         children: [
           { path: "/home/posts", element: <Posts /> },
+          { path: "/home/groups", element: <Groups /> },
           { path: "/home/myschool", element: <School /> },
           { path: "/home/tests", element: <Tests /> },
           { path: "/home/results", element: <Results /> },

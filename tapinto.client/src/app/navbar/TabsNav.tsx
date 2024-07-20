@@ -21,7 +21,7 @@ export default function TabsNav() {
       {location.pathname.includes("home") && (
         <Grid container>
           <Grid xs={12}>
-            <Tabs defaultValue={0}>
+            <Tabs >
               <TabList>
                 <Switch
                   size="lg"
