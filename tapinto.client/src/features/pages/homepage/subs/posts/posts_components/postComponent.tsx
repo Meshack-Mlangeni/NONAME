@@ -30,6 +30,7 @@ import { _PostType } from "./_PostType";
 import { NavLink } from "react-router-dom";
 import abbreviateNumber from "../../../../../../helpers/abbreviateNumber";
 import convertFullNamesToInitials from "../../../../../../helpers/convertFullNameToInitials";
+import { useAppSelector } from "../../../../../../app/store/store";
 
 interface IPostProps {
   hasLiveDiscussion?: boolean;
@@ -40,6 +41,7 @@ interface IPostProps {
   post_content?: string;
   groupName: string;
   userFullNames: string;
+  userPostEmail: string;
 }
 
 export default function PostComponent({
@@ -50,9 +52,10 @@ export default function PostComponent({
   post_content = "",
   groupName,
   userFullNames,
+  userPostEmail,
 }: IPostProps) {
   const [Like, setLike] = useState<number>(likes);
-
+  const { user } = useAppSelector((state) => state.account);
   return (
     <Card sx={{ mt: 2, mb: 2 }}>
       <CardContent
@@ -77,27 +80,30 @@ export default function PostComponent({
             </Typography>
           </div>
         </Box>
-
-        <Dropdown>
-          <MenuButton
-            variant="plain"
-            color="neutral"
-            size="sm"
-            sx={{ ml: "auto" }}
-            slots={{ root: IconButton }}
-            slotProps={{ root: { variant: "outlined", color: "neutral" } }}
-          >
-            <MoreVert />
-          </MenuButton>
-          <Menu placement="bottom-end">
-            <MenuItem variant="soft">
-              <ListItemDecorator>
-                <DeleteForever />
-              </ListItemDecorator>{" "}
-              Delete
-            </MenuItem>
-          </Menu>
-        </Dropdown>
+        {userPostEmail.toLowerCase() === user?.email.toLowerCase() && (
+          <>
+            <Dropdown>
+              <MenuButton
+                variant="plain"
+                color="neutral"
+                size="sm"
+                sx={{ ml: "auto" }}
+                slots={{ root: IconButton }}
+                slotProps={{ root: { variant: "outlined", color: "neutral" } }}
+              >
+                <MoreVert />
+              </MenuButton>
+              <Menu placement="bottom-end">
+                <MenuItem variant="soft">
+                  <ListItemDecorator>
+                    <DeleteForever />
+                  </ListItemDecorator>{" "}
+                  Delete
+                </MenuItem>
+              </Menu>
+            </Dropdown>
+          </>
+        )}
       </CardContent>
       {Labels && <CardContent orientation="horizontal">{Labels}</CardContent>}
       {/* //remove false to display image */}
@@ -118,48 +124,46 @@ export default function PostComponent({
 
           {PostType === _PostType.Post ? (
             <>
-                <Sheet
-                  variant="soft"
-                  sx={(theme) => ({
-                    borderRadius: "md",
-                    p: 0.2,
-                    border: `2px ${
-                      theme.palette.mode === "dark"
-                        ? theme.palette.neutral[700]
-                        : theme.palette.neutral[300]
-                    } dashed`,
+              <Sheet
+                variant="soft"
+                sx={(theme) => ({
+                  borderRadius: "md",
+                  p: 0.2,
+                  border: `2px ${
+                    theme.palette.mode === "dark"
+                      ? theme.palette.neutral[700]
+                      : theme.palette.neutral[300]
+                  } dashed`,
 
-                    fontWeight: "xl",
-                  })}
+                  fontWeight: "xl",
+                })}
+              >
+                <Button
+                  variant="plain"
+                  color="neutral"
+                  startDecorator={<FavoriteRounded sx={{ color: "crimson" }} />}
+                  sx={{
+                    "--Button-gap": "13px",
+                  }}
+                  onClick={() => setLike(Like + 1)}
                 >
-                  <Button
-                    variant="plain"
-                    color="neutral"
-                    startDecorator={
-                      <FavoriteRounded sx={{ color: "crimson" }} />
-                    }
-                    sx={{
-                      "--Button-gap": "13px",
-                    }}
-                    onClick={() => setLike(Like + 1)}
-                  >
-                    {abbreviateNumber(Like)}
-                  </Button>
+                  {abbreviateNumber(Like)}
+                </Button>
 
-                  <Button
-                    variant="plain"
-                    color="neutral"
-                    startDecorator={<ForumRounded />}
-                    sx={{
-                      "--Button-gap": "13px",
-                    }}
-                  >
-                    {(() => {
-                      const noOfComments = 125;
-                      return abbreviateNumber(noOfComments);
-                    })()}
-                  </Button>
-                </Sheet>
+                <Button
+                  variant="plain"
+                  color="neutral"
+                  startDecorator={<ForumRounded />}
+                  sx={{
+                    "--Button-gap": "13px",
+                  }}
+                >
+                  {(() => {
+                    const noOfComments = 125;
+                    return abbreviateNumber(noOfComments);
+                  })()}
+                </Button>
+              </Sheet>
             </>
           ) : (
             <>

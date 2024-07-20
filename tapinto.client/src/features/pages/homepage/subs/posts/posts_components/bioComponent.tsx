@@ -23,11 +23,15 @@ import { loginAsync } from "../../../../account/accountSlice";
 import AppLogo from "../../../../../../app/navbar/AppLogo";
 import { EmailRounded, Verified } from "@mui/icons-material";
 import { setLoading } from "../../../../../../app/store/appSlice";
+import { getallActivityAsync, postSelector } from "../postSlice";
 
 export default function Bio() {
   const { user } = useAppSelector((state) => state.account);
   console.log(user);
   const dispatch = useAppDispatch();
+  const posts = useAppSelector(postSelector.selectAll);
+  const numberOfUserPosts =
+    posts?.filter((p) => p.userEmail === user?.email).length ?? 0;
   const {
     register,
     handleSubmit,
@@ -35,7 +39,9 @@ export default function Bio() {
   } = useForm({ mode: "onTouched" });
   const onLoginSubmit = async (data: FieldValues) => {
     dispatch(setLoading(true));
-    await dispatch(loginAsync(data));
+    await dispatch(loginAsync(data)).then(
+      async (data) => data && (await dispatch(getallActivityAsync()))
+    );
     dispatch(setLoading(false));
   };
   return (
@@ -80,7 +86,7 @@ export default function Bio() {
                 <Typography level="body-xs" fontWeight="lg">
                   Posts
                 </Typography>
-                <Typography fontWeight="lg">00</Typography>
+                <Typography fontWeight="lg">{numberOfUserPosts}</Typography>
               </div>
               <div>
                 <Typography level="body-xs" fontWeight="lg">

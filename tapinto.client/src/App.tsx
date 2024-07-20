@@ -10,7 +10,10 @@ import { useCallback, useEffect } from "react";
 import { setLoading } from "./app/store/appSlice";
 import { fetchLoggedInUser } from "./features/pages/account/accountSlice";
 import { routes } from "./app/router/Routes";
-import { getallActivityAsync } from "./features/pages/homepage/subs/posts/postSlice";
+import {
+  getallActivityAsync,
+  getLabelsAsync,
+} from "./features/pages/homepage/subs/posts/postSlice";
 
 function App() {
   const appLocation = useLocation();
@@ -22,6 +25,7 @@ function App() {
         if (data) {
           await dispatch(getallActivityAsync());
         }
+        await dispatch(getLabelsAsync());
         routes.navigate("/home/posts");
       });
     } catch (error) {

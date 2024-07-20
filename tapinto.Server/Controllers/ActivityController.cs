@@ -57,15 +57,21 @@ namespace tapinto.Server.Controllers
                 var groupsUserIsIn = context.GroupUsers.Where(gu => gu.UserEmail == user.Email)
                     .Include(g => g.Group).ToList();
                 //var schoolUserIsIn = context.Schools.Where(school => user.SchoolId == school.Id).FirstOrDefault();
-                var AllPosts = context.Posts.Where(p => groupsUserIsIn.Select(gug => gug.GroupId)
-                .Any(gug => gug == p.GroupId));
-                var PostDtos = AllPosts.Select((pp) => new PostDto(pp)
+
+                var AllPostsFromGroupsUserIsIn = new List<Post>();
+                context.Posts.ToList().ForEach(p => {
+                    if(groupsUserIsIn.Select(g => g.GroupId).Any(gr => gr == p.GroupId)){
+                        AllPostsFromGroupsUserIsIn.Add(p);
+                    }
+                });
+
+                var PostDtos = AllPostsFromGroupsUserIsIn.Select((pp) => new PostDto(pp)
                 {
                     GroupName = context.Groups.Where(g => g.Id == pp.GroupId).FirstOrDefault().GroupName,
                     UserFullNames = new HelperFunctions.HelperFunctions().GetFullNames(pp.UserEmail, userManager).Result,
                     Upvotes = 57//to be changed
                 }).ToList();
-                return Ok(PostDtos.OrderBy(p => p.TimeStamp));
+                return Ok(PostDtos.OrderByDescending(p => p.TimeStamp));
             }
             //var activityForUser = context.Posts.Where(p => p.go)
             return BadRequest();

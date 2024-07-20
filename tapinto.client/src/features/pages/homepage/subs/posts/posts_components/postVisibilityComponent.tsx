@@ -1,6 +1,5 @@
 import { useAppSelector } from "../../../../../../app/store/store";
 import { KeyboardArrowDown, Visibility } from "@mui/icons-material";
-import { useMediaQuery } from "@mui/material";
 import { FieldValues, UseFormRegister } from "react-hook-form";
 import { Select, Option, selectClasses } from "@mui/joy";
 
@@ -10,9 +9,7 @@ interface IShowTo {
 
 export default function ShowTo({ register }: IShowTo) {
   const { user } = useAppSelector((state) => state.account);
-  const Tablet = useMediaQuery("(min-width:1100px)");
   const _showto: string[] | null = user && user?.groups.map((g) => g.groupName);
-  user && _showto && _showto?.unshift(user?.school);
 
   return (
     <>
@@ -43,7 +40,7 @@ export default function ShowTo({ register }: IShowTo) {
         >
           {_showto?.map((item, index) => (
             <Option key={index} value={item}>
-              {item.length > 8 ? item.substring(0, 8) + "..." : item}
+              {item.length > 10 ? item.substring(0, 10) + "..." : item}
             </Option>
           ))}
         </Select>

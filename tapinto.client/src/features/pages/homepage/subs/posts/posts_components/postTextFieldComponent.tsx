@@ -1,8 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import ListDivider from "@mui/joy/ListDivider";
-import { KeyboardArrowDown } from "@mui/icons-material";
-
-import { Option, Select, selectClasses } from "@mui/joy";
 import {
   Box,
   Button,
@@ -29,6 +25,7 @@ import {
 } from "../../../../../../app/store/store";
 import {
   createActivityAsync,
+  getallActivityAsync,
   getLabelsAsync,
   removeLabel,
   resetLabels,
@@ -93,11 +90,15 @@ export default function PostTextField() {
     control,
   });
   const onSubmit = (data: FieldValues) => {
-    dispatch(createActivityAsync(data)).finally(() => {
-      setAnswers([]);
-      dispatch(resetLabels());
-      reset();
-    });
+    dispatch(createActivityAsync(data))
+      .finally(() => {
+        setAnswers([]);
+        dispatch(resetLabels());
+        reset();
+      })
+      .then(() => {
+        dispatch(getallActivityAsync());
+      });
   };
 
   useEffect(() => {
