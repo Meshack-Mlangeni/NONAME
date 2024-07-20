@@ -14,11 +14,9 @@ namespace tapinto.Server.Models
         public Post(PostDto post)
         {
             Id = post.Id;
-            UserEmail = "mncedisimlangeni@outlook.com"; //user logged in [Token];
             Content = post.PostContent;
             Labels = post.Labels;
             PostType = (PostType)post.PostType;
-            GroupId = post.GroupId;
             Timestamp = DateTime.UtcNow;
         }
         public Post() { }

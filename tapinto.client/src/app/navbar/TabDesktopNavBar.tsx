@@ -180,7 +180,7 @@ export default function TabDesktopNavBar() {
                     </MenuItem>
                     <MenuItem
                       component={NavLink}
-                      to="/register"
+                      to="/login"
                       onClick={() => dispatch(signOutUser())}
                     >
                       <Logout />

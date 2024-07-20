@@ -58,20 +58,19 @@ export const accountSlice = createSlice({
     extraReducers(builder) {
         builder.addCase(loginAsync.fulfilled, (state, action) => {
             state.user = action.payload;
-            toast.success("Welcome");
-            routes.navigate("/home")
+            routes.navigate("/home/posts")
         });
         builder.addCase(loginAsync.rejected, () => {
             toast.error("Error logging in, contact admin!!");
         });
         builder.addCase(fetchLoggedInUser.fulfilled, (state, action) => {
             state.user = action.payload;
-            routes.navigate("/home")
+            routes.navigate("/home/posts")
         });
         builder.addCase(fetchLoggedInUser.rejected, (state) => {
             state.user = null;
             localStorage.removeItem("user");
-            routes.navigate("/home")
+            routes.navigate("/home/posts")
             toast.error("Your session has expired, click toast to login", { delay: 5000, onClick: () => routes.navigate("/login") });
         });
     },

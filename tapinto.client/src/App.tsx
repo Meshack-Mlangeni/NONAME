@@ -3,23 +3,30 @@ import "./App.css";
 import NavigationBar from "./app/navbar/NavigationBar";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import { CssBaseline, Grid, LinearProgress } from "@mui/joy";
-import { useAppDispatch, useAppSelector } from "./app/store/store";
+import { CssBaseline, Grid } from "@mui/joy";
+import { useAppDispatch } from "./app/store/store";
 import "./assets/fonts/AsahinaSans.ttf";
 import { useCallback, useEffect } from "react";
 import { setLoading } from "./app/store/appSlice";
 import { fetchLoggedInUser } from "./features/pages/account/accountSlice";
+import { routes } from "./app/router/Routes";
+import { getallActivityAsync } from "./features/pages/homepage/subs/posts/postSlice";
 
 function App() {
   const appLocation = useLocation();
-  const { Loading } = useAppSelector((state) => state.app);
   const dispatch = useAppDispatch();
 
   const initApp = useCallback(async () => {
     try {
-      await dispatch(fetchLoggedInUser());
+      await dispatch(fetchLoggedInUser()).then(async (data) => {
+        if (data) {
+          await dispatch(getallActivityAsync());
+        }
+        routes.navigate("/home/posts");
+      });
     } catch (error) {
       console.log(error);
+      routes.navigate("/login");
     }
   }, [dispatch]);
 

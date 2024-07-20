@@ -5,9 +5,14 @@ import { Box, Chip } from "@mui/joy";
 import PostComponent from "./posts_components/postComponent";
 import MyGroups from "./posts_components/myGroupsComponent";
 import { _PostType } from "./posts_components/_PostType";
+import { postSelector } from "./postSlice";
+import { useAppSelector } from "../../../../../app/store/store";
+import convertToDateTimeAgo from "../../../../../helpers/convertToDateTimeAgo";
 
 export default function Posts() {
   const Tablet = useMediaQuery("(min-width:1100px)");
+  const posts = useAppSelector(postSelector.selectAll);
+
   return (
     <Box
       {...(!Tablet
@@ -18,16 +23,24 @@ export default function Posts() {
         <Grid item xs={!Tablet ? 12 : 8}>
           <Box {...(Tablet && { sx: { ml: 1, mr: 1 } })}>
             <Post />
-            <PostComponent
-              post_content="How can we balance this equation: P4O10 + H2O → H3PO4"
-              likes={998}
-              PostType={_PostType.Post}
-              Labels={
-                <>
-                  <Chip color="danger">Quiz</Chip>
-                </>
-              }
-            />
+            {posts.map((post, index) => {
+              return (
+                <PostComponent
+                  key={index}
+                  groupName={post.groupName}
+                  timestamp={convertToDateTimeAgo(post.timeStamp)}
+                  post_content={post.postContent}
+                  likes={998}
+                  PostType={post.postType}
+                  userFullNames={post.userFullNames}
+                  Labels={
+                    <>
+                      <Chip color="danger">Quiz</Chip>
+                    </>
+                  }
+                />
+              );
+            })}
           </Box>
         </Grid>
         {Tablet && (

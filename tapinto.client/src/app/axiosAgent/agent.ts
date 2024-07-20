@@ -3,7 +3,7 @@ import { store } from "../store/store";
 
 axios.defaults.baseURL = "http://localhost:5169/api";
 axios.defaults.withCredentials = true;
-axios.defaults.timeout = 30000; //Allow 30 second timeout
+axios.defaults.timeout = 30000000; //Allow 30 second timeout
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -28,14 +28,15 @@ const requests = {
 }
 
 const account = {
-    login: (data: object) => requests.post('account/login', data),
-    register: (data: object) => requests.post('account/register', data),
+    login: (data: object) => requests.post("account/login", data),
+    register: (data: object) => requests.post("account/register", data),
     currentUser: () => requests.get("account/currentUser")
 }
 
 const posts = {
-    labels: () => requests.get('activity/getlabels'),
-    posts: (data: object) => requests.put('activity/create', data),
+    labels: () => requests.get("activity/getlabels"),
+    create: (data: object) => requests.put("activity/create", data),
+    getposts: () => requests.get("activity/getall")
 }
 
 export const agent = {

@@ -23,27 +23,33 @@ import {
   ListItemDecorator,
   MenuItem,
   Menu,
-  Tooltip,
 } from "@mui/joy";
 import React, { useState } from "react";
 import PopQuizComponent from "./popQuizComponent";
 import { _PostType } from "./_PostType";
 import { NavLink } from "react-router-dom";
 import abbreviateNumber from "../../../../../../helpers/abbreviateNumber";
+import convertFullNamesToInitials from "../../../../../../helpers/convertFullNameToInitials";
 
 interface IPostProps {
   hasLiveDiscussion?: boolean;
   Labels?: React.ReactNode;
   PostType?: _PostType;
+  timestamp: string;
   likes: number;
   post_content?: string;
+  groupName: string;
+  userFullNames: string;
 }
 
 export default function PostComponent({
   Labels,
   PostType = _PostType.Post,
+  timestamp = "",
   likes = 0,
   post_content = "",
+  groupName,
+  userFullNames,
 }: IPostProps) {
   const [Like, setLike] = useState<number>(likes);
 
@@ -54,14 +60,21 @@ export default function PostComponent({
         sx={{ alignItems: "center", gap: 1 }}
       >
         <Box sx={{ display: "flex", gap: 1.5, mt: "auto" }}>
-          <Avatar variant="soft" color="neutral">
-            MM
+          <Avatar
+            sx={{ boxShadow: "sm" }}
+            alt={userFullNames}
+            variant="solid"
+            color="neutral"
+          >
+            {convertFullNamesToInitials(userFullNames)}
           </Avatar>
           <div>
             <Typography sx={{ fontWeight: "md" }} level="body-md">
-              Mncedisi Mlangeni
+              {userFullNames}
             </Typography>
-            <Typography level="body-xs">15 Min Ago</Typography>
+            <Typography level="body-sm">
+              <strong>{groupName}</strong> |{" " + timestamp}
+            </Typography>
           </div>
         </Box>
 
@@ -97,70 +110,57 @@ export default function PostComponent({
               </AspectRatio>
             </CardOverflow>
           )}
-          <Box sx={{ display: "flex", gap: 1.5, mt: "auto" }}>
-            {PostType === _PostType.Post && (
-              <Box>
-                <Sheet
-                  variant="soft"
-                  sx={(theme) => ({
-                    p: 0.5,
-                    borderRadius: "md",
-                    border: `2px ${
-                      theme.palette.mode === "dark"
-                        ? theme.palette.neutral[700]
-                        : theme.palette.neutral[300]
-                    } dashed`,
-                    justifyContent: "center",
-                    justifyItems: "center",
-                    textAlign: "center",
-                    fontWeight: "xl",
-                  })}
-                >
-                  <Tooltip
-                    title="Love"
-                    variant="solid"
-                    color="success"
-                    placement="right-end"
-                  >
-                    <IconButton onClick={() => setLike(Like + 1)}>
-                      <FavoriteRounded />
-                    </IconButton>
-                  </Tooltip>
-                  <br />
-                  {abbreviateNumber(Like)}
-                </Sheet>
-                <Sheet
-                  variant="soft"
-                  sx={(theme) => ({
-                    mt: 1,
-                    p: 0.5,
-                    borderRadius: "md",
-                    border: `2px ${
-                      theme.palette.mode === "dark"
-                        ? theme.palette.neutral[700]
-                        : theme.palette.neutral[300]
-                    } dashed`,
-                    justifyContent: "center",
-                    justifyItems: "center",
-                    textAlign: "center",
-                    fontWeight: "xl",
-                  })}
-                >
-                  <IconButton onClick={() => setLike(Like - 1)}>
-                    <Tooltip title="Comment(s)" placement="right-end">
-                      <ForumRounded />
-                    </Tooltip>
-                  </IconButton>
-                </Sheet>
-              </Box>
-            )}
-            <CardContent sx={{ mt: 1 }} orientation="horizontal">
+          <Box sx={{ display: "flex", gap: 1.5, mt: "1" }}>
+            <CardContent orientation="horizontal">
               <Typography level="body-lg">{post_content}</Typography>
             </CardContent>
           </Box>
 
           {PostType === _PostType.Post ? (
-            <></>
+            <>
+                <Sheet
+                  variant="soft"
+                  sx={(theme) => ({
+                    borderRadius: "md",
+                    p: 0.2,
+                    border: `2px ${
+                      theme.palette.mode === "dark"
+                        ? theme.palette.neutral[700]
+                        : theme.palette.neutral[300]
+                    } dashed`,
+
+                    fontWeight: "xl",
+                  })}
+                >
+                  <Button
+                    variant="plain"
+                    color="neutral"
+                    startDecorator={
+                      <FavoriteRounded sx={{ color: "crimson" }} />
+                    }
+                    sx={{
+                      "--Button-gap": "13px",
+                    }}
+                    onClick={() => setLike(Like + 1)}
+                  >
+                    {abbreviateNumber(Like)}
+                  </Button>
+
+                  <Button
+                    variant="plain"
+                    color="neutral"
+                    startDecorator={<ForumRounded />}
+                    sx={{
+                      "--Button-gap": "13px",
+                    }}
+                  >
+                    {(() => {
+                      const noOfComments = 125;
+                      return abbreviateNumber(noOfComments);
+                    })()}
+                  </Button>
+                </Sheet>
+            </>
           ) : (
             <>
               <Stack direction="row" spacing={1}>

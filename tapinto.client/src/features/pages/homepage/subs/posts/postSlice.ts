@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { agent } from "../../../../../app/axiosAgent/agent";
 import { Label } from "../../../../../models/label";
 import { toast } from "react-toastify";
 import { FieldValues } from "react-hook-form";
-import { Post, PostDto } from "../../../../../models/post";
-import { store } from "../../../../../app/store/store";
+import { PostDto } from "../../../../../models/post";
+import { AppRootState, store } from "../../../../../app/store/store";
+import { setLoading } from "../../../../../app/store/appSlice";
 
 export const getLabelsAsync = createAsyncThunk<Label>(
     "posts/getLabelsAsync",
@@ -25,7 +26,7 @@ export const createActivityAsync = createAsyncThunk<PostDto, FieldValues>(
     async (data, thunkApi) => {
         try {
             data.labels = store.getState().posts.selectedLabels.map(l => l.id).join(",");
-            const post = await agent.posts.posts(data);
+            const post = await agent.posts.create(data);
             return post;
         } catch (error: any) {
             return thunkApi.rejectWithValue({ error: error.data })
@@ -33,23 +34,34 @@ export const createActivityAsync = createAsyncThunk<PostDto, FieldValues>(
     }
 )
 
+export const getallActivityAsync = createAsyncThunk(
+    "post/getallActivityAsync",
+    async (_, thunkAPI) => {
+        try {
+            thunkAPI.dispatch(setLoading(true));
+            const posts = await agent.posts.getposts();
+            thunkAPI.dispatch(setLoading(false));
+            return posts;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.data })
+        }
+    }
+)
+
+const postAdapter = createEntityAdapter<PostDto>()
 interface postType {
     numberOfPosts: number,
     labels: Label[];
     selectedLabels: Label[];
-    allPosts: Post[]
 }
-
-const initialState: postType = {
-    numberOfPosts: 0,
-    labels: [],
-    selectedLabels: [],
-    allPosts: []
-};
 
 export const PostSlice = createSlice({
     name: 'posts',
-    initialState: initialState,
+    initialState: postAdapter.getInitialState<postType>({
+        numberOfPosts: 0,
+        labels: [],
+        selectedLabels: [],
+    }),
     reducers: {
         increment(state, action) {
             state.numberOfPosts += action.payload;
@@ -73,14 +85,22 @@ export const PostSlice = createSlice({
             toast.error("There was an error fetching data")
         });
 
-        builder.addCase(createActivityAsync.fulfilled, (state, action) => {
-            state.allPosts.push(action.payload);
+        builder.addCase(createActivityAsync.fulfilled, () => {
             toast.success("Post successfully sent")
         });
         builder.addCase(createActivityAsync.rejected, () => {
             toast.error("There was an error creating you post, please contact system adminitrator.")
         });
+        //Get all posts
+        builder.addCase(getallActivityAsync.rejected, () => {
+            toast.error("There was an error fetching data")
+        });
+
+        builder.addCase(getallActivityAsync.fulfilled, (state, action) => {
+            postAdapter.setAll(state, action.payload);
+        });
     }
 });
 
 export const { increment, addLabel, removeLabel, resetLabels } = PostSlice.actions;
+export const postSelector = postAdapter.getSelectors((state: AppRootState) => state.posts);

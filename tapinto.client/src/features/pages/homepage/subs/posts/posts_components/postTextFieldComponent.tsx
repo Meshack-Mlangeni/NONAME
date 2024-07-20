@@ -1,4 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import ListDivider from "@mui/joy/ListDivider";
+import { KeyboardArrowDown } from "@mui/icons-material";
+
+import { Option, Select, selectClasses } from "@mui/joy";
 import {
   Box,
   Button,
@@ -68,6 +72,9 @@ export default function PostTextField() {
       console.log(file.name);
     }
   };
+
+  const { user } = useAppSelector((state) => state.account);
+
   const Mobile = useMediaQuery("(min-width:600px)");
   const dispatch = useAppDispatch();
   const { selectedLabels } = useAppSelector((state) => state.posts);
@@ -104,7 +111,6 @@ export default function PostTextField() {
     ["Poll", <PollRounded />],
     ["Discussion", <CommentRounded />],
   ];
-  const { user } = useAppSelector((state) => state.account);
   return user ? (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -329,7 +335,28 @@ export default function PostTextField() {
               })}
               startDecorator={
                 submitBtnText.toLowerCase().includes("post") && (
-                  <Box sx={{ display: "flex", gap: 0.5, flex: 1 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 0.5,
+                      flex: 1,
+                      maxHeight: 42,
+                      overflowX: "auto",
+                    }}
+                  >
+                    <Box>
+                      <label>
+                        <IconButton size="sm" color="warning">
+                          <AttachFileOutlined />
+                        </IconButton>
+                      </label>
+                      <label>
+                        <IconButton size="sm" color="success">
+                          <PhotoCameraOutlined />
+                        </IconButton>
+                      </label>
+                    </Box>
+                    <Divider orientation="vertical" sx={{ ml: 1, mr: 1 }} />
                     <Labels />
                     <>
                       {selectedLabels.map((lbl, idx) => (
@@ -361,7 +388,7 @@ export default function PostTextField() {
           )}
         </Box>
         <Box sx={{ mt: 3 }} display="flex" alignItems="center">
-          <div>
+          <>
             <Button
               disabled={(() => {
                 if (submitBtnText.toLowerCase().includes("poll"))
@@ -375,36 +402,11 @@ export default function PostTextField() {
             >
               <Send /> &nbsp; {submitBtnText}
             </Button>
-
-            <input
-              accept="*/*"
-              style={{ display: "none" }}
-              id="attach-file"
-              type="file"
-              onChange={handleFileUpload}
-            />
-            <label htmlFor="attach-file">
-              <IconButton size="sm" color="warning" component="span">
-                <AttachFileOutlined />
-              </IconButton>
-            </label>
-            <input
-              accept="image/*"
-              style={{ display: "none" }}
-              id="attach-photo"
-              type="file"
-              onChange={handleFileUpload}
-            />
-            <label htmlFor="attach-photo">
-              <IconButton size="sm" color="success" component="span">
-                <PhotoCameraOutlined />
-              </IconButton>
-            </label>
-          </div>
+          </>
           {Mobile && <br />}
           <>
             <Divider orientation="vertical" sx={{ ml: 1, mr: 1 }} />
-            <ShowTo />
+            <ShowTo register={register} />
           </>
         </Box>
       </form>

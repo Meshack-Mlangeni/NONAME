@@ -8,6 +8,8 @@ export interface PostDto {
     groupId: number;
     postType: number;
     postContent: string;
+    groupName: string;
+    userFullNames: string;
     userEmail: string;
     upvotes: number;
     timeStamp: string;
