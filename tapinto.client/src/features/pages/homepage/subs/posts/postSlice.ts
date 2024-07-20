@@ -10,6 +10,7 @@ import { AppRootState, store } from "../../../../../app/store/store";
 import { setLoading } from "../../../../../app/store/appSlice";
 import { Group } from "../../../../../models/group";
 
+
 export const getLabelsAsync = createAsyncThunk<Label>(
     "activities/getLabelsAsync",
     async (_, thunkApi) => {

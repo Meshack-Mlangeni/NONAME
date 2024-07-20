@@ -21,16 +21,25 @@ import {
 import { FieldValues, useForm } from "react-hook-form";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import AppLogo from "../../../app/navbar/AppLogo";
+import { useAppDispatch } from "../../../app/store/store";
+import { registerAsync } from "./accountSlice";
+import { setLoading } from "../../../app/store/appSlice";
+import { getallActivityAsync } from "../homepage/subs/posts/postSlice";
 //generously borrowed from MUI sign up template
 
 export default function Register() {
+  const dispatch = useAppDispatch();
   const {
     register,
     handleSubmit,
     formState: { isSubmitting, errors, isValid },
   } = useForm({ mode: "onTouched" });
-  const onRegisterSubmit = (data: FieldValues) => {
-    console.log(data);
+  const onRegisterSubmit = async (data: FieldValues) => {
+    dispatch(setLoading(true));
+    await dispatch(registerAsync(data)).then(
+      async (data) => data && (await dispatch(getallActivityAsync()))
+    );
+    dispatch(setLoading(false));
   };
   const { mode, setMode } = useColorScheme();
   return (
@@ -166,23 +175,22 @@ export default function Register() {
                   />
                 </FormControl>
 
-                <FormControl error={!!errors.school}>
+                <FormControl error={!!errors.schoolName}>
                   <FormLabel>School name</FormLabel>
                   <Autocomplete
+                    freeSolo
                     options={[
                       "Mzimela High School",
                       "Ntandoyesizwe Secondary School",
                     ]}
-                    placeholder={errors.school?.message as string}
-                    {...register("school", {
+                    placeholder={errors.schoolName?.message as string}
+                    {...register("schoolName", {
                       required: "Please select school",
                     })}
                   />
-                  <FormHelperText>
-                    School not showing? &nbsp;
-                    <Link component={NavLink} to={"/"} level="title-sm">
-                      Request school to be added
-                    </Link>
+                  <FormHelperText sx={{ fontWeight: "500" }}>
+                    School not showing? Type it in, it will be approved by
+                    Administrators if its valid.
                   </FormHelperText>
                 </FormControl>
 
@@ -202,12 +210,12 @@ export default function Register() {
                     })}
                   />
                 </FormControl>
-                <FormControl error={!!errors.cpassword}>
+                <FormControl error={!!errors.confirmPassword}>
                   <FormLabel>Confirm Password</FormLabel>
                   <Input
-                    type="cpassword"
-                    placeholder={errors.cpassword?.message as string}
-                    {...register("cpassword", {
+                    type="password"
+                    placeholder={errors.confirmPassword?.message as string}
+                    {...register("confirmPassword", {
                       required: "Please re-enter password",
                     })}
                   />

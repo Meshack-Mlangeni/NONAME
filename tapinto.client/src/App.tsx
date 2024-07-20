@@ -22,16 +22,17 @@ function App() {
 
   const initApp = useCallback(async () => {
     try {
-      await dispatch(fetchLoggedInUser()).then(async (data) => {
-        if (data) {
+      await dispatch(fetchLoggedInUser())
+        .then(() => {
+          routes.navigate("/home/posts");
+        })
+        .finally(async () => {
+          await dispatch(getLabelsAsync());
           await dispatch(getallActivityAsync());
           await dispatch(getAllSchoolUserGroupsAsync());
-        }
-        await dispatch(getLabelsAsync());
-        routes.navigate("/home/posts");
-      });
+          dispatch(setLoading(false));
+        });
     } catch (error) {
-      console.log(error);
       routes.navigate("/login");
     }
   }, [dispatch]);

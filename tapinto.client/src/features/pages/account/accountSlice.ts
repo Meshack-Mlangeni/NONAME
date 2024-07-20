@@ -21,6 +21,19 @@ export const loginAsync = createAsyncThunk<User, FieldValues>(
         }
     }
 )
+export const registerAsync = createAsyncThunk<User, FieldValues>(
+    "account/registerAsync",
+    async (data, thunkApi) => {
+        try {
+            const user = await agent.account.register(data);
+            localStorage.getItem("user") && localStorage.removeItem("user");
+            localStorage.setItem("user", JSON.stringify(user));
+            return user;
+        } catch (error: any) {
+            return thunkApi.rejectWithValue({ error: error.data });
+        }
+    }
+)
 
 export const fetchLoggedInUser = createAsyncThunk<User>(
     "account/fetchLoggedInUser",
@@ -28,7 +41,6 @@ export const fetchLoggedInUser = createAsyncThunk<User>(
         thunkAPI.dispatch(setUser(JSON.parse(localStorage.getItem("user")!)))
         try {
             const user = await agent.account.currentUser()
-            console.log(user);
             localStorage.setItem("user", JSON.stringify(user));
             return user;
         } catch (error: any) {
