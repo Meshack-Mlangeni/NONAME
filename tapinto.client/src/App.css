@@ -1,4 +1,8 @@
-﻿@font-face {
+﻿:root {
+  -mm-default-padding: "58px";
+}
+
+@font-face {
   font-family: "Rockybilly";
   src: url("./assets/fonts/Righteous.ttf") format("truetype");
 }
