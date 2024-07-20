@@ -59,8 +59,10 @@ namespace tapinto.Server.Controllers
                 //var schoolUserIsIn = context.Schools.Where(school => user.SchoolId == school.Id).FirstOrDefault();
 
                 var AllPostsFromGroupsUserIsIn = new List<Post>();
-                context.Posts.ToList().ForEach(p => {
-                    if(groupsUserIsIn.Select(g => g.GroupId).Any(gr => gr == p.GroupId)){
+                context.Posts.ToList().ForEach(p =>
+                {
+                    if (groupsUserIsIn.Select(g => g.GroupId).Any(gr => gr == p.GroupId))
+                    {
                         AllPostsFromGroupsUserIsIn.Add(p);
                     }
                 });
@@ -74,6 +76,20 @@ namespace tapinto.Server.Controllers
                 return Ok(PostDtos.OrderByDescending(p => p.TimeStamp));
             }
             //var activityForUser = context.Posts.Where(p => p.go)
+            return BadRequest();
+        }
+
+
+        [Authorize]
+        [HttpGet("getallgroups")]
+        public async Task<ActionResult<GroupDto>> GetAllGroups()
+        {
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            if (user != null)
+            {
+                var groupsInUsersSchool = context.Groups.Include(s => s.School).Where(g => g.SchoolId == user.SchoolId).ToList();
+                return Ok(groupsInUsersSchool.Select(g => new GroupDto(g)).ToList());
+            }
             return BadRequest();
         }
 
