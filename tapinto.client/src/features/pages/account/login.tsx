@@ -98,7 +98,7 @@ export default function Login() {
               borderRadius: "sm",
             }}
           >
-            <Stack gap={4} sx={{ mb: 2 }}>
+            <Stack gap={4} sx={{ mb: 1 }}>
               <Stack gap={1}>
                 <Typography component="h1" level="h2">
                   Login to your account
@@ -112,7 +112,7 @@ export default function Login() {
               </Stack>
             </Stack>
 
-            <Stack gap={4} sx={{ mt: 2 }}>
+            <Stack gap={4} sx={{ mt: 1 }}>
               <form onSubmit={handleSubmit(onLoginSubmit)}>
                 <FormControl error={!!errors.email}>
                   <FormLabel>Email</FormLabel>
