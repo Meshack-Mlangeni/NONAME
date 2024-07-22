@@ -2,42 +2,50 @@
 import { Camera } from "@mui/icons-material";
 import { Button, Modal, ModalClose, Sheet, Typography } from "@mui/joy";
 import React, { useRef, useState } from "react";
+import { toast } from "react-toastify";
 
-const MyCamera = () => {
+interface ITakeImage {
+  imageData: [string, React.Dispatch<React.SetStateAction<string>>];
+}
+
+const MyCamera = ({ imageData }: ITakeImage) => {
   const videoRef = useRef(null);
   const [imgSrc, setImgSrc] = useState("");
   const [open, setOpen] = React.useState<boolean>(false);
+  const [streamData, setStreamData] = React.useState<MediaStream | null>(null);
 
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      setStreamData(stream);
       // @ts-expect-error
       videoRef.current.srcObject = stream;
     } catch (error) {
-      console.error("Error accessing camera:", error);
+      toast.error("Error accessing camera: " + error);
     }
   };
 
   const capture = () => {
     const canvas = document.createElement("canvas");
-    // @ts-expect-error
-    canvas.width = videoRef.current.videoWidth;
-    // @ts-expect-error
-    canvas.height = videoRef.current.videoHeight;
-    // @ts-expect-error
-    canvas
-      .getContext("2d")
-      .drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-    const imageSrc = canvas.toDataURL("image/jpeg");
-    console.log(imageSrc);
-    setImgSrc(imageSrc);
+    if (videoRef.current) {
+      // @ts-expect-error
+      canvas.width = videoRef.current.videoWidth;
+      // @ts-expect-error
+      canvas.height = videoRef.current.videoHeight!;
+      canvas
+        ?.getContext("2d")
+        ?.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      const imageSrc = canvas.toDataURL("image/jpeg");
+      setImgSrc(imageSrc);
+      imageData[1](imageSrc);
+      streamData?.getTracks().forEach((t) => t.stop());
+    }
   };
 
   return (
     <>
       <Button
         sx={{ ml: 1 }}
-        variant="outlined"
         onClick={async () => {
           setOpen(true);
           await startCamera();
@@ -90,22 +98,9 @@ const MyCamera = () => {
                   fullWidth
                   sx={{ mt: 2, mb: 1 }}
                   onClick={async () => {
-                    videoRef.current.srcObject = null;
-                    if (
-                      navigator.mediaDevices &&
-                      (
-                        await navigator.mediaDevices.getUserMedia({
-                          video: true,
-                        })
-                      ).getTracks()
-                    ) {
-                      const tracks = (
-                        await navigator.mediaDevices.getUserMedia({
-                          video: true,
-                        })
-                      ).getTracks();
-                      tracks.forEach((track) => track.stop());
-                    }
+                    await (streamData?.getTracks().some((e) => e.enabled) &&
+                      streamData?.getTracks().forEach((t) => t.stop()));
+                    setOpen(false);
                   }}
                 >
                   Save and continue
@@ -125,6 +120,7 @@ const MyCamera = () => {
             ) : (
               <>
                 <video
+                  id="video"
                   width={300}
                   style={{ transform: "scaleX(-1)", borderRadius: "12px" }}
                   ref={videoRef}

@@ -3,7 +3,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { User } from "../../../models/user";
 import { FieldValues } from "react-hook-form";
 import { agent } from "../../../app/axiosAgent/agent";
-import { toast } from "react-toastify";
 import { routes } from "../../../app/router/Routes";
 
 interface IAccount { user: User | null; }
@@ -73,7 +72,7 @@ export const accountSlice = createSlice({
             routes.navigate("/home/posts")
         });
         builder.addCase(loginAsync.rejected, () => {
-            toast.error("Error logging in, contact admin!!");
+
         });
         builder.addCase(fetchLoggedInUser.fulfilled, (state, action) => {
             state.user = action.payload;
@@ -83,7 +82,6 @@ export const accountSlice = createSlice({
             state.user = null;
             localStorage.removeItem("user");
             routes.navigate("/home/posts")
-            toast.error("Your session has expired, click toast to login", { delay: 5000, onClick: () => routes.navigate("/login") });
         });
     },
 })

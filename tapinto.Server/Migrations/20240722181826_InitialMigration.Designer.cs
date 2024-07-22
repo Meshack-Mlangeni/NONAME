@@ -12,7 +12,7 @@ using tapinto.Server.Data;
 namespace tapinto.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240626191148_InitialMigration")]
+    [Migration("20240722181826_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -236,27 +236,6 @@ namespace tapinto.Server.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("tapinto.Server.Models.GroupUserBridge", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("GroupUsers");
-                });
-
             modelBuilder.Entity("tapinto.Server.Models.Label", b =>
                 {
                     b.Property<int>("Id")
@@ -295,6 +274,27 @@ namespace tapinto.Server.Migrations
                     b.HasIndex("PostId");
 
                     b.ToTable("Likes");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.Membership", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("Membership");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.PossibleAnswer", b =>
@@ -371,6 +371,34 @@ namespace tapinto.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Schools");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.TeacherRequests", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ImageData")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Requests");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.User", b =>
@@ -540,16 +568,6 @@ namespace tapinto.Server.Migrations
                     b.Navigation("School");
                 });
 
-            modelBuilder.Entity("tapinto.Server.Models.GroupUserBridge", b =>
-                {
-                    b.HasOne("tapinto.Server.Models.Group", "Group")
-                        .WithMany("groupUserBridge")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Group");
-                });
-
             modelBuilder.Entity("tapinto.Server.Models.Like", b =>
                 {
                     b.HasOne("tapinto.Server.Models.Post", "Post")
@@ -559,6 +577,16 @@ namespace tapinto.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.Membership", b =>
+                {
+                    b.HasOne("tapinto.Server.Models.Group", "Group")
+                        .WithMany("groupUserBridge")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.PossibleAnswer", b =>

@@ -3,7 +3,7 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { agent } from "../../../../../app/axiosAgent/agent";
 import { Label } from "../../../../../models/label";
-import { toast } from "react-toastify";
+
 import { FieldValues } from "react-hook-form";
 import { PostDto } from "../../../../../models/post";
 import { AppRootState, store } from "../../../../../app/store/store";
@@ -100,22 +100,22 @@ export const PostSlice = createSlice({
             state.labels = action.payload;
         });
         builder.addCase(getLabelsAsync.rejected, () => {
-            toast.error("There was an error fetching data")
+            
         });
 
         builder.addCase(createActivityAsync.fulfilled, () => {
-            toast.success("Post successfully sent")
+            
         });
         builder.addCase(createActivityAsync.rejected, () => {
-            toast.error("There was an error creating you post, please contact system adminitrator.")
+            
         });
         //Get all posts
         builder.addCase(getallActivityAsync.pending, () => {
-            toast.info("Fetching posts...")
+            
         });
 
         builder.addCase(getallActivityAsync.rejected, () => {
-            toast.error("There was an error fetching data")
+            
         });
 
         builder.addCase(getallActivityAsync.fulfilled, (state, action) => {
@@ -123,15 +123,15 @@ export const PostSlice = createSlice({
         });
         //Get all groups in the school the user is in
         builder.addCase(getAllSchoolUserGroupsAsync.rejected, () => {
-            toast.error("There was an error fetching data")
+            
         });
         builder.addCase(getAllSchoolUserGroupsAsync.pending, () => {
-            toast.info("Fetching user groups data...")
+            
         });
 
         builder.addCase(getAllSchoolUserGroupsAsync.fulfilled, (state, action) => {
             state.groups = [...action.payload];
-            toast.success("Groups fetched successfully")
+            
         });
     }
 });

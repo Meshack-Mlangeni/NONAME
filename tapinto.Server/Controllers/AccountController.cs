@@ -79,6 +79,21 @@ namespace tapinto.Server.Controllers
                     }
                     user.SchoolId = SchoolId;
                     var result = await _userManager.CreateAsync(user, registerDto.Password);
+
+                    if (registerDto.RegisterAs == "Teacher" && registerDto.ImageData != null)
+                    {
+                        var teacherRequests = new TeacherRequests
+                        {
+                            Approved = false,
+                            Timestamp = DateTime.Now,
+                            UserEmail = user.Email,
+                            Reason = "",
+                            ImageData = registerDto.ImageData
+                        };
+                        await context.Requests.AddAsync(teacherRequests);
+                        await context.SaveChangesAsync();
+                    }
+
                     if (result.Succeeded)
                         if ((await _userManager.AddToRoleAsync(user, registerDto.RegisterAs)).Succeeded)
                         {
@@ -112,7 +127,7 @@ namespace tapinto.Server.Controllers
         private async Task<UserDto> GetUserDto(User user)
         {
             var userSchool = await context.Schools.Where(u => u.Id == user.SchoolId).Select(x => x.SchoolName).FirstOrDefaultAsync();
-            var groups = await context.GroupUsers.Where(gu => gu.UserEmail == user.Email)
+            var groups = await context.Membership.Where(gu => gu.UserEmail == user.Email)
                 .Include(o => o.Group)
                 .Select(g => new GroupDto(g.Group) { SchoolName = userSchool })
                 .ToArrayAsync();

@@ -18,6 +18,6 @@ namespace tapinto.Server.Models
         [DeleteBehavior(DeleteBehavior.NoAction)]
         public School School { get; set; }
 
-        public ICollection<GroupUserBridge> groupUserBridge { get; set; }
+        public ICollection<Membership> groupUserBridge { get; set; }
     }
 }

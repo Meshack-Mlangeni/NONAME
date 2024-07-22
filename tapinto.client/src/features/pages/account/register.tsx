@@ -19,13 +19,7 @@ import {
   Sheet,
 } from "@mui/joy";
 import { FieldValues, useForm } from "react-hook-form";
-import {
-  DarkMode,
-  LightMode,
-  UploadFile,
-  Warning,
-  WarningAmberRounded,
-} from "@mui/icons-material";
+import { DarkMode, LightMode, WarningAmberRounded } from "@mui/icons-material";
 import AppLogo from "../../../app/navbar/AppLogo";
 import { useAppDispatch } from "../../../app/store/store";
 import { registerAsync } from "./accountSlice";
@@ -51,6 +45,7 @@ export default function Register() {
   };
   const { mode, setMode } = useColorScheme();
   const [isTeacher, setIsTeacher] = useState<boolean>(false);
+  const [imageData, setImageData] = useState<string>("");
   return (
     <Sheet>
       <Box
@@ -220,7 +215,11 @@ export default function Register() {
                       borderRadius: "sm",
                       border: `2px ${
                         theme.palette.mode === "dark"
-                          ? theme.palette.neutral[700]
+                          ? imageData
+                            ? theme.palette.success[700]
+                            : theme.palette.neutral[700]
+                          : imageData
+                          ? theme.palette.success[300]
                           : theme.palette.neutral[300]
                       } dashed`,
                     })}
@@ -232,14 +231,26 @@ export default function Register() {
                         alt="SACE Logo"
                         src="../_sace.png"
                       />
-                      &nbsp;Upload SACE for Verification
+                      &nbsp;Upload SACE for Verification ({"<"} 72 hours)
                     </FormLabel>
                     <Box sx={{ m: 1 }}>
-                      <Button>
-                        <UploadFile />
-                        Upload Picture
-                      </Button>
-                      <MyCamera />
+                      <FormControl error={!!errors.imageData}>
+                        <Input
+                          type="text"
+                          placeholder={
+                            (errors.imageData?.message as string) ??
+                            "Image Data"
+                          }
+                          value={imageData}
+                          endDecorator={
+                            <MyCamera imageData={[imageData, setImageData]} />
+                          }
+                          readOnly
+                          {...register("imageData", {
+                            required: "Please upload SACE",
+                          })}
+                        />
+                      </FormControl>
                     </Box>
                     <FormHelperText sx={{ mt: 2 }}>
                       <WarningAmberRounded />

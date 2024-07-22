@@ -61,9 +61,9 @@ namespace tapinto.Server.Data
             }
             context.SaveChanges();
 
-            if (!context.GroupUsers.Any())
+            if (!context.Membership.Any())
             {
-                context.GroupUsers.AddRange([
+                context.Membership.AddRange([
                    new(){ UserEmail = "meshackmlangeni@hotmail.com", GroupId = 1 },
                    new(){ UserEmail = "njabulo261@gmail.com", GroupId = 1 },
                    new(){ UserEmail = "meshackmlangeni@hotmail.com", GroupId = 2 },

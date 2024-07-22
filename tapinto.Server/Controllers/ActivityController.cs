@@ -54,7 +54,7 @@ namespace tapinto.Server.Controllers
             var user = await userManager.FindByNameAsync(User.Identity.Name);
             if (user != null)
             {
-                var groupsUserIsIn = context.GroupUsers.Where(gu => gu.UserEmail == user.Email)
+                var groupsUserIsIn = context.Membership.Where(gu => gu.UserEmail == user.Email)
                     .Include(g => g.Group).ToList();
                 //var schoolUserIsIn = context.Schools.Where(school => user.SchoolId == school.Id).FirstOrDefault();
 

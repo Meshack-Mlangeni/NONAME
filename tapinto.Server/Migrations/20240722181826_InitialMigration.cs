@@ -71,6 +71,23 @@ namespace tapinto.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Requests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Approved = table.Column<bool>(type: "bit", nullable: false),
+                    Reason = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Requests", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Schools",
                 columns: table => new
                 {
@@ -211,7 +228,7 @@ namespace tapinto.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GroupUsers",
+                name: "Membership",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -221,9 +238,9 @@ namespace tapinto.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GroupUsers", x => x.Id);
+                    table.PrimaryKey("PK_Membership", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GroupUsers_Groups_GroupId",
+                        name: "FK_Membership_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "Id");
@@ -388,14 +405,14 @@ namespace tapinto.Server.Migrations
                 column: "SchoolId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupUsers_GroupId",
-                table: "GroupUsers",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Likes_PostId",
                 table: "Likes",
                 column: "PostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Membership_GroupId",
+                table: "Membership",
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PossibleAnswers_PostId",
@@ -433,16 +450,19 @@ namespace tapinto.Server.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "GroupUsers");
-
-            migrationBuilder.DropTable(
                 name: "Labels");
 
             migrationBuilder.DropTable(
                 name: "Likes");
 
             migrationBuilder.DropTable(
+                name: "Membership");
+
+            migrationBuilder.DropTable(
                 name: "PossibleAnswers");
+
+            migrationBuilder.DropTable(
+                name: "Requests");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
