@@ -55,7 +55,9 @@ namespace tapinto.Server.Data
             if (!context.Groups.Any())
             {
                 context.Groups.AddRange([
-                   new(){ GroupName = "Grade 12z", SchoolId = 1 , UserEmail="meshackmlangeni@hotmail.com"},
+                   new(){ GroupName = "Grade 12z", 
+                   Description="Group scrictly created for Mzimela Grade 12 physics" ,SchoolId = 1 
+                   , UserEmail="meshackmlangeni@hotmail.com"},
                     new(){ GroupName = "Merien", SchoolId = 1 , UserEmail="njabulo261@gmail.com"},
                 ]);
             }

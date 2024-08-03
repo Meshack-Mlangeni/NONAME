@@ -30,7 +30,11 @@ import { _PostType } from "./_PostType";
 import { NavLink } from "react-router-dom";
 import abbreviateNumber from "../../../../../../helpers/abbreviateNumber";
 import convertFullNamesToInitials from "../../../../../../helpers/convertFullNameToInitials";
-import { useAppSelector } from "../../../../../../app/store/store";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../../../../app/store/store";
+import { likePostAsync } from "../postSlice";
 
 interface IPostProps {
   hasLiveDiscussion?: boolean;
@@ -56,6 +60,8 @@ export default function PostComponent({
 }: IPostProps) {
   const [Like, setLike] = useState<number>(likes);
   const { user } = useAppSelector((state) => state.account);
+  const dispatch = useAppDispatch();
+
   return (
     <Card sx={{ mt: 2, mb: 2 }}>
       <CardContent
@@ -145,7 +151,9 @@ export default function PostComponent({
                   sx={{
                     "--Button-gap": "13px",
                   }}
-                  onClick={() => setLike(Like + 1)}
+                  onClick={() => {
+                    dispatch(likePostAsync)
+                  }}
                 >
                   {abbreviateNumber(Like)}
                 </Button>
@@ -159,7 +167,7 @@ export default function PostComponent({
                   }}
                 >
                   {(() => {
-                    const noOfComments = 125;
+                    const noOfComments = 0;
                     return abbreviateNumber(noOfComments);
                   })()}
                 </Button>

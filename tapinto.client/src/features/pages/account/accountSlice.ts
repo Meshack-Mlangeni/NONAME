@@ -83,6 +83,16 @@ export const accountSlice = createSlice({
             localStorage.removeItem("user");
             routes.navigate("/home/posts")
         });
+
+        builder.addCase(registerAsync.fulfilled, (state, action) => {
+            state.user = action.payload;
+            routes.navigate("/home/posts")
+        });
+        builder.addCase(registerAsync.rejected, (state) => {
+            state.user = null;
+            localStorage.removeItem("user");
+            routes.navigate("/home/posts")
+        });
     },
 })
 export const { signOutUser, setUser } = accountSlice.actions;

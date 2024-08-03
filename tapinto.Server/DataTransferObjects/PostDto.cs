@@ -25,7 +25,7 @@ namespace tapinto.Server.DataTransferObjects
         public string PostContent { get; set; }
         public string UserEmail { get; set; }
         public string UserFullNames { get; set; }
-        public int Upvotes { get; set; }
+        public int Likes { get; set; }
         public DateTime TimeStamp { get; set; }
         public CommentsDto[] Comments { get; set; }
         public ChatHistory[] Chats { get; set; }

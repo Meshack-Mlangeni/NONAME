@@ -12,7 +12,7 @@ using tapinto.Server.Data;
 namespace tapinto.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240722181826_InitialMigration")]
+    [Migration("20240731202752_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -219,6 +219,9 @@ namespace tapinto.Server.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("GroupName")
                         .HasColumnType("nvarchar(max)");

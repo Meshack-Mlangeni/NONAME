@@ -12,7 +12,7 @@ export const AppSlice = createSlice({
     name: "App",
     initialState: initialState,
     reducers: {
-        setLoading : (state, action) => {
+        setLoading: (state, action) => {
             state.Loading = action.payload;
         }
     }

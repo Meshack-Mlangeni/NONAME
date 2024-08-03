@@ -23,6 +23,17 @@ export const getLabelsAsync = createAsyncThunk<Label>(
     }
 );
 
+export const likeActivityAsync = createAsyncThunk(
+    "activity/likeActivityAsync",
+    async (id: number, thunkAPI) => {
+        try{
+            await agent.activity.like_activity(id);
+        }catch(error: any){
+            return thunkAPI.rejectWithValue({error: error.data});
+        }
+    }
+)
+
 export const createActivityAsync = createAsyncThunk<PostDto, FieldValues>(
     "activities/createActivityAsync",
     async (data, thunkApi) => {
@@ -45,7 +56,7 @@ export const getallActivityAsync = createAsyncThunk(
             thunkAPI.dispatch(setLoading(false));
             return posts;
         } catch (error: any) {
-            return thunkAPI.rejectWithValue({ error: error.data })
+            return thunkAPI.rejectWithValue({ error: error.data });
         }
     }
 )
@@ -59,7 +70,20 @@ export const getAllSchoolUserGroupsAsync = createAsyncThunk(
             thunkAPI.dispatch(setLoading(false));
             return allGroups;
         } catch (error: any) {
-            return thunkAPI.rejectWithValue({ error: error.data })
+            return thunkAPI.rejectWithValue({ error: error.data });
+        }
+    }
+)
+
+export const createGroupAsync = createAsyncThunk<Group, FieldValues>(
+    "activities/createGroupAsync",
+    async (data, thunkAPI) => {
+        try {
+            const group = await agent.activity.createGroup(data)
+                .finally(async () => await thunkAPI.dispatch(getAllSchoolUserGroupsAsync()));
+            return group;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.data });
         }
     }
 )
@@ -100,22 +124,22 @@ export const PostSlice = createSlice({
             state.labels = action.payload;
         });
         builder.addCase(getLabelsAsync.rejected, () => {
-            
+
         });
 
         builder.addCase(createActivityAsync.fulfilled, () => {
-            
+
         });
         builder.addCase(createActivityAsync.rejected, () => {
-            
+
         });
         //Get all posts
         builder.addCase(getallActivityAsync.pending, () => {
-            
+
         });
 
         builder.addCase(getallActivityAsync.rejected, () => {
-            
+
         });
 
         builder.addCase(getallActivityAsync.fulfilled, (state, action) => {
@@ -123,15 +147,25 @@ export const PostSlice = createSlice({
         });
         //Get all groups in the school the user is in
         builder.addCase(getAllSchoolUserGroupsAsync.rejected, () => {
-            
+
         });
         builder.addCase(getAllSchoolUserGroupsAsync.pending, () => {
-            
+
         });
 
         builder.addCase(getAllSchoolUserGroupsAsync.fulfilled, (state, action) => {
             state.groups = [...action.payload];
-            
+
+        });
+        //Create Group
+        builder.addCase(createGroupAsync.rejected, () => {
+            //toast.error(action.error);
+        });
+        builder.addCase(createGroupAsync.pending, () => {
+
+        });
+        builder.addCase(createGroupAsync.fulfilled, () => {
+
         });
     }
 });

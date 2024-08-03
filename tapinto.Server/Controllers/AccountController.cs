@@ -61,9 +61,7 @@ namespace tapinto.Server.Controllers
                         Rating = 0.0
                     };
 
-                    var getSchool = context.Schools.ToList()
-                    .FirstOrDefault(s => s.SchoolName == registerDto.SchoolName);
-                    int SchoolId = getSchool?.Id ?? 0;
+                    var getSchool = context.Schools.FirstOrDefault(s => s.SchoolName == registerDto.SchoolName || s.SchoolName == registerDto.SchoolName + $" - Awaiting Approval");
                     if (getSchool == null)
                     {
                         var newSchool = new School
@@ -72,12 +70,11 @@ namespace tapinto.Server.Controllers
                             UserEmail = registerDto.Email,
                         };
                         context.Schools.Add(newSchool);
-                        if ((await context.SaveChangesAsync()) > 0)
-                        {
-                            SchoolId = context.Schools.FirstOrDefault(s => s.SchoolName == registerDto.SchoolName)?.Id ?? 0;
-                        }
+                        await context.SaveChangesAsync();
                     }
-                    user.SchoolId = SchoolId;
+                    getSchool = context.Schools
+                    .FirstOrDefault(s => s.SchoolName == registerDto.SchoolName || s.SchoolName == registerDto.SchoolName + $" - Awaiting Approval");
+                    user.SchoolId = getSchool?.Id ?? 0;
                     var result = await _userManager.CreateAsync(user, registerDto.Password);
 
                     if (registerDto.RegisterAs == "Teacher" && registerDto.ImageData != null)

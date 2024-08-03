@@ -32,7 +32,7 @@ export default function Posts() {
                     groupName={post.groupName}
                     timestamp={convertToDateTimeAgo(post.timeStamp)}
                     post_content={post.postContent}
-                    likes={998}
+                    likes={post.likes}
                     PostType={post.postType}
                     userFullNames={post.userFullNames}
                     userPostEmail={post.userEmail}

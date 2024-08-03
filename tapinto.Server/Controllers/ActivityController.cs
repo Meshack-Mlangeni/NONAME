@@ -6,6 +6,7 @@ using tapinto.Server.Data;
 using tapinto.Server.DataTransferObjects;
 using tapinto.Server.Models;
 using tapinto.Server.HelperFunctions;
+using System.Linq;
 
 namespace tapinto.Server.Controllers
 {
@@ -27,6 +28,7 @@ namespace tapinto.Server.Controllers
             try
             {
                 var user = await userManager.FindByNameAsync(User.Identity.Name);
+                //incr rating
                 var group = context.Groups.FirstOrDefault(g => g.GroupName == post.GroupName);
                 if (user != null && group != null)
                 {
@@ -34,7 +36,7 @@ namespace tapinto.Server.Controllers
                     {
                         UserEmail = user.Email ?? "",
                         GroupId = group.Id,
-                        Timestamp = DateTime.Now
+                        Timestamp = DateTime.Now,
                     };
                     await context.Posts.AddAsync(newPost);
                     await context.SaveChangesAsync();
@@ -42,7 +44,7 @@ namespace tapinto.Server.Controllers
                 }
                 return BadRequest(post);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return BadRequest(post);
             }
@@ -71,7 +73,7 @@ namespace tapinto.Server.Controllers
                 {
                     GroupName = context.Groups.Where(g => g.Id == pp.GroupId).FirstOrDefault().GroupName,
                     UserFullNames = new HelperFunctions.HelperFunctions().GetFullNames(pp.UserEmail, userManager).Result,
-                    Upvotes = 57//to be changed
+                    Likes = context.Likes.Where(like => like.PostId == pp.Id)?.Count() ?? 0//to be changed
                 }).ToList();
                 return Ok(PostDtos.OrderByDescending(p => p.TimeStamp));
             }
@@ -88,7 +90,8 @@ namespace tapinto.Server.Controllers
             if (user != null)
             {
                 var groupsInUsersSchool = context.Groups.Include(s => s.School).Where(g => g.SchoolId == user.SchoolId).Include(g => g.groupUserBridge).ToList();
-                return Ok(groupsInUsersSchool.Select(g => new GroupDto(g){
+                return Ok(groupsInUsersSchool.Select(g => new GroupDto(g)
+                {
                     Users = g.groupUserBridge
                     .Select(ue => ue.UserEmail)
                     .Select(t => new UserDto(context.Users.FirstOrDefault(u => u.Email == t))).ToArray()
@@ -97,11 +100,69 @@ namespace tapinto.Server.Controllers
             return BadRequest();
         }
 
+        [Authorize]
+        [HttpPut("creategroup")]
+        public async Task<ActionResult<GroupDto>> CreateGroupAsync(Group group)
+        {
+            var _group = group;
+            if (_group.GroupName != "" && !context.Groups.Any(g => g.GroupName == group.GroupName))
+            {
+                var groupAdmin = await userManager.FindByNameAsync(User.Identity.Name);
+                if (context.Groups.Where(g => g.UserEmail == groupAdmin.Email).ToList().Count <= 5)
+                {
+                    if (groupAdmin != null)
+                    {
+                        _group.UserEmail = groupAdmin.Email;
+                        _group.SchoolId = groupAdmin.SchoolId;
+                        context.Add(_group);
+                        if (await context.SaveChangesAsync() > 0)
+                        {
+                            var membership = new Membership
+                            {
+                                UserEmail = groupAdmin.Email,
+                                GroupId = (await context.Groups.FirstOrDefaultAsync(g => g.GroupName == group.GroupName)).Id,
+                            };
+                            context.Membership.Add(membership);
+                            groupAdmin.Rating += 0.10;
+                            await context.SaveChangesAsync();
+                            await userManager.UpdateAsync(groupAdmin);
+                            return Ok();
+                        }
+                        return BadRequest("Could not save changes to the database, please contact system administrator.");
+                    }
+                    else return BadRequest("Could find user, please contact system administrator.");
+                }
+                else return BadRequest("User must have a minimum of 5 group");
+            }
+            return BadRequest("Something went wrong, please try again.");
+        }
+
         [HttpGet("getlabels")]
         public ActionResult GetLabels()
         {
             var labels = context.Labels.ToList();
             return Ok(labels);
+        }
+
+        [Authorize]
+        [HttpPost("likeactivity")]
+        public async Task<IActionResult> LikeActivity(int PostId)
+        {
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            if (user != null)
+            {
+                var like = context.Likes.FirstOrDefault(l => l.UserEmail == user.Email);
+                if (like == null)
+                    context.Likes.Add(new Like
+                    {
+                        UserEmail = user.Email,
+                        PostId = PostId
+                    });
+                else context.Likes.Remove(like);
+                await context.SaveChangesAsync();
+                return Ok();
+            }
+            else return BadRequest();
         }
 
     }

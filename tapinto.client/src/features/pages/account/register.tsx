@@ -21,16 +21,20 @@ import {
 import { FieldValues, useForm } from "react-hook-form";
 import { DarkMode, LightMode, WarningAmberRounded } from "@mui/icons-material";
 import AppLogo from "../../../app/navbar/AppLogo";
-import { useAppDispatch } from "../../../app/store/store";
+import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import { registerAsync } from "./accountSlice";
 import { setLoading } from "../../../app/store/appSlice";
 import { getallActivityAsync } from "../homepage/subs/posts/postSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MyCamera from "./takeImage";
+import { getAllSchoolsAsync } from "../homepage/subs/myschool/schoolSlice";
+import { School } from "../../../models/school";
 //generously borrowed from MUI sign up template
 
 export default function Register() {
   const dispatch = useAppDispatch();
+  const { schools } = useAppSelector((state) => state.school);
+  let getSchoolNames = schools.map((s) => s.schoolName);
   const {
     register,
     handleSubmit,
@@ -46,6 +50,13 @@ export default function Register() {
   const { mode, setMode } = useColorScheme();
   const [isTeacher, setIsTeacher] = useState<boolean>(false);
   const [imageData, setImageData] = useState<string>("");
+
+  useEffect(() => {
+    if (!schools || schools === undefined) {
+      dispatch(getAllSchoolsAsync());
+    }
+  }, [dispatch, schools]);
+
   return (
     <Sheet>
       <Box
@@ -77,7 +88,7 @@ export default function Register() {
           >
             <Box sx={{ gap: 2, display: "flex", alignItems: "center" }}>
               <AppLogo /> &nbsp;
-              <Button component={NavLink} to="/home">
+              <Button component={NavLink} to="/home/posts">
                 Guest mode
               </Button>
               <Switch
@@ -188,11 +199,11 @@ export default function Register() {
                 <FormControl error={!!errors.schoolName}>
                   <FormLabel>School name</FormLabel>
                   <Autocomplete
+                    options={schools
+                      .map((s) => s.schoolName)
+                      .sort((a, b) => -b.localeCompare(a))}
+                    groupBy={(schools) => schools[0]}
                     freeSolo
-                    options={[
-                      "Mzimela High School",
-                      "Ntandoyesizwe Secondary School",
-                    ]}
                     placeholder={errors.schoolName?.message as string}
                     {...register("schoolName", {
                       required: "Please select school",

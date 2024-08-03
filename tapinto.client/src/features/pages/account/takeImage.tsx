@@ -10,13 +10,16 @@ interface ITakeImage {
 
 const MyCamera = ({ imageData }: ITakeImage) => {
   const videoRef = useRef(null);
+  const [disabled, setDisabled] = useState(true);
   const [imgSrc, setImgSrc] = useState("");
   const [open, setOpen] = React.useState<boolean>(false);
   const [streamData, setStreamData] = React.useState<MediaStream | null>(null);
 
   const startCamera = async () => {
     try {
+      setImgSrc("");
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      stream && setDisabled(false);
       setStreamData(stream);
       // @ts-expect-error
       videoRef.current.srcObject = stream;
@@ -101,6 +104,7 @@ const MyCamera = ({ imageData }: ITakeImage) => {
                     await (streamData?.getTracks().some((e) => e.enabled) &&
                       streamData?.getTracks().forEach((t) => t.stop()));
                     setOpen(false);
+                    setDisabled(true);
                   }}
                 >
                   Save and continue
@@ -111,7 +115,8 @@ const MyCamera = ({ imageData }: ITakeImage) => {
                   sx={{ mb: 1 }}
                   onClick={async () => {
                     setImgSrc("");
-                    await startCamera();
+                    setDisabled(true);
+                    await startCamera().then(() => setDisabled(false));
                   }}
                 >
                   Reset
@@ -127,7 +132,12 @@ const MyCamera = ({ imageData }: ITakeImage) => {
                   autoPlay
                 />
                 <br />
-                <Button fullWidth sx={{ mt: 2, mb: 1 }} onClick={capture}>
+                <Button
+                  disabled={disabled}
+                  fullWidth
+                  sx={{ mt: 2, mb: 1 }}
+                  onClick={capture}
+                >
                   Capture Photo
                 </Button>
               </>
