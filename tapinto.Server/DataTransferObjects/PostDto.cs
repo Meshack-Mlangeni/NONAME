@@ -31,5 +31,6 @@ namespace tapinto.Server.DataTransferObjects
         public ChatHistory[] Chats { get; set; }
         public PossibleAnswer[] Answers { get; set; }
         public string Labels { get; set; }
+        public bool CurrentUserLiked { get; set; } = false;
     }
 }

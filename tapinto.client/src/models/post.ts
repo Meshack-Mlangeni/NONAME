@@ -17,4 +17,5 @@ export interface PostDto {
     chats: Chats[];
     answers: Answer[];
     labels: string;
+    currentUserLiked: boolean;
 }

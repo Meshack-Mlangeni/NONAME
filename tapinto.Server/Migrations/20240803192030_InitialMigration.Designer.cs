@@ -12,7 +12,7 @@ using tapinto.Server.Data;
 namespace tapinto.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240731202752_InitialMigration")]
+    [Migration("20240803192030_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

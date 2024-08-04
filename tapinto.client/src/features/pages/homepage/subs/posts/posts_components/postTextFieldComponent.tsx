@@ -111,8 +111,8 @@ export default function PostTextField() {
   const [pollValid, setPollValid] = useState<boolean>(false);
   const data = [
     ["Post", <PostAddRounded />],
-    ["Poll", <PollRounded />],
     ["Discussion", <CommentRounded />],
+    ["Poll", <PollRounded />],
   ];
 
   const postTFComponent = (
@@ -150,13 +150,11 @@ export default function PostTextField() {
                   onChange: (e) => setDefaultValue(+e.target.defaultValue),
                 })}
                 color="neutral"
-                value={
-                  item[0] === "Post"
-                    ? (0 as PostType)
-                    : item[0] === "Poll"
-                    ? (1 as PostType)
-                    : (2 as PostType)
-                }
+                value={(() => {
+                  if (item[0] === "Post") return 0 as PostType;
+                  else if (item[0] === "Discussion") return 1 as PostType;
+                  else return 2 as PostType;
+                })()}
                 disableIcon
                 label={
                   <>

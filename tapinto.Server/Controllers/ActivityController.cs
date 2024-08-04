@@ -51,7 +51,7 @@ namespace tapinto.Server.Controllers
         }
         [Authorize]
         [HttpGet("getall")]
-        public async Task<ActionResult<PostDto>> getAllActivity()
+        public async Task<ActionResult<PostDto>> GetAllActivity()
         {
             var user = await userManager.FindByNameAsync(User.Identity.Name);
             if (user != null)
@@ -60,22 +60,27 @@ namespace tapinto.Server.Controllers
                     .Include(g => g.Group).ToList();
                 //var schoolUserIsIn = context.Schools.Where(school => user.SchoolId == school.Id).FirstOrDefault();
 
-                var AllPostsFromGroupsUserIsIn = new List<Post>();
-                context.Posts.ToList().ForEach(p =>
+                //var AllPostsFromGroupsUserIsIn = new List<Post>();
+                List<PostDto> postDto = new List<PostDto>();
+                var allPosts = context.Posts.Include(l => l.Likes).ToList();
+                foreach (var p in allPosts)
                 {
                     if (groupsUserIsIn.Select(g => g.GroupId).Any(gr => gr == p.GroupId))
                     {
-                        AllPostsFromGroupsUserIsIn.Add(p);
+                        var _pDto = new PostDto(p)
+                        {
+                            GroupName = context.Groups.Where(g => g.Id == p.GroupId).FirstOrDefault().GroupName,
+                            UserFullNames = new HelperFunctions.HelperFunctions().GetFullNames(p.UserEmail, userManager).Result,
+                            Likes = context.Likes.Where(like => like.PostId == p.Id)?.Count() ?? 0//to be changed
+                        };
+                        if (p.Likes != null && p.Likes.Any(p => p.UserEmail == user.Email))
+                            _pDto.CurrentUserLiked = true;
+                        postDto.Add(_pDto);
                     }
-                });
+                }
 
-                var PostDtos = AllPostsFromGroupsUserIsIn.Select((pp) => new PostDto(pp)
-                {
-                    GroupName = context.Groups.Where(g => g.Id == pp.GroupId).FirstOrDefault().GroupName,
-                    UserFullNames = new HelperFunctions.HelperFunctions().GetFullNames(pp.UserEmail, userManager).Result,
-                    Likes = context.Likes.Where(like => like.PostId == pp.Id)?.Count() ?? 0//to be changed
-                }).ToList();
-                return Ok(PostDtos.OrderByDescending(p => p.TimeStamp));
+
+                return Ok(postDto.OrderByDescending(p => p.TimeStamp));
             }
             //var activityForUser = context.Posts.Where(p => p.go)
             return BadRequest();
@@ -146,20 +151,20 @@ namespace tapinto.Server.Controllers
 
         [Authorize]
         [HttpPost("likeactivity")]
-        public async Task<IActionResult> LikeActivity(int PostId)
+        public async Task<IActionResult> LikeActivity(int postId)
         {
             var user = await userManager.FindByNameAsync(User.Identity.Name);
             if (user != null)
             {
-                var like = context.Likes.FirstOrDefault(l => l.UserEmail == user.Email);
+                var like = context.Likes.FirstOrDefault(l => l.UserEmail == user.Email && l.PostId == postId);
                 if (like == null)
                     context.Likes.Add(new Like
                     {
                         UserEmail = user.Email,
-                        PostId = PostId
+                        PostId = postId
                     });
                 else context.Likes.Remove(like);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 return Ok();
             }
             else return BadRequest();
