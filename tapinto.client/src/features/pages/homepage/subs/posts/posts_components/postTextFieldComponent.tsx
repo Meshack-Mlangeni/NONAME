@@ -99,7 +99,7 @@ export default function PostTextField() {
         reset();
       })
       .then(() => {
-        dispatch(getallActivityAsync());
+        dispatch(getallActivityAsync(5));
       });
   };
 

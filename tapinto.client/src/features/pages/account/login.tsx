@@ -29,7 +29,9 @@ export default function Login() {
   const onLoginSubmit = async (data: FieldValues) => {
     dispatch(setLoading(true));
     await dispatch(loginAsync(data)).then(
-      async (data) => data && (await dispatch(getallActivityAsync()))
+      async (data) =>
+        data &&
+        (await dispatch(getallActivityAsync(5)))
     );
     dispatch(setLoading(false));
   };

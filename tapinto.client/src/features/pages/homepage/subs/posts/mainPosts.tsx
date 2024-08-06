@@ -1,22 +1,37 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Grid, useMediaQuery } from "@mui/material";
+import { Fab, Grid, SxProps, useMediaQuery } from "@mui/material";
 import Post from "./posts_components/postCreateComponent";
 import Bio from "./posts_components/bioComponent";
-import { Box, Chip, ColorPaletteProp, Typography } from "@mui/joy";
+import {
+  Box,
+  Button,
+  Chip,
+  CircularProgress,
+  ColorPaletteProp,
+  Typography,
+} from "@mui/joy";
 import PostComponent from "./posts_components/postComponent";
 import MyGroups from "./posts_components/myGroupsComponent";
-import { postSelector } from "./postSlice";
-import { useAppSelector } from "../../../../../app/store/store";
+import { getallActivityAsync, postSelector } from "./postSlice";
+import { useAppDispatch, useAppSelector } from "../../../../../app/store/store";
 import convertToDateTimeAgo from "../../../../../helpers/convertToDateTimeAgo";
 import { NavLink } from "react-router-dom";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { ArrowDownwardRounded, ArrowUpwardRounded } from "@mui/icons-material";
+import {
+  ArrowDownwardRounded,
+  ArrowUpwardRounded,
+  ArrowUpwardTwoTone,
+} from "@mui/icons-material";
+import { useState } from "react";
 
 export default function Posts() {
   const Tablet = useMediaQuery("(min-width:1100px)");
   const posts = useAppSelector(postSelector.selectAll);
-  //const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
+  const [hasMoreData, setHasMoreData] = useState<boolean>(true);
   const { labels } = useAppSelector((state) => state.activities);
+
+
   return (
     <Box
       {...(!Tablet
@@ -26,38 +41,72 @@ export default function Posts() {
       <Grid container spacing={2}>
         <Grid item xs={!Tablet ? 12 : 8}>
           <Box {...(Tablet && { sx: { ml: 1, mr: 1 } })}>
+            <Button
+              color="primary"
+              sx={{
+                position: "fixed",
+                bottom: 16,
+                right: 16,
+                zIndex: 10,
+                boxShadow: "sm",
+                visibility: scrollY > 100 ? "visible" : "hidden",
+              }}
+              aria-label="add"
+            >
+              <ArrowUpwardTwoTone />
+              {scrollY}
+            </Button>
             <InfiniteScroll
-              dataLength={5}
-              next={() => {}}
-              hasMore={true}
-              // loader={
-              //   <CircularProgress
-              //     style={{ textAlign: "center" }}
-              //     sx={{ alignSelf: "center" }}
-              //   />
-              // }
+            onScroll={(e: any){
+              console.log("scrolled")
+            }}
+              dataLength={posts.length}
+              next={async () => {
+                const offset = posts.length + 5;
+                await dispatch(getallActivityAsync(offset)).then((data) => {
+                  if (!((data.payload as []).length > 0)) {
+                    setHasMoreData(false);
+                  }
+                });
+              }}
+              hasMore={hasMoreData}
               endMessage={
                 <p style={{ textAlign: "center" }}>
-                  <b>Yay! You have seen it all</b>
+                  <b>🎊 Hooray! You have seen it all</b>
                 </p>
               }
               // below props only if you need pull down functionality
-              refreshFunction={async () => {}}
-              loader={<>Loading...</>}
+              refreshFunction={async () => {
+                await dispatch(getallActivityAsync(5));
+              }}
+              loader={
+                <p style={{ textAlign: "center" }}>
+                  <CircularProgress />
+                </p>
+              }
               pullDownToRefresh
               pullDownToRefreshThreshold={50}
               pullDownToRefreshContent={
-                <Typography level="body-md" style={{ textAlign: "center" }}>
+                <Typography
+                  level="body-md"
+                  sx={{ mt: 1, mb: 1 }}
+                  style={{ textAlign: "center" }}
+                >
                   <ArrowDownwardRounded /> Pull down to refresh
                 </Typography>
               }
               releaseToRefreshContent={
-                <Typography level="body-md" style={{ textAlign: "center" }}>
+                <Typography
+                  level="body-md"
+                  sx={{ mt: 1, mb: 1 }}
+                  style={{ textAlign: "center" }}
+                >
                   <ArrowUpwardRounded /> Release to refresh
                 </Typography>
               }
             >
               <Post />
+
               {posts.length > 0 ? (
                 posts.map((post, index) => {
                   return (

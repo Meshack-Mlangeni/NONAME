@@ -27,11 +27,9 @@ import { getallActivityAsync, postSelector } from "../postSlice";
 
 export default function Bio() {
   const { user } = useAppSelector((state) => state.account);
-  console.log(user);
   const dispatch = useAppDispatch();
   const posts = useAppSelector(postSelector.selectAll);
-  const numberOfUserPosts =
-    posts?.filter((p) => p.userEmail === user?.email).length ?? 0;
+
   const {
     register,
     handleSubmit,
@@ -40,7 +38,7 @@ export default function Bio() {
   const onLoginSubmit = async (data: FieldValues) => {
     dispatch(setLoading(true));
     await dispatch(loginAsync(data)).then(
-      async (data) => data && (await dispatch(getallActivityAsync()))
+      async (data) => data && (await dispatch(getallActivityAsync(5)))
     );
     dispatch(setLoading(false));
   };
@@ -86,7 +84,7 @@ export default function Bio() {
                 <Typography level="body-xs" fontWeight="lg">
                   Posts
                 </Typography>
-                <Typography fontWeight="lg">{numberOfUserPosts}</Typography>
+                <Typography fontWeight="lg">{user?.numberOfPosts ?? 0}</Typography>
               </div>
               <div>
                 <Typography level="body-xs" fontWeight="lg">

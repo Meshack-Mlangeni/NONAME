@@ -51,7 +51,7 @@ namespace tapinto.Server.Controllers
         }
         [Authorize]
         [HttpGet("getall")]
-        public async Task<ActionResult<PostDto>> GetAllActivity()
+        public async Task<ActionResult<PostDto>> GetAllActivity(int skip) //offset is skip
         {
             var user = await userManager.FindByNameAsync(User.Identity.Name);
             if (user != null)
@@ -62,7 +62,7 @@ namespace tapinto.Server.Controllers
 
                 //var AllPostsFromGroupsUserIsIn = new List<Post>();
                 List<PostDto> postDto = new List<PostDto>();
-                var allPosts = context.Posts.Include(l => l.Likes).ToList();
+                var allPosts = context.Posts.OrderByDescending(p => p.Timestamp).Include(l => l.Likes).ToList();
                 foreach (var p in allPosts)
                 {
                     if (groupsUserIsIn.Select(g => g.GroupId).Any(gr => gr == p.GroupId))
@@ -78,9 +78,8 @@ namespace tapinto.Server.Controllers
                         postDto.Add(_pDto);
                     }
                 }
-
-
-                return Ok(postDto.OrderByDescending(p => p.TimeStamp));
+                //postDto.OrderByDescending(p => p.TimeStamp)
+                return Ok(postDto.Skip(skip - 5).Take(5));
             }
             //var activityForUser = context.Posts.Where(p => p.go)
             return BadRequest();

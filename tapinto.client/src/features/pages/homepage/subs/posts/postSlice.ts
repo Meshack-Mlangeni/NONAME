@@ -26,10 +26,10 @@ export const getLabelsAsync = createAsyncThunk<Label>(
 export const likeActivityAsync = createAsyncThunk(
     "activity/likeActivityAsync",
     async (id: number, thunkAPI) => {
-        try{
+        try {
             await agent.activity.like_activity(id);
-        }catch(error: any){
-            return thunkAPI.rejectWithValue({error: error.data});
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.data });
         }
     }
 )
@@ -47,12 +47,12 @@ export const createActivityAsync = createAsyncThunk<PostDto, FieldValues>(
     }
 )
 
-export const getallActivityAsync = createAsyncThunk(
+export const getallActivityAsync = createAsyncThunk<[], number>(
     "activities/getallActivityAsync",
-    async (_, thunkAPI) => {
+    async (skip, thunkAPI) => {
         try {
             thunkAPI.dispatch(setLoading(true));
-            const posts = await agent.activity.getallactivity();
+            const posts = await agent.activity.getallactivity(skip);
             thunkAPI.dispatch(setLoading(false));
             return posts;
         } catch (error: any) {
@@ -88,7 +88,9 @@ export const createGroupAsync = createAsyncThunk<Group, FieldValues>(
     }
 )
 
-const postAdapter = createEntityAdapter<PostDto>()
+const postAdapter = createEntityAdapter<PostDto>(
+    { sortComparer: (a, b) => new Date(b.timeStamp).getTime() - new Date(a.timeStamp).getTime(), }
+)
 interface postType {
     numberOfPosts: number,
     labels: Label[];
@@ -143,7 +145,7 @@ export const PostSlice = createSlice({
         });
 
         builder.addCase(getallActivityAsync.fulfilled, (state, action) => {
-            postAdapter.setAll(state, action.payload);
+            postAdapter.setMany(state, action.payload);
         });
         //Get all groups in the school the user is in
         builder.addCase(getAllSchoolUserGroupsAsync.rejected, () => {

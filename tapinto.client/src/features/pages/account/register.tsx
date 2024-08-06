@@ -28,13 +28,12 @@ import { getallActivityAsync } from "../homepage/subs/posts/postSlice";
 import { useEffect, useState } from "react";
 import MyCamera from "./takeImage";
 import { getAllSchoolsAsync } from "../homepage/subs/myschool/schoolSlice";
-import { School } from "../../../models/school";
 //generously borrowed from MUI sign up template
 
 export default function Register() {
   const dispatch = useAppDispatch();
   const { schools } = useAppSelector((state) => state.school);
-  let getSchoolNames = schools.map((s) => s.schoolName);
+  //let getSchoolNames = schools.map((s) => s.schoolName);
   const {
     register,
     handleSubmit,
@@ -43,7 +42,7 @@ export default function Register() {
   const onRegisterSubmit = async (data: FieldValues) => {
     dispatch(setLoading(true));
     await dispatch(registerAsync(data)).then(
-      async (data) => data && (await dispatch(getallActivityAsync()))
+      async (data) => data && (await dispatch(getallActivityAsync(5)))
     );
     dispatch(setLoading(false));
   };

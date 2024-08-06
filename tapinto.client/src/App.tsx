@@ -30,7 +30,7 @@ function App() {
         })
         .finally(async () => {
           await dispatch(getLabelsAsync());
-          await dispatch(getallActivityAsync());
+          await dispatch(getallActivityAsync(5));
           await dispatch(getAllSchoolUserGroupsAsync());
           await dispatch(getAllSchoolsAsync());
           dispatch(setLoading(false));

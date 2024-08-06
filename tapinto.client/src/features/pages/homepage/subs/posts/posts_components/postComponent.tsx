@@ -34,7 +34,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from "../../../../../../app/store/store";
-import { getallActivityAsync, likeActivityAsync } from "../postSlice";
+import { likeActivityAsync } from "../postSlice";
 
 interface IPostProps {
   id: number;
@@ -66,7 +66,6 @@ export default function PostComponent({
   const [hasUserLiked, setHasUserLiked] = useState<boolean>(currentUserLiked);
   const { user } = useAppSelector((state) => state.account);
   const dispatch = useAppDispatch();
-  console.log(`Post Type of id: ${id} is ${PostType}`);
 
   const poll = (
     <PopQuizComponent

@@ -128,10 +128,12 @@ namespace tapinto.Server.Controllers
                 .Include(o => o.Group)
                 .Select(g => new GroupDto(g.Group) { SchoolName = userSchool })
                 .ToArrayAsync();
+            var numberOfPosts = context.Posts.Where(p => p.UserEmail == user.Email).Count();
             return new UserDto(user)
             {
                 School = userSchool,
-                Groups = groups
+                Groups = groups,
+                NumberOfPosts = numberOfPosts,
             };
         }
     }
