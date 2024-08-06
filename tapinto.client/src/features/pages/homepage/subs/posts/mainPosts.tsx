@@ -30,7 +30,17 @@ export default function Posts() {
   const dispatch = useAppDispatch();
   const [hasMoreData, setHasMoreData] = useState<boolean>(true);
   const { labels } = useAppSelector((state) => state.activities);
+  const [hasScrolled, setHasScrolled] = useState(false);
 
+  window.onscroll = function () {
+    const distanceScrolled = document.documentElement.scrollTop!;
+    console.log(distanceScrolled);
+    if (distanceScrolled > 112) {
+      setHasScrolled(true);
+    } else {
+      setHasScrolled(false);
+    }
+  };
 
   return (
     <Box
@@ -42,24 +52,24 @@ export default function Posts() {
         <Grid item xs={!Tablet ? 12 : 8}>
           <Box {...(Tablet && { sx: { ml: 1, mr: 1 } })}>
             <Button
+              onClick={() => {
+                document.documentElement.scrollTop = 0;
+                setHasScrolled(false);
+              }}
               color="primary"
               sx={{
                 position: "fixed",
                 bottom: 16,
                 right: 16,
                 zIndex: 10,
-                boxShadow: "sm",
-                visibility: scrollY > 100 ? "visible" : "hidden",
+                boxShadow: "lg",
+                visibility: hasScrolled ? "visible" : "hidden",
               }}
               aria-label="add"
             >
               <ArrowUpwardTwoTone />
-              {scrollY}
             </Button>
             <InfiniteScroll
-            onScroll={(e: any){
-              console.log("scrolled")
-            }}
               dataLength={posts.length}
               next={async () => {
                 const offset = posts.length + 5;
