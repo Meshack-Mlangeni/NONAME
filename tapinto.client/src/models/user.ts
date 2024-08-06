@@ -10,4 +10,5 @@ export interface User {
     school: string;
     verified: boolean;
     groups: Group[];
+    numberOfPosts: number;
 }

@@ -3,12 +3,13 @@
 import { createAsyncThunk, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { agent } from "../../../../../app/axiosAgent/agent";
 import { Label } from "../../../../../models/label";
-import { toast } from "react-toastify";
+
 import { FieldValues } from "react-hook-form";
 import { PostDto } from "../../../../../models/post";
 import { AppRootState, store } from "../../../../../app/store/store";
 import { setLoading } from "../../../../../app/store/appSlice";
 import { Group } from "../../../../../models/group";
+
 
 export const getLabelsAsync = createAsyncThunk<Label>(
     "activities/getLabelsAsync",
@@ -21,6 +22,17 @@ export const getLabelsAsync = createAsyncThunk<Label>(
         }
     }
 );
+
+export const likeActivityAsync = createAsyncThunk(
+    "activity/likeActivityAsync",
+    async (id: number, thunkAPI) => {
+        try {
+            await agent.activity.like_activity(id);
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.data });
+        }
+    }
+)
 
 export const createActivityAsync = createAsyncThunk<PostDto, FieldValues>(
     "activities/createActivityAsync",
@@ -35,16 +47,16 @@ export const createActivityAsync = createAsyncThunk<PostDto, FieldValues>(
     }
 )
 
-export const getallActivityAsync = createAsyncThunk(
+export const getallActivityAsync = createAsyncThunk<[], number>(
     "activities/getallActivityAsync",
-    async (_, thunkAPI) => {
+    async (skip, thunkAPI) => {
         try {
             thunkAPI.dispatch(setLoading(true));
-            const posts = await agent.activity.getallactivity();
+            const posts = await agent.activity.getallactivity(skip);
             thunkAPI.dispatch(setLoading(false));
             return posts;
         } catch (error: any) {
-            return thunkAPI.rejectWithValue({ error: error.data })
+            return thunkAPI.rejectWithValue({ error: error.data });
         }
     }
 )
@@ -58,12 +70,27 @@ export const getAllSchoolUserGroupsAsync = createAsyncThunk(
             thunkAPI.dispatch(setLoading(false));
             return allGroups;
         } catch (error: any) {
-            return thunkAPI.rejectWithValue({ error: error.data })
+            return thunkAPI.rejectWithValue({ error: error.data });
         }
     }
 )
 
-const postAdapter = createEntityAdapter<PostDto>()
+export const createGroupAsync = createAsyncThunk<Group, FieldValues>(
+    "activities/createGroupAsync",
+    async (data, thunkAPI) => {
+        try {
+            const group = await agent.activity.createGroup(data)
+                .finally(async () => await thunkAPI.dispatch(getAllSchoolUserGroupsAsync()));
+            return group;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.data });
+        }
+    }
+)
+
+const postAdapter = createEntityAdapter<PostDto>(
+    { sortComparer: (a, b) => new Date(b.timeStamp).getTime() - new Date(a.timeStamp).getTime(), }
+)
 interface postType {
     numberOfPosts: number,
     labels: Label[];
@@ -99,38 +126,48 @@ export const PostSlice = createSlice({
             state.labels = action.payload;
         });
         builder.addCase(getLabelsAsync.rejected, () => {
-            toast.error("There was an error fetching data")
+
         });
 
         builder.addCase(createActivityAsync.fulfilled, () => {
-            toast.success("Post successfully sent")
+
         });
         builder.addCase(createActivityAsync.rejected, () => {
-            toast.error("There was an error creating you post, please contact system adminitrator.")
+
         });
         //Get all posts
         builder.addCase(getallActivityAsync.pending, () => {
-            toast.info("Fetching posts...")
+
         });
 
         builder.addCase(getallActivityAsync.rejected, () => {
-            toast.error("There was an error fetching data")
+
         });
 
         builder.addCase(getallActivityAsync.fulfilled, (state, action) => {
-            postAdapter.setAll(state, action.payload);
+            postAdapter.setMany(state, action.payload);
         });
         //Get all groups in the school the user is in
         builder.addCase(getAllSchoolUserGroupsAsync.rejected, () => {
-            toast.error("There was an error fetching data")
+
         });
         builder.addCase(getAllSchoolUserGroupsAsync.pending, () => {
-            toast.info("Fetching user groups data...")
+
         });
 
         builder.addCase(getAllSchoolUserGroupsAsync.fulfilled, (state, action) => {
             state.groups = [...action.payload];
-            toast.success("Groups fetched successfully")
+
+        });
+        //Create Group
+        builder.addCase(createGroupAsync.rejected, () => {
+            //toast.error(action.error);
+        });
+        builder.addCase(createGroupAsync.pending, () => {
+
+        });
+        builder.addCase(createGroupAsync.fulfilled, () => {
+
         });
     }
 });

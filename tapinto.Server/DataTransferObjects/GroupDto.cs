@@ -20,6 +20,7 @@ namespace tapinto.Server.DataTransferObjects
         public string GroupName { get; set; }
         public string UserEmail { get; set; }
         public string SchoolName { get; set; }
+        public string Description { get; set; }
         public UserDto[] Users { get; set; }
     }
 }

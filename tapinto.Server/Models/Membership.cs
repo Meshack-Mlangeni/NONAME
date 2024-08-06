@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace tapinto.Server.Models
 {
-    public class GroupUserBridge
+    public class Membership
     {
         [Key]
         public int Id { get; set; }

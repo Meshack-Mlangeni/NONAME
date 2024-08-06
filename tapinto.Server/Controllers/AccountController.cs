@@ -43,31 +43,71 @@ namespace tapinto.Server.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDto registerDto)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
-            var user = new User
+            var user = await _userManager.FindByEmailAsync(registerDto.Email);
+            if (user == null)
             {
-                Email = registerDto.Email,
-                FirstName = registerDto.FirstName,
-                LastName = registerDto.LastName
-            };
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
-
-            if (!result.Succeeded)
-            {
-                foreach (var error in result.Errors)
+                if (registerDto.Password == registerDto.ConfirmPassword)
                 {
-                    ModelState.AddModelError(error.Code, error.Description);
-                }
+                    user = new User
+                    {
+                        Email = registerDto.Email,
+                        FirstName = registerDto.FirstName,
+                        LastName = registerDto.LastName,
+                        UserName = registerDto.Email[0..3] + registerDto.FirstName + registerDto.LastName,
+                        Verified = false,
+                        Bio = "",
+                        Rating = 0.0
+                    };
 
-                return ValidationProblem();
+                    var getSchool = context.Schools.FirstOrDefault(s => s.SchoolName == registerDto.SchoolName || s.SchoolName == registerDto.SchoolName + $" - Awaiting Approval");
+                    if (getSchool == null)
+                    {
+                        var newSchool = new School
+                        {
+                            SchoolName = registerDto.SchoolName + $" - Awaiting Approval",
+                            UserEmail = registerDto.Email,
+                        };
+                        context.Schools.Add(newSchool);
+                        await context.SaveChangesAsync();
+                    }
+                    getSchool = context.Schools
+                    .FirstOrDefault(s => s.SchoolName == registerDto.SchoolName || s.SchoolName == registerDto.SchoolName + $" - Awaiting Approval");
+                    user.SchoolId = getSchool?.Id ?? 0;
+                    var result = await _userManager.CreateAsync(user, registerDto.Password);
+
+                    if (registerDto.RegisterAs == "Teacher" && registerDto.ImageData != null)
+                    {
+                        var teacherRequests = new TeacherRequests
+                        {
+                            Approved = false,
+                            Timestamp = DateTime.Now,
+                            UserEmail = user.Email,
+                            Reason = "",
+                            ImageData = registerDto.ImageData
+                        };
+                        await context.Requests.AddAsync(teacherRequests);
+                        await context.SaveChangesAsync();
+                    }
+
+                    if (result.Succeeded)
+                        if ((await _userManager.AddToRoleAsync(user, registerDto.RegisterAs)).Succeeded)
+                        {
+                            var userDto = await GetUserDto(
+                                await _userManager.Users.Where(u => u.Email == registerDto.Email).FirstOrDefaultAsync()
+                            );
+                            var token = await _authController.Auntheticate(user);
+                            userDto.Token = token.accessToken;
+                            return userDto;
+                        }
+
+                    return Unauthorized();
+                }
+                else return BadRequest();
             }
 
-            _logger.Log(LogLevel.Information, "Successfully registered!");
-
-            await _userManager.AddToRoleAsync(user, registerDto.RegisterAs);
-
-            return StatusCode(201);
+            return BadRequest();
         }
 
         [Authorize]
@@ -84,14 +124,16 @@ namespace tapinto.Server.Controllers
         private async Task<UserDto> GetUserDto(User user)
         {
             var userSchool = await context.Schools.Where(u => u.Id == user.SchoolId).Select(x => x.SchoolName).FirstOrDefaultAsync();
-            var groups = await context.GroupUsers.Where(gu => gu.UserEmail == user.Email)
+            var groups = await context.Membership.Where(gu => gu.UserEmail == user.Email)
                 .Include(o => o.Group)
                 .Select(g => new GroupDto(g.Group) { SchoolName = userSchool })
                 .ToArrayAsync();
+            var numberOfPosts = context.Posts.Where(p => p.UserEmail == user.Email).Count();
             return new UserDto(user)
             {
                 School = userSchool,
-                Groups = groups
+                Groups = groups,
+                NumberOfPosts = numberOfPosts,
             };
         }
     }

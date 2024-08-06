@@ -27,6 +27,7 @@ namespace tapinto.Server.DataTransferObjects
         public string Bio { get; set; }
         public bool Verified { get; set; }
         public GroupDto[] Groups { get; set; }
+        public int NumberOfPosts { get; set; }
 
     }
 }

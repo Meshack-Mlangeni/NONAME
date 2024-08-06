@@ -36,11 +36,18 @@ const account = {
 const activity = {
     labels: () => requests.get("activity/getlabels"),
     create: (data: object) => requests.put("activity/create", data),
-    getallactivity: () => requests.get("activity/getall"),
-    getallschoolgroups: () => requests.get("activity/getallgroups")
+    getallactivity: (skip: number) => requests.get(`activity/getall?skip=${skip}`),
+    getallschoolgroups: () => requests.get("activity/getallgroups"),
+    createGroup: (data: object) => requests.put("activity/creategroup", data),
+    like_activity: (id: number) => requests.post(`activity/likeactivity?PostId=${id}`, {}),
+}
+
+const school = {
+    getallschools: () => requests.get("school/getallschools"),
 }
 
 export const agent = {
     account,
-    activity
+    activity,
+    school
 };

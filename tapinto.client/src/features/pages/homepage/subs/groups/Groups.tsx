@@ -5,6 +5,7 @@ import { getAllSchoolUserGroupsAsync } from "../posts/postSlice";
 import Input, { InputProps } from "@mui/joy/Input";
 import Box from "@mui/joy/Box";
 import React from "react";
+import CreateGroupModal from "./createGroupModal";
 
 //Debounced code kindly borrowed from MUI
 
@@ -38,12 +39,12 @@ export default function Groups() {
 
   const dispatch = useAppDispatch();
   useEffect(() => {
-    if (!groups) dispatch(getAllSchoolUserGroupsAsync());
-  }, [dispatch, groups]);
+    dispatch(getAllSchoolUserGroupsAsync());
+  }, [dispatch]);
 
   return (
     <>
-      <Typography sx={{ mt: 2 }} level="h3">
+      <Typography sx={{ mt: 2 }} level="h2">
         Groups at <Typography color="primary">{user?.school}</Typography>
       </Typography>
 
@@ -63,7 +64,7 @@ export default function Groups() {
           handleDebounce={handleDebounce}
         />
         <Divider orientation="vertical" />
-        <Button>Create Group</Button>
+        <CreateGroupModal />
       </Box>
 
       <Sheet>
@@ -90,7 +91,7 @@ export default function Groups() {
                 <tr>
                   <td>{g.groupName}</td>
                   <td>{g.userEmail}</td>
-                  <td>{g.users.length}</td>
+                  <td>{g?.users?.length ?? 0}</td>
                   <td>
                     <Button>Join</Button>
                   </td>

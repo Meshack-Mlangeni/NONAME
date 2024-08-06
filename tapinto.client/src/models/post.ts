@@ -11,10 +11,11 @@ export interface PostDto {
     groupName: string;
     userFullNames: string;
     userEmail: string;
-    upvotes: number;
+    likes: number;
     timeStamp: string;
     comments: Comments[];
     chats: Chats[];
     answers: Answer[];
     labels: string;
+    currentUserLiked: boolean;
 }

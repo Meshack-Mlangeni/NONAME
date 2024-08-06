@@ -55,15 +55,17 @@ namespace tapinto.Server.Data
             if (!context.Groups.Any())
             {
                 context.Groups.AddRange([
-                   new(){ GroupName = "Grade 12z", SchoolId = 1 , UserEmail="meshackmlangeni@hotmail.com"},
+                   new(){ GroupName = "Grade 12z", 
+                   Description="Group scrictly created for Mzimela Grade 12 physics" ,SchoolId = 1 
+                   , UserEmail="meshackmlangeni@hotmail.com"},
                     new(){ GroupName = "Merien", SchoolId = 1 , UserEmail="njabulo261@gmail.com"},
                 ]);
             }
             context.SaveChanges();
 
-            if (!context.GroupUsers.Any())
+            if (!context.Membership.Any())
             {
-                context.GroupUsers.AddRange([
+                context.Membership.AddRange([
                    new(){ UserEmail = "meshackmlangeni@hotmail.com", GroupId = 1 },
                    new(){ UserEmail = "njabulo261@gmail.com", GroupId = 1 },
                    new(){ UserEmail = "meshackmlangeni@hotmail.com", GroupId = 2 },

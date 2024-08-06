@@ -15,6 +15,7 @@ import Labels from "../../../../../components/labelctr";
 import {
   Add,
   AttachFileOutlined,
+  JoinFullTwoTone,
   LoginTwoTone,
   PhotoCameraOutlined,
   Send,
@@ -46,10 +47,11 @@ import {
 } from "@mui/icons-material";
 import Theme from "../../../../../../app/theme/theme";
 import { Answer } from "../../../../../../models/answers";
+import { useNavigate } from "react-router-dom";
 
 export default function PostTextField() {
   //Poll Start
-
+  const navigate = useNavigate();
   const [pollAnswer, setPollAnswer] = useState<string>("");
   const [answers, setAnswers] = useState<Answer[]>([]);
 
@@ -97,7 +99,7 @@ export default function PostTextField() {
         reset();
       })
       .then(() => {
-        dispatch(getallActivityAsync());
+        dispatch(getallActivityAsync(5));
       });
   };
 
@@ -109,10 +111,11 @@ export default function PostTextField() {
   const [pollValid, setPollValid] = useState<boolean>(false);
   const data = [
     ["Post", <PostAddRounded />],
-    ["Poll", <PollRounded />],
     ["Discussion", <CommentRounded />],
+    ["Poll", <PollRounded />],
   ];
-  return user ? (
+
+  const postTFComponent = (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box
@@ -147,13 +150,11 @@ export default function PostTextField() {
                   onChange: (e) => setDefaultValue(+e.target.defaultValue),
                 })}
                 color="neutral"
-                value={
-                  item[0] === "Post"
-                    ? (0 as PostType)
-                    : item[0] === "Poll"
-                    ? (1 as PostType)
-                    : (2 as PostType)
-                }
+                value={(() => {
+                  if (item[0] === "Post") return 0 as PostType;
+                  else if (item[0] === "Discussion") return 1 as PostType;
+                  else return 2 as PostType;
+                })()}
                 disableIcon
                 label={
                   <>
@@ -412,9 +413,35 @@ export default function PostTextField() {
         </Box>
       </form>
     </>
-  ) : (
+  );
+
+  return !user
+    ? checkUserAndGroups(
+        <LoginTwoTone />,
+        "You have to sign in to post something"
+      )
+    : user.groups.length > 0
+    ? postTFComponent
+    : checkUserAndGroups(
+        <JoinFullTwoTone />,
+        "Please join atleast one group in your school",
+        <>
+          <Button sx={{ m: 1 }} onClick={() => navigate("/home/groups")}>
+            Go To Groups
+          </Button>
+        </>
+      );
+}
+
+function checkUserAndGroups(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  img: any,
+  text: string,
+  children?: React.ReactNode
+) {
+  return (
     <Typography level="body-lg">
-      <LoginTwoTone /> &nbsp;&nbsp;&nbsp; You have to sign in to post something
+      {img}&nbsp;&nbsp;&nbsp;{text} &nbsp;&nbsp; {children}
     </Typography>
   );
 }

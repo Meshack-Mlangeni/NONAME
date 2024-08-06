@@ -29,7 +29,9 @@ export default function Login() {
   const onLoginSubmit = async (data: FieldValues) => {
     dispatch(setLoading(true));
     await dispatch(loginAsync(data)).then(
-      async (data) => data && (await dispatch(getallActivityAsync()))
+      async (data) =>
+        data &&
+        (await dispatch(getallActivityAsync(5)))
     );
     dispatch(setLoading(false));
   };
@@ -65,7 +67,7 @@ export default function Login() {
           >
             <Box sx={{ gap: 2, display: "flex", alignItems: "center" }}>
               <AppLogo /> &nbsp;
-              <Button component={NavLink} to="/home">
+              <Button component={NavLink} to="/home/posts">
                 Guest mode
               </Button>
               <Switch
@@ -98,7 +100,7 @@ export default function Login() {
               borderRadius: "sm",
             }}
           >
-            <Stack gap={4} sx={{ mb: 2 }}>
+            <Stack gap={4} sx={{ mb: 1 }}>
               <Stack gap={1}>
                 <Typography component="h1" level="h2">
                   Login to your account
@@ -112,7 +114,7 @@ export default function Login() {
               </Stack>
             </Stack>
 
-            <Stack gap={4} sx={{ mt: 2 }}>
+            <Stack gap={4} sx={{ mt: 1 }}>
               <form onSubmit={handleSubmit(onLoginSubmit)}>
                 <FormControl error={!!errors.email}>
                   <FormLabel>Email</FormLabel>

@@ -3,12 +3,14 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { PostSlice } from "../../features/pages/homepage/subs/posts/postSlice";
 import { accountSlice } from "../../features/pages/account/accountSlice";
 import { AppSlice } from "./appSlice";
+import { schoolSlice } from "../../features/pages/homepage/subs/myschool/schoolSlice";
 
 export const store = configureStore({
     reducer: {
         app: AppSlice.reducer,
         activities: PostSlice.reducer,
-        account: accountSlice.reducer
+        account: accountSlice.reducer,
+        school: schoolSlice.reducer,
     }
 });
 

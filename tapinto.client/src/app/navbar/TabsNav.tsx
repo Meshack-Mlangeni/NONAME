@@ -16,12 +16,22 @@ export default function TabsNav() {
   const location = useLocation(); //use location.pathname to get current path
   const { mode, setMode } = useColorScheme();
 
+  const getSelectedValue = () => {
+    const lpn = location.pathname;
+    let value = 0;
+    if (lpn.includes("posts")) value = 0;
+    else if (lpn.includes("groups")) value = 1;
+    else if (lpn.includes("tests")) value = 2;
+    else if (lpn.includes("results")) value = 3;
+    return value;
+  };
+
   return (
     <>
       {location.pathname.includes("home") && (
         <Grid container>
           <Grid xs={12}>
-            <Tabs >
+            <Tabs defaultValue={0} value={(() => getSelectedValue())()}>
               <TabList>
                 <Switch
                   size="lg"
@@ -44,7 +54,12 @@ export default function TabsNav() {
                 <Tab component={NavLink} to={"/home/posts"} title={"Posts"}>
                   Posts
                 </Tab>
-                <Tab component={NavLink} to={"/home/groups"} title={"Groups"}>
+                <Tab
+                  onClick={() => window.alert("test")}
+                  component={NavLink}
+                  to={"/home/groups"}
+                  title={"Groups"}
+                >
                   Groups
                 </Tab>
                 <Tab component={NavLink} to={"/home/tests"} title={"Tests"}>
