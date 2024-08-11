@@ -11,10 +11,13 @@ import TabsNav from "./TabsNav";
 import NavSpacingComponent from "./NavSpacingComponent";
 import AppLogo from "./AppLogo";
 import { Typography } from "@mui/joy";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function MobileNavBar() {
   const [index, setIndex] = React.useState(0);
   const colors = ["primary", "danger", "success", "warning"] as const;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <>
@@ -30,8 +33,20 @@ export default function MobileNavBar() {
         <Tabs
           size="sm"
           aria-label="Bottom Navigation"
-          value={index}
-          onChange={(_, value) => setIndex(value as number)}
+          value={(() => {
+            if (location.pathname.includes("home")) return 0;
+            else if (location.pathname.includes("school")) return 1;
+            else if (location.pathname.includes("settings")) return 2;
+            else if (location.pathname.includes("mobprofile")) return 3;
+            else return index;
+          })()}
+          onChange={(_, value) => {
+            setIndex(value as number);
+            if (value === 0) navigate("/home/posts");
+            else if (value === 1) navigate("/home/myschool");
+            else if (value === 2) navigate("/settings");
+            else navigate("/mobprofile");
+          }}
           sx={(theme) => ({
             p: 1,
             pb: 2,

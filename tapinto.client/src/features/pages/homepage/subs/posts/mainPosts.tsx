@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Fab, Grid, SxProps, useMediaQuery } from "@mui/material";
+import { Grid, useMediaQuery } from "@mui/material";
 import Post from "./posts_components/postCreateComponent";
 import Bio from "./posts_components/bioComponent";
 import {
@@ -34,7 +34,6 @@ export default function Posts() {
 
   window.onscroll = function () {
     const distanceScrolled = document.documentElement.scrollTop!;
-    console.log(distanceScrolled);
     if (distanceScrolled > 112) {
       setHasScrolled(true);
     } else {

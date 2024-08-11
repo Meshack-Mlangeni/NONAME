@@ -97,7 +97,7 @@ export default function TabDesktopNavBar() {
                   disableIndicator
                   orientation="vertical"
                   component={NavLink}
-                  to={"/home"}
+                  to={"/home/posts"}
                   {...(index === 0 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>
@@ -133,7 +133,7 @@ export default function TabDesktopNavBar() {
                   disableIndicator
                   orientation="vertical"
                   component={NavLink}
-                  to={"/home/profile"}
+                  to={"/mobprofile"}
                   {...(index === 3 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>

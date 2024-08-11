@@ -11,6 +11,7 @@ import Register from "../../features/pages/account/register";
 import School from "../../features/pages/homepage/subs/myschool/mySchool";
 import Live from "../../features/pages/live/live";
 import Groups from "../../features/pages/homepage/subs/groups/Groups";
+import MobileProfilePage from "../../features/pages/account/mobileProfilePage";
 
 export const routes = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ export const routes = createBrowserRouter([
       { path: "/about", element: <AboutPage /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },
+      { path: "/mobprofile", element: <MobileProfilePage /> },
     ],
   },
 ]);

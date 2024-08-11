@@ -1,9 +1,9 @@
+import { Box, Typography } from "@mui/joy";
+
 export default function Settings() {
   return (
-    <>
-      <h1 className="mt-3 fw-bold">Settings</h1>
-    </>
-
-    
+    <Box sx={{ p: 2 }}>
+      <Typography level="h1">Settings</Typography>
+    </Box>
   );
 }
