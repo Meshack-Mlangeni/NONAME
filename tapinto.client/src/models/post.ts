@@ -18,4 +18,5 @@ export interface PostDto {
     answers: Answer[];
     labels: string;
     currentUserLiked: boolean;
+    verified: boolean;
 }

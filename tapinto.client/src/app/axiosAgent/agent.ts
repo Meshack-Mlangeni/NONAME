@@ -40,6 +40,8 @@ const activity = {
     getallschoolgroups: () => requests.get("activity/getallgroups"),
     createGroup: (data: object) => requests.put("activity/creategroup", data),
     like_activity: (id: number) => requests.post(`activity/likeactivity?PostId=${id}`, {}),
+    comment: (data: object) => requests.put("activity/comment", data),
+    getallactivitycomments: (id: number) => requests.get(`activity/getcomments?PostId=${id}`),
 }
 
 const school = {

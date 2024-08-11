@@ -129,6 +129,7 @@ export default function Posts() {
                       PostType={post.postType}
                       userFullNames={post.userFullNames}
                       userPostEmail={post.userEmail}
+                      verified={post.verified}
                       currentUserLiked={post.currentUserLiked}
                       Labels={(() => {
                         const lblChips = post.labels.split(",").map((l) => {
