@@ -14,5 +14,7 @@ namespace tapinto.Server.HelperFunctions
             var user = await userManager.FindByEmailAsync(email);
             return $"{user.FirstName} {user.LastName}";
         }
+        public async Task<bool> GetVerification(string email, UserManager<User> userManager) =>
+            (await userManager.FindByEmailAsync(email))?.Verified ?? false;
     }
 }

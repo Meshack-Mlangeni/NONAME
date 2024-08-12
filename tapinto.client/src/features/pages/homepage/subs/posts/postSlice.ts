@@ -9,6 +9,7 @@ import { PostDto } from "../../../../../models/post";
 import { AppRootState, store } from "../../../../../app/store/store";
 import { setLoading } from "../../../../../app/store/appSlice";
 import { Group } from "../../../../../models/group";
+import { Comments } from "../../../../../models/comments";
 
 
 export const getLabelsAsync = createAsyncThunk<Label>(
@@ -88,6 +89,29 @@ export const createGroupAsync = createAsyncThunk<Group, FieldValues>(
     }
 )
 
+export const commentOnActivityAsync = createAsyncThunk<Comments, FieldValues>(
+    "activity/commentOnActivityAsync",
+    async (data, ThunkAPI) => {
+        try {
+            const comment = await agent.activity.comment(data);
+            return comment;
+        } catch (error: any) {
+            return ThunkAPI.rejectWithValue({ error: error.data });
+        }
+    }
+)
+
+export const getAllActivityComments = createAsyncThunk(
+    "activity/getAllActivityComments",
+    async (id: number, ThunkAPI) => {
+        try {
+            return await agent.activity.getallactivitycomments(id);
+        } catch (error: any) {
+            return ThunkAPI.rejectWithValue({ error: error.data });
+        }
+    }
+)
+
 const postAdapter = createEntityAdapter<PostDto>(
     { sortComparer: (a, b) => new Date(b.timeStamp).getTime() - new Date(a.timeStamp).getTime(), }
 )
@@ -96,6 +120,7 @@ interface postType {
     labels: Label[];
     selectedLabels: Label[];
     groups: Group[];
+    post_comments: Comments[];
 }
 
 export const PostSlice = createSlice({
@@ -105,6 +130,7 @@ export const PostSlice = createSlice({
         labels: [],
         selectedLabels: [],
         groups: [],
+        post_comments: [],
     }),
     reducers: {
         increment(state, action) {
@@ -118,6 +144,9 @@ export const PostSlice = createSlice({
         },
         resetLabels(state) {
             state.selectedLabels = [];
+        },
+        resetComments(state) {
+            state.post_comments = [];
         }
     },
     extraReducers: (builder) => {
@@ -157,7 +186,6 @@ export const PostSlice = createSlice({
 
         builder.addCase(getAllSchoolUserGroupsAsync.fulfilled, (state, action) => {
             state.groups = [...action.payload];
-
         });
         //Create Group
         builder.addCase(createGroupAsync.rejected, () => {
@@ -169,8 +197,18 @@ export const PostSlice = createSlice({
         builder.addCase(createGroupAsync.fulfilled, () => {
 
         });
+        //getallcomments
+        builder.addCase(getAllActivityComments.rejected, () => {
+            //toast.error(action.error);
+        });
+        builder.addCase(getAllActivityComments.pending, () => {
+
+        });
+        builder.addCase(getAllActivityComments.fulfilled, (state, action) => {
+            state.post_comments = [...action.payload];
+        });
     }
 });
 
-export const { increment, addLabel, removeLabel, resetLabels } = PostSlice.actions;
+export const { increment, addLabel, removeLabel, resetLabels, resetComments } = PostSlice.actions;
 export const postSelector = postAdapter.getSelectors((state: AppRootState) => state.activities);

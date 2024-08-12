@@ -4,10 +4,11 @@ import FormLabel from "@mui/joy/FormLabel";
 import Radio from "@mui/joy/Radio";
 import RadioGroup from "@mui/joy/RadioGroup";
 import Sheet from "@mui/joy/Sheet";
+import { Answer } from "../../../../../../models/answers";
 
 interface IPopQuiz {
   question: string;
-  answers: string[];
+  answers: Answer[];
 }
 
 export default function PopQuizComponent({ question, answers }: IPopQuiz) {
@@ -28,17 +29,17 @@ export default function PopQuizComponent({ question, answers }: IPopQuiz) {
       >
         {answers.map((value, index) => (
           <Sheet
-            key={value + index}
+            key={value.id + index}
             sx={{
               p: 2,
               borderRadius: "md",
             }}
           >
             <Radio
-              label={value}
+              label={value.answer}
               overlay
               disableIcon
-              value={value}
+              value={value.answer}
               slotProps={{
                 label: ({ checked }) => ({
                   sx: {

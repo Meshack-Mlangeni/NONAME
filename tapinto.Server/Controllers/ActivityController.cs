@@ -39,7 +39,18 @@ namespace tapinto.Server.Controllers
                         Timestamp = DateTime.Now,
                     };
                     await context.Posts.AddAsync(newPost);
-                    await context.SaveChangesAsync();
+                    context.SaveChanges();
+
+                    post.Answers.ToList().ToList().ForEach(answer =>
+                       {
+                           context.PossibleAnswers.Add(new PossibleAnswer{
+                            Answer = answer.Answer,
+                            isAnswer = answer.isAnswer,
+                            PostId = newPost.Id,
+                           });
+                       });
+                    context.SaveChanges();
+
                     return Ok(post);
                 }
                 return BadRequest(post);
@@ -62,16 +73,19 @@ namespace tapinto.Server.Controllers
 
                 //var AllPostsFromGroupsUserIsIn = new List<Post>();
                 List<PostDto> postDto = new List<PostDto>();
-                var allPosts = context.Posts.OrderByDescending(p => p.Timestamp).Include(l => l.Likes).ToList();
+                var allPosts = context.Posts.Include(a => a.Answers).OrderByDescending(p => p.Timestamp).Include(l => l.Likes).ToList();
                 foreach (var p in allPosts)
                 {
                     if (groupsUserIsIn.Select(g => g.GroupId).Any(gr => gr == p.GroupId))
                     {
                         var _pDto = new PostDto(p)
                         {
+                            Answers = p.Answers.Select(a => new PossibleAnswerDto(a)).ToArray(),
                             GroupName = context.Groups.Where(g => g.Id == p.GroupId).FirstOrDefault().GroupName,
                             UserFullNames = new HelperFunctions.HelperFunctions().GetFullNames(p.UserEmail, userManager).Result,
-                            Likes = context.Likes.Where(like => like.PostId == p.Id)?.Count() ?? 0//to be changed
+                            Likes = context.Likes.Where(like => like.PostId == p.Id)?.Count() ?? 0,//to be changed
+                            Comments = context.Comments.Where(c => c.PostId == p.Id).Count(),
+                            Verified = new HelperFunctions.HelperFunctions().GetVerification(p.UserEmail, userManager).Result,
                         };
                         if (p.Likes != null && p.Likes.Any(p => p.UserEmail == user.Email))
                             _pDto.CurrentUserLiked = true;
@@ -167,6 +181,49 @@ namespace tapinto.Server.Controllers
                 return Ok();
             }
             else return BadRequest();
+        }
+
+        [Authorize]
+        [HttpPut("comment")]
+        public async Task<IActionResult> CommentOnActivity(CommentsDto comment)
+        {
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            if (user != null)
+            {
+                var Comment = new Comments
+                {
+                    CommentContent = comment.CommentContent,
+                    PostId = comment.PostId,
+                    TimeStamp = DateTime.Now,
+                    UserEmail = user.Email
+                };
+                context.Comments.Add(Comment);
+                context.SaveChanges();
+                return Ok(comment);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("getcomments")]
+        public async Task<IActionResult> GetAllActivityComments(int PostId)
+        {
+            if (PostId != 0)
+            {
+                var allComments = context.Comments.Where(c => c.PostId == PostId);
+                List<CommentsDto> comments = new List<CommentsDto>();
+                foreach (var comment in allComments)
+                {
+                    var user = await userManager.FindByEmailAsync(comment.UserEmail);
+                    if (user == null) continue;
+                    comments.Add(new CommentsDto(comment)
+                    {
+                        Verified = user.Verified,
+                        FullNames = user.FirstName + " " + user.LastName,
+                    });
+                }
+                return Ok(comments.OrderByDescending(c => c.TimeStamp));
+            }
+            return BadRequest();
         }
 
     }
