@@ -121,15 +121,17 @@ export default function Posts() {
                   return (
                     <PostComponent
                       id={post.id}
-                      key={index}
+                      key={post.id + "-" + index}
                       groupName={post.groupName}
                       timestamp={convertToDateTimeAgo(post.timeStamp)}
                       post_content={post.postContent}
                       likes={post.likes}
                       PostType={post.postType}
+                      answers = {post.answers}
                       userFullNames={post.userFullNames}
                       userPostEmail={post.userEmail}
                       verified={post.verified}
+                      comments_no={post.comments}
                       currentUserLiked={post.currentUserLiked}
                       Labels={(() => {
                         const lblChips = post.labels.split(",").map((l) => {

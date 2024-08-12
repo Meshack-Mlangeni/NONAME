@@ -1,6 +1,5 @@
 import { Answer } from "./answers";
 import { Chats } from "./chats";
-import { Comments } from "./comments";
 
 
 export interface PostDto {
@@ -13,7 +12,7 @@ export interface PostDto {
     userEmail: string;
     likes: number;
     timeStamp: string;
-    comments: Comments[];
+    comments: number;
     chats: Chats[];
     answers: Answer[];
     labels: string;

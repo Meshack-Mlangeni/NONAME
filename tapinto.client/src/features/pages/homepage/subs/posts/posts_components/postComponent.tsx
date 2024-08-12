@@ -47,6 +47,7 @@ import {
 import { toast } from "react-toastify";
 import { FieldValues, useForm } from "react-hook-form";
 import convertToDateTimeAgo from "../../../../../../helpers/convertToDateTimeAgo";
+import { Answer } from "../../../../../../models/answers";
 
 interface IPostProps {
   id: number;
@@ -54,7 +55,9 @@ interface IPostProps {
   Labels?: React.ReactNode;
   PostType?: _PostType;
   timestamp: string;
+  comments_no: number;
   likes: number;
+  answers: Answer[];
   post_content?: string;
   groupName: string;
   userFullNames: string;
@@ -75,14 +78,21 @@ export default function PostComponent({
   userPostEmail,
   currentUserLiked,
   verified,
+  answers,
+  comments_no,
 }: IPostProps) {
   const [Like, setLike] = useState<number>(likes);
+  const [noOfComments, setNoOfComments] = useState<{
+    postId: number;
+    numberOfComments: number;
+  }>({ postId: id, numberOfComments: comments_no });
   const [hasUserLiked, setHasUserLiked] = useState<boolean>(currentUserLiked);
   const { user } = useAppSelector((state) => state.account);
   const dispatch = useAppDispatch();
   const { post_comments } = useAppSelector((state) => state.activities);
   const {
-    register, reset,
+    register,
+    reset,
     handleSubmit,
     formState: { isValid },
   } = useForm();
@@ -90,7 +100,13 @@ export default function PostComponent({
   const onCommentSubmit = async (data: FieldValues) => {
     await dispatch(
       commentOnActivityAsync({ ...data, postId: id } as FieldValues)
-    ).then(async () => await fetchCommentsForPost(id));
+    ).then(async () => {
+      await fetchCommentsForPost(id);
+      setNoOfComments({
+        postId: id,
+        numberOfComments: noOfComments.numberOfComments + 1,
+      });
+    });
     reset();
   };
 
@@ -179,12 +195,7 @@ export default function PostComponent({
     );
   };
 
-  const poll = (
-    <PopQuizComponent
-      question={"Who is the greatest player ever"}
-      answers={["CR7", "NEY", "Messi", "Hazard"]}
-    />
-  );
+  const poll = <PopQuizComponent question={post_content} answers={answers} />;
   // The !!0 is to temporaly hide the image
   const postOrdisc = (
     <>
@@ -267,10 +278,7 @@ export default function PostComponent({
                 }
               }}
             >
-              {(() => {
-                const noOfComments = 0;
-                return abbreviateNumber(noOfComments);
-              })()}
+              {abbreviateNumber(noOfComments.numberOfComments)}
             </Button>
             <Sheet
               sx={(theme) => ({

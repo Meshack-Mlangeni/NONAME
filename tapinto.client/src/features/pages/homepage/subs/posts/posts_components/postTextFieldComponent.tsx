@@ -92,7 +92,7 @@ export default function PostTextField() {
     control,
   });
   const onSubmit = (data: FieldValues) => {
-    dispatch(createActivityAsync(data))
+    dispatch(createActivityAsync({...data, "answers": answers} as FieldValues))
       .finally(() => {
         setAnswers([]);
         dispatch(resetLabels());
