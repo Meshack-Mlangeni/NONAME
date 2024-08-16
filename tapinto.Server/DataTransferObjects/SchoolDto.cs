@@ -22,5 +22,6 @@ namespace tapinto.Server.DataTransferObjects
         public string UserEmail { get; set; } //admin
 
         public GroupDto[] Groups { get; set; }
+        public UserDto[] Users { get; set; }
     }
 }

@@ -27,7 +27,7 @@ export const routes = createBrowserRouter([
           { path: "/home/myschool", element: <School /> },
           { path: "/home/tests", element: <Tests /> },
           { path: "/home/results", element: <Results /> },
-          { path: "/home/live", element: <Live /> },
+          { path: "/home/live/:id", element: <Live /> },
         ],
       },
       { path: "/settings", element: <Settings /> },

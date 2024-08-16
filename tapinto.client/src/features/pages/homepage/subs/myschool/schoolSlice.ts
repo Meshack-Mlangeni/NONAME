@@ -15,12 +15,26 @@ export const getAllSchoolsAsync = createAsyncThunk<School>(
     }
 )
 
+export const getUserSchoolAsync = createAsyncThunk(
+    "school/getUserSchoolAsync",
+    async (_, thunkAPI) => {
+        try {
+            const school = agent.school.getuserschool();
+            return school;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.data })
+        }
+    }
+)
+
 interface schoolSliceType {
-    schools: School[]
+    userSchool: School | null;
+    schools: School[];
 }
 
 const initialState: schoolSliceType = {
-    schools: []
+    userSchool: null,
+    schools: [],
 }
 
 export const schoolSlice = createSlice({
@@ -31,9 +45,15 @@ export const schoolSlice = createSlice({
     },
     extraReducers(builder) {
         builder.addCase(getAllSchoolsAsync.fulfilled, (state, action) => {
-            state.schools = [...action.payload];
+            state.schools = [action.payload];
         }),
             builder.addCase(getAllSchoolsAsync.rejected, () => {
+                console.log("error occured!")
+            }),
+            builder.addCase(getUserSchoolAsync.fulfilled, (state, action) => {
+                state.userSchool = action.payload;
+            }),
+            builder.addCase(getUserSchoolAsync.rejected, () => {
                 console.log("error occured!")
             })
     }

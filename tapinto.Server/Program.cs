@@ -65,6 +65,7 @@ namespace tapinto.Server
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .WithOrigins("https://localhost:5000")
+                    .WithOrigins("https://localhost:5000/livehub")
                     .AllowCredentials();
                 });
             });
@@ -97,6 +98,7 @@ namespace tapinto.Server
             var app = builder.Build();
             app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.MapHub<LiveHub>("/livehub");
             app.UseCors(CORS);
 
             // Configure the HTTP request pipeline.
@@ -122,7 +124,6 @@ namespace tapinto.Server
 
             app.MapFallbackToFile("/index.html");
             await SeedData.EnsurePopulated(app);
-            app.MapHub<LiveHub>("/live");
             app.Run();
         }
     }

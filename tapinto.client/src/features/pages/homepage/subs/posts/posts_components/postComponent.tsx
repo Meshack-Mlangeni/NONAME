@@ -237,7 +237,11 @@ export default function PostComponent({
               color={hasUserLiked ? "danger" : "neutral"}
               startDecorator={
                 <FavoriteRounded
-                  sx={{ color: hasUserLiked ? "crimson" : "black" }}
+                  sx={(theme) => ({
+                    color: hasUserLiked
+                      ? "crimson"
+                      : theme.palette.background.paper,
+                  })}
                 />
               }
               sx={{
@@ -353,7 +357,7 @@ export default function PostComponent({
               variant="soft"
               color="danger"
               component={NavLink}
-              to={"/home/live"}
+              to={`/home/live/${id}`}
             >
               <Chip color="danger">
                 LIVE

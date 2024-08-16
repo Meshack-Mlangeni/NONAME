@@ -10,6 +10,13 @@ import {
   Textarea,
   Typography,
   Input,
+  Modal,
+  ModalClose,
+  List,
+  ListItem,
+  ListItemDecorator,
+  ListItemContent,
+  Avatar,
 } from "@mui/joy";
 import Labels from "../../../../../components/labelctr";
 import {
@@ -48,6 +55,11 @@ import {
 import Theme from "../../../../../../app/theme/theme";
 import { Answer } from "../../../../../../models/answers";
 import { useNavigate } from "react-router-dom";
+import {
+  getAllSchoolsAsync,
+  getUserSchoolAsync,
+} from "../../myschool/schoolSlice";
+import { joinDiscussionRoom } from "../../../../../../app/signalr/establishConnection";
 
 export default function PostTextField() {
   //Poll Start
@@ -73,7 +85,7 @@ export default function PostTextField() {
   };
 
   const { user } = useAppSelector((state) => state.account);
-
+  const [open, setOpen] = React.useState<boolean>(false);
   const Mobile = useMediaQuery("(min-width:600px)");
   const dispatch = useAppDispatch();
   const { selectedLabels } = useAppSelector((state) => state.activities);
@@ -92,7 +104,7 @@ export default function PostTextField() {
     control,
   });
   const onSubmit = (data: FieldValues) => {
-    dispatch(createActivityAsync({...data, "answers": answers} as FieldValues))
+    dispatch(createActivityAsync({ ...data, answers: answers } as FieldValues))
       .finally(() => {
         setAnswers([]);
         dispatch(resetLabels());
@@ -128,11 +140,12 @@ export default function PostTextField() {
         >
           <RadioGroup
             orientation="horizontal"
-            onChange={(e) =>
+            onChange={(e) => {
               setSubmitBtnText(
                 ("Create " + data[+e.target.value as number][0]) as string
-              )
-            }
+              );
+              joinDiscussionRoom("njabulo261@gmail.com", 55);
+            }}
             sx={{
               minHeight: 40,
               padding: "4px",
@@ -401,9 +414,65 @@ export default function PostTextField() {
               size="sm"
               sx={{ mr: 1 }}
               variant="solid"
+              
             >
               <Send /> &nbsp; {submitBtnText}
             </Button>
+            <React.Fragment>
+              <Modal
+                aria-labelledby="close-modal-title"
+                open={open}
+                onClose={(
+                  _event: React.MouseEvent<HTMLButtonElement>,
+                  reason: string
+                ) => {
+                  if (reason === "backdropClick") {
+                    setOpen(true);
+                  } else {
+                    setOpen(false);
+                  }
+                }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Sheet
+                  variant="outlined"
+                  sx={{
+                    minWidth: 300,
+                    borderRadius: "md",
+                    p: 3,
+                  }}
+                >
+                  <ModalClose variant="outlined" />
+                  <Typography
+                    component="h2"
+                    level="h4"
+                    textColor="inherit"
+                    fontWeight="lg"
+                  >
+                    Add Participant(s)
+                  </Typography>
+                  <Box sx={{ width: 320 }}>
+                    <List sx={{ "--ListItemDecorator-size": "56px" }}>
+                      <ListItem>
+                        <ListItemDecorator>
+                          <Avatar />
+                        </ListItemDecorator>
+                        <ListItemContent>
+                          <Typography level="title-sm">Name</Typography>
+                          <Typography level="body-sm" noWrap>
+                            Role
+                          </Typography>
+                        </ListItemContent>
+                      </ListItem>
+                    </List>
+                  </Box>
+                </Sheet>
+              </Modal>
+            </React.Fragment>
           </>
           {Mobile && <br />}
           <>
@@ -444,4 +513,8 @@ function checkUserAndGroups(
       {img}&nbsp;&nbsp;&nbsp;{text} &nbsp;&nbsp; {children}
     </Typography>
   );
+}
+
+function buttonHas(text: string, searchText: string) {
+  return text.toLowerCase().includes(searchText);
 }

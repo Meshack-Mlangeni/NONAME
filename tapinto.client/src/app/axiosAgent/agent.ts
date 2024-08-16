@@ -46,6 +46,7 @@ const activity = {
 
 const school = {
     getallschools: () => requests.get("school/getallschools"),
+    getuserschool: () => requests.get("school/getuserschool"),
 }
 
 export const agent = {
