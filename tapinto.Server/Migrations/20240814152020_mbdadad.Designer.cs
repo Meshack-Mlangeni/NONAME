@@ -12,8 +12,8 @@ using tapinto.Server.Data;
 namespace tapinto.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240803192030_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20240814152020_mbdadad")]
+    partial class mbdadad
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

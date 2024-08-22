@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Microsoft.VisualBasic;
 using System.Text;
 using tapinto.Server.Controllers;
 using tapinto.Server.Data;
+using tapinto.Server.Middleware;
 using tapinto.Server.Models;
 using tapinto.Server.Services;
 
@@ -109,7 +109,7 @@ namespace tapinto.Server
                 });
             }
 
-
+            app.UseMiddleware<ExceptionMiddleware>();
 
             // app.UseCors(opt =>
             //  {

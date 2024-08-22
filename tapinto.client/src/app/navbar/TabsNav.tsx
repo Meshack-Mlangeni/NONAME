@@ -10,7 +10,7 @@ import {
 } from "@mui/joy";
 import { NavLink, useLocation } from "react-router-dom";
 import PasswordModal from "../../helpers/helper_components/PasswordModal";
-import React from "react";
+
 
 export default function TabsNav() {
   const location = useLocation(); //use location.pathname to get current path
