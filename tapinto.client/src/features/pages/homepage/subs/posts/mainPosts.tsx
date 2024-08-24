@@ -134,14 +134,14 @@ export default function Posts() {
                       comments_no={post.comments}
                       currentUserLiked={post.currentUserLiked}
                       Labels={(() => {
-                        const lblChips = post.labels.split(",").map((l) => {
+                        const lblChips = post.labels.split(",").map((l, index) => {
                           const getFromLabels = labels.find(
                             (lbl) => lbl.id === +l
                           );
                           if (!getFromLabels) return <></>;
                           return (
                             <Chip
-                              key={getFromLabels?.id}
+                              key={getFromLabels?.id + getFromLabels.name + index}
                               color={getFromLabels?.color as ColorPaletteProp}
                             >
                               {getFromLabels?.name}

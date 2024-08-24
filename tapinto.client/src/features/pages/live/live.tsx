@@ -1,22 +1,104 @@
 import { toast } from "react-toastify";
-import { chats } from "../../../models/ddata";
 import MessagesPanel from "./messagesPanel";
 import SelectedDiscussion from "./selectedDiscussion";
 import { routes } from "../../../app/router/Routes";
 import { Stack } from "@mui/joy";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { useAppSelector } from "../../../app/store/store";
+import { useCallback, useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../app/store/store";
+import {
+  getallActivityAsync,
+  getSingleActivityAsync,
+} from "../homepage/subs/posts/postSlice";
+import { Chats } from "../../../models/chats";
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  LogLevel,
+} from "@microsoft/signalr";
+import convertToDateTimeAgo from "../../../helpers/convertToDateTimeAgo";
 
 export default function Live() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAppSelector((state) => state.account);
-  //get connection from state
-  //
+  const { single_activity } = useAppSelector((state) => state.activities);
+  const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [chats, setChats] = useState(single_activity?.chats ?? ([] as Chats[]));
+  const dispatch = useAppDispatch();
+
+  connection &&
+    connection.on("ReceiveMessage", (user, message) => {
+        let chat: Chats;
+        if(typeof(message) === "string"){
+            chat = {
+                content: message,
+                id: 1,
+                timeStamp: "just now",
+                userEmail: user,
+                postId: 1
+            };
+        }else chat = message as Chats;
+        setChats((chats) => [
+            ...chats,
+            {
+              id: chats.length + 1,
+              content: chat.content,
+              userEmail: chat.userEmail,
+              timeStamp: convertToDateTimeAgo(chat.timeStamp),
+              postId: chat.postId,
+            },
+          ]);
+    });
+
+  connection &&
+    connection.onclose(() => {
+      setConnection(null);
+      setChats([]);
+    });
+  const sendMessage = async (message: string) => {
+    try {
+      connection &&
+        (await connection.invoke(
+          "SendMessage",
+          message,
+          user?.email,
+          parseInt(id!)
+        ));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const closeConnection = async () => {
+    try {
+      connection && (await connection.stop());
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const initConnection = useCallback(async () => {
+    try {
+      const connection = new HubConnectionBuilder()
+        .withUrl("http://localhost:5169/livehub/")
+        .configureLogging(LogLevel.Information)
+        .build();
+
+      await connection
+        .start()
+        .then(() => console.log("Connection Established!"));
+      await connection.invoke("JoinLiveDiscussion", user?.email, parseInt(id!));
+      setConnection(connection);
+    } catch (error: any) {
+      console.log(error);
+    }
+  }, [id, user?.email]);
 
   useEffect(() => {
-    //We must find discussion by Id // connection // and messageHistory
-  }, []);
+    if (!single_activity) dispatch(getSingleActivityAsync(+id!));
+    console.log("here");
+    initConnection();
+  }, [dispatch, user?.email, id, single_activity, initConnection]);
 
   return (
     <Stack
@@ -26,15 +108,20 @@ export default function Live() {
       sx={{ mb: 0.25 }}
     >
       <SelectedDiscussion
-        onLeave={() => {
+        onLeave={async () => {
+          await closeConnection();
           toast.success("You have left the chat", { autoClose: 1000 });
-          routes.navigate("/home");
+          await dispatch(getallActivityAsync(5));
+          routes.navigate("/home/posts");
         }}
-        contentOnDiscussion={
-          " We are a community of developers prepping for coding interviews, participate, chat with others and get better at interviewing."
-        }
+        contentOnDiscussion={single_activity?.postContent as string}
       />
-      <MessagesPanel chat={chats[0]} />
+      <MessagesPanel
+        sendMessage={sendMessage}
+        id={+id!}
+        chats={chats}
+        user={user!}
+      />
     </Stack>
   );
 }

@@ -43,10 +43,11 @@ namespace tapinto.Server.Controllers
 
                     post.Answers.ToList().ToList().ForEach(answer =>
                        {
-                           context.PossibleAnswers.Add(new PossibleAnswer{
-                            Answer = answer.Answer,
-                            isAnswer = answer.isAnswer,
-                            PostId = newPost.Id,
+                           context.PossibleAnswers.Add(new PossibleAnswer
+                           {
+                               Answer = answer.Answer,
+                               isAnswer = answer.isAnswer,
+                               PostId = newPost.Id,
                            });
                        });
                     context.SaveChanges();
@@ -96,6 +97,22 @@ namespace tapinto.Server.Controllers
                 return Ok(postDto.Skip(skip - 5).Take(5));
             }
             //var activityForUser = context.Posts.Where(p => p.go)
+            return BadRequest();
+        }
+
+        [Authorize]
+        [HttpGet("getsingleactivity")]
+        public async Task<IActionResult> getSingleActivity(int PostId)
+        {
+            if (PostId > 0)
+            {
+                var user = await userManager.FindByNameAsync(User.Identity.Name);
+                if (user == null) return BadRequest();
+                return Ok(new PostDto(context.Posts.FirstOrDefault(u => u.Id == PostId))
+                {
+                    Chats = context.ChatHistory.Select(ch => new ChatDto(ch)).ToArray(),
+                });
+            }
             return BadRequest();
         }
 

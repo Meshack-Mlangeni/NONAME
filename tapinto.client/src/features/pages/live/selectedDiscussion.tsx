@@ -13,21 +13,20 @@ export default function SelectedDiscussion({ onLeave, contentOnDiscussion }: Pro
     return (
         <>
             <Card
-                variant="outlined"
+                variant="plain"
                 sx={{
                     position: "fixed",
                     zIndex: 12,
-                    top: 100,
+                    top: 95,
                     left: 0,
                     right: 0,
-                    boxShadow: "sm"
                 }}
             >
                 <CardContent
                     orientation="horizontal"
                     sx={{ alignItems: "center", gap: 1 }}
                 >
-                    <Typography level="body-xs">
+                    <Typography level="title-md">
                         {contentOnDiscussion}
                     </Typography>
                     <Button sx={{ ml: "auto" }} variant="solid" color="danger"

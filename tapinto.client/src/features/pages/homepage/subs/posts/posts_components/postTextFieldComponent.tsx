@@ -144,7 +144,6 @@ export default function PostTextField() {
               setSubmitBtnText(
                 ("Create " + data[+e.target.value as number][0]) as string
               );
-              joinDiscussionRoom("njabulo261@gmail.com", 55);
             }}
             sx={{
               minHeight: 40,
@@ -414,7 +413,6 @@ export default function PostTextField() {
               size="sm"
               sx={{ mr: 1 }}
               variant="solid"
-              
             >
               <Send /> &nbsp; {submitBtnText}
             </Button>

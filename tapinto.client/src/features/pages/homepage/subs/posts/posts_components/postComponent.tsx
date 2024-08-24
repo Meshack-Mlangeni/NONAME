@@ -300,8 +300,9 @@ export default function PostComponent({
                   maxHeight: "300px",
                 }}
               >
-                {post_comments.map((c) => (
+                {post_comments.map((c, index) => (
                   <Box
+                    key={index}
                     sx={(theme) => ({
                       mt: 1,
                       ml: 2,

@@ -62,6 +62,18 @@ export const getallActivityAsync = createAsyncThunk<[], number>(
     }
 )
 
+export const getSingleActivityAsync = createAsyncThunk(
+    "activity/getSingleActivityAsync",
+    async (id: number, ThunkApi) => {
+        try {
+            const singleActivity = agent.activity.getsingleactivity(id);
+            return singleActivity;
+        } catch (error: any) {
+            return ThunkApi.rejectWithValue({error: error.data});
+        }
+    }
+)
+
 export const getAllSchoolUserGroupsAsync = createAsyncThunk(
     "activities/getAllSchoolUserGroupsAsync",
     async (_, thunkAPI) => {
@@ -118,6 +130,7 @@ const postAdapter = createEntityAdapter<PostDto>(
 interface postType {
     numberOfPosts: number,
     labels: Label[];
+    single_activity : PostDto | null;
     selectedLabels: Label[];
     groups: Group[];
     post_comments: Comments[];
@@ -128,6 +141,7 @@ export const PostSlice = createSlice({
     initialState: postAdapter.getInitialState<postType>({
         numberOfPosts: 0,
         labels: [],
+        single_activity: null,
         selectedLabels: [],
         groups: [],
         post_comments: [],
@@ -206,6 +220,16 @@ export const PostSlice = createSlice({
         });
         builder.addCase(getAllActivityComments.fulfilled, (state, action) => {
             state.post_comments = [...action.payload];
+        });
+
+        builder.addCase(getSingleActivityAsync.rejected, () => {
+            //toast.error(action.error);
+        });
+        builder.addCase(getSingleActivityAsync.pending, () => {
+
+        });
+        builder.addCase(getSingleActivityAsync.fulfilled, (state, action) => {
+            state.single_activity = action.payload;
         });
     }
 });

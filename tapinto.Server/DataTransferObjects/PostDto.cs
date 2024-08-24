@@ -28,7 +28,7 @@ namespace tapinto.Server.DataTransferObjects
         public int Likes { get; set; }
         public DateTime TimeStamp { get; set; }
         public int Comments { get; set; }
-        public ChatHistory[] Chats { get; set; }
+        public ChatDto[] Chats { get; set; }
         public PossibleAnswerDto[] Answers { get; set; }
         public string Labels { get; set; }
         public bool CurrentUserLiked { get; set; } = false;

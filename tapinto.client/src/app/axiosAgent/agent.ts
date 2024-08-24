@@ -42,6 +42,7 @@ const activity = {
     like_activity: (id: number) => requests.post(`activity/likeactivity?PostId=${id}`, {}),
     comment: (data: object) => requests.put("activity/comment", data),
     getallactivitycomments: (id: number) => requests.get(`activity/getcomments?PostId=${id}`),
+    getsingleactivity: (id: number) => requests.get(`activity/getsingleactivity?PostId=${id}`),
 }
 
 const school = {

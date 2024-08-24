@@ -1,6 +1,8 @@
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+import { Chats } from "../../models/chats";
+import { agent } from "../axiosAgent/agent";
 
 interface signalrType {
     connection: HubConnection | null;
@@ -21,6 +23,9 @@ export const createConnectionAsync = createAsyncThunk<HubConnection, { userEmail
             connection.on("ReceiveMessage", (userEmail, msg) => {
                 console.log("msg", msg);
             })
+            connection.on("ReceiveChatMessage", (chat) => {
+                console.log("Please be a chat obj: ", chat);
+            })
             await connection.start().then(() => console.info("connection successfully established..."));
             await connection.invoke("JoinLiveDiscussion", userEmail, discussionId)
             return connection;
@@ -30,10 +35,18 @@ export const createConnectionAsync = createAsyncThunk<HubConnection, { userEmail
         }
     }
 )
-export const sendMessageAsync = createAsyncThunk(
+export const sendMessageAsync = createAsyncThunk<Chats, { chat: Chats, connection: HubConnection }>(
     "signalr/sendMessageAsync",
-    async ({ message, discussionId, userEmail }, ThunkApi) => {
-
+    async ({ chat, connection }, ThunkApi) => {
+        try {
+            console.log("conn please: ", connection)
+            await connection.invoke("JoinLiveDiscussion", "Mesh", "Hello")
+            console.log("sendConnection: ", connection);
+            console.log("sendChat: ", chat);
+            return chat;
+        } catch (error: any) {
+            return ThunkApi.rejectWithValue({ error: error.data })
+        }
     }
 )
 
