@@ -16,7 +16,6 @@ import {
   HubConnectionBuilder,
   LogLevel,
 } from "@microsoft/signalr";
-import convertToDateTimeAgo from "../../../helpers/convertToDateTimeAgo";
 
 export default function Live() {
   const { id } = useParams<{ id: string }>();
@@ -28,26 +27,28 @@ export default function Live() {
 
   connection &&
     connection.on("ReceiveMessage", (user, message) => {
-        let chat: Chats;
-        if(typeof(message) === "string"){
-            chat = {
-                content: message,
-                id: 1,
-                timeStamp: "just now",
-                userEmail: user,
-                postId: 1
-            };
-        }else chat = message as Chats;
-        setChats((chats) => [
-            ...chats,
-            {
-              id: chats.length + 1,
-              content: chat.content,
-              userEmail: chat.userEmail,
-              timeStamp: convertToDateTimeAgo(chat.timeStamp),
-              postId: chat.postId,
-            },
-          ]);
+      let chat: Chats;
+      if (typeof message === "string") {
+        chat = {
+          content: message,
+          id: 1,
+          timeStamp: "just now",
+          userEmail: user,
+          postId: 1,
+        };
+      } else chat = message as Chats;
+      setChats((chats) => [
+        ...chats,
+        {
+          id: chats.length + 1,
+          content: chat.content,
+          userEmail: chat.userEmail,
+          timeStamp: chat.timeStamp,
+          postId: chat.postId,
+        },
+      ]);
+      document.documentElement.scrollTop! =
+        document.documentElement.offsetHeight;
     });
 
   connection &&

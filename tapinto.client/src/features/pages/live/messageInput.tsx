@@ -1,10 +1,8 @@
-import * as React from "react";
 import Box from "@mui/joy/Box";
 import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
 import { Input } from "@mui/joy";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
-import { useForm } from "react-hook-form";
 
 export type MessageInputProps = {
   textAreaValue: string;

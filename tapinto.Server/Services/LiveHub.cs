@@ -21,11 +21,6 @@ namespace tapinto.Server.Services
             userManager = _userManager;
             context = _context;
         }
-
-        public async Task JoinChat()
-        {
-            await Clients.All.SendAsync("ReceiveMessage", "Mesh", "Mesh has joined chat");
-        }
         public async Task JoinLiveDiscussion(string userEmail, int discussionId)
         {
             var user = await userManager.FindByEmailAsync(userEmail);
@@ -33,7 +28,6 @@ namespace tapinto.Server.Services
                 return;
             await Groups.AddToGroupAsync(Context.ConnectionId, discussionId.ToString());
             await Clients.Group(discussionId.ToString()).SendAsync("ReceiveMessage", $"{user.FirstName} {user.LastName}", $"{user.FirstName} {user.LastName} has joined");
-            //await Clients.Group(discussionId.ToString()).SendAsync(method: "ReceiveMessage", arg1: userEmail, arg2: "This is the message");
         }
 
         public async Task SendMessage(string message, string userEmail, int discussionId)
@@ -49,10 +43,13 @@ namespace tapinto.Server.Services
                 UserEmail = userEmail
             };
             context.ChatHistory.Add(chatMessage);
+            context.SaveChanges();
             user.Rating += 0.02;
             await userManager.UpdateAsync(user);
 
-            await Clients.Group(discussionId.ToString()).SendAsync("ReceiveMessage", $"{user.FirstName} {user.LastName}", new ChatDto(chatMessage));
+            await Clients.Group(discussionId.ToString())
+            .SendAsync("ReceiveMessage", $"{user.FirstName} {user.LastName}", new ChatDto(chatMessage) { UserEmail = $"{user.FirstName} {user.LastName}" });
+            //The UserEmail = $"{user.FirstName} {user.LastName}" is to override the email and use the users first and last name instead
         }
     }
 }

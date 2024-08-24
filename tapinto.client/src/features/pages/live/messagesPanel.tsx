@@ -7,6 +7,7 @@ import { Chats } from "../../../models/chats";
 import { User } from "../../../models/user";
 import Bubble from "./bubble";
 import { Avatar, Typography } from "@mui/joy";
+import convertFullNamesToInitials from "../../../helpers/convertFullNameToInitials";
 
 type MessagesPaneProps = {
   user: User;
@@ -46,7 +47,8 @@ export default function MessagesPanel({
           <Stack spacing={4} justifyContent="flex-end">
             {chats.map((chat: Chats, index: number) => {
               const joinNotification = chat.content.includes("has joined");
-              const isYou = chat.userEmail === user.email;
+              const isYou =
+                chat.userEmail === user.firstName + " " + user.lastName;
               return joinNotification ? (
                 <>
                   <Typography sx={{ alignSelf: "center" }} level="title-md">
@@ -60,7 +62,13 @@ export default function MessagesPanel({
                   spacing={2}
                   flexDirection={isYou ? "row-reverse" : "row"}
                 >
-                  {!isYou && <Avatar />}
+                  {!isYou && (
+                    <Avatar alt="User">
+                      {convertFullNamesToInitials(
+                        chat.userEmail
+                      )}
+                    </Avatar>
+                  )}
                   <Bubble
                     chat={chat}
                     isYou={isYou}

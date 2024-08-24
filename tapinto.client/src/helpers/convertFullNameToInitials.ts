@@ -1,5 +1,5 @@
 export default function convertFullNamesToInitials(fullName: string) {
-    const fNameArray = fullName.split(" ");
+    const fNameArray = fullName.toUpperCase().split(" ");
     if (fNameArray && fNameArray.length > 1) {
         return fNameArray[0][0] + fNameArray[1][0];
     }
