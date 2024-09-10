@@ -93,11 +93,28 @@ namespace tapinto.Server
             });
 
             builder.Services.AddAuthorization();
+            builder.Services.AddResponseCaching(options =>
+            {
+                options.MaximumBodySize = 1024;
+                options.UseCaseSensitivePaths = true;
+            });
 
             var app = builder.Build();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCors(CORS);
+            app.UseResponseCaching();
+            app.Use(async (context, next) =>
+            {
+                context.Response.GetTypedHeaders().CacheControl =
+                  new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+                  {
+                      Public = true,
+                      MaxAge = TimeSpan.FromSeconds(40)
+                  };
+                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Encoding" };
+                await next();
+            });
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
