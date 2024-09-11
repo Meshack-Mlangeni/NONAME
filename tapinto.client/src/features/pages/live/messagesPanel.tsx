@@ -24,6 +24,7 @@ export default function MessagesPanel({
 }: MessagesPaneProps) {
   const [textAreaValue, setTextAreaValue] = useState("");
 
+  console.log("Chats in messagePanel: ", chats);
   return (
     <>
       <Sheet
@@ -39,16 +40,15 @@ export default function MessagesPanel({
             display: "flex",
             flex: 1,
             minHeight: 0,
-            px: 3,
-            py: 4,
+            px: 1,
+            py: 0,
             flexDirection: "column-reverse",
           }}
         >
           <Stack spacing={4} justifyContent="flex-end">
             {chats.map((chat: Chats, index: number) => {
               const joinNotification = chat.content.includes("has joined");
-              const isYou =
-                chat.userEmail === user.firstName + " " + user.lastName;
+              const isYou = chat.userEmail === user.email;
               return joinNotification ? (
                 <>
                   <Typography sx={{ alignSelf: "center" }} level="title-md">
@@ -64,9 +64,7 @@ export default function MessagesPanel({
                 >
                   {!isYou && (
                     <Avatar alt="User">
-                      {convertFullNamesToInitials(
-                        chat.userEmail
-                      )}
+                      {convertFullNamesToInitials(chat.fullNames)}
                     </Avatar>
                   )}
                   <Bubble
@@ -82,9 +80,12 @@ export default function MessagesPanel({
         <MessageInput
           textAreaValue={textAreaValue}
           setTextAreaValue={setTextAreaValue}
-          onSubmit={() => sendMessage(textAreaValue)}
+          onSubmit={() => {
+            sendMessage(textAreaValue);
+            setTextAreaValue("");
+          }}
         />
-        <Box sx={{ pt: 4, pb: 4 }}></Box>
+        <Box sx={{ pt: 5, pb: 5 }}></Box>
       </Sheet>
     </>
   );

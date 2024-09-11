@@ -3,8 +3,8 @@ import MessagesPanel from "./messagesPanel";
 import SelectedDiscussion from "./selectedDiscussion";
 import { routes } from "../../../app/router/Routes";
 import { Stack } from "@mui/joy";
-import { useParams } from "react-router-dom";
-import { useCallback, useEffect, useState } from "react";
+import { Navigate, useLocation, useParams } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import {
   getallActivityAsync,
@@ -21,9 +21,16 @@ export default function Live() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAppSelector((state) => state.account);
   const { single_activity } = useAppSelector((state) => state.activities);
+  const main_stack = useRef<HTMLDivElement>(null);
   const [connection, setConnection] = useState<HubConnection | null>(null);
-  const [chats, setChats] = useState(single_activity?.chats ?? ([] as Chats[]));
+  const [chats, setChats] = useState<Chats[]>([]);
   const dispatch = useAppDispatch();
+
+  if (useLocation().pathname.includes("live")) {
+    window.onbeforeunload = function () {
+      console.log("Hey");
+    };
+  } else window.onbeforeunload = () => {};
 
   connection &&
     connection.on("ReceiveMessage", (user, message) => {
@@ -35,6 +42,7 @@ export default function Live() {
           timeStamp: "just now",
           userEmail: user,
           postId: 1,
+          fullNames: user,
         };
       } else chat = message as Chats;
       setChats((chats) => [
@@ -45,26 +53,39 @@ export default function Live() {
           userEmail: chat.userEmail,
           timeStamp: chat.timeStamp,
           postId: chat.postId,
+          fullNames: chat.fullNames,
         },
       ]);
+      console.log("chats from receive: ", chats);
       document.documentElement.scrollTop! =
         document.documentElement.offsetHeight;
     });
 
   connection &&
     connection.onclose(() => {
+      console.log("Connection closed");
+
       setConnection(null);
       setChats([]);
     });
   const sendMessage = async (message: string) => {
     try {
       connection &&
-        (await connection.invoke(
-          "SendMessage",
-          message,
-          user?.email,
-          parseInt(id!)
-        ));
+        (await connection
+          .invoke("SendMessage", message, user?.email, parseInt(id!))
+          .then(() => {
+            setChats([
+              ...chats,
+              {
+                content: message,
+                id: chats.length + 1,
+                fullNames: user?.firstName + " " + user?.lastName,
+                timeStamp: new Date().toString(),
+                userEmail: user?.email ?? "No Email",
+                postId: +id!,
+              },
+            ]);
+          }));
     } catch (e) {
       console.log(e);
     }
@@ -96,16 +117,18 @@ export default function Live() {
   }, [id, user?.email]);
 
   useEffect(() => {
-    if (!single_activity) dispatch(getSingleActivityAsync(+id!));
-    console.log("here");
-    initConnection();
+    initConnection().then(() => {
+      if (!single_activity) dispatch(getSingleActivityAsync(+id!));
+      setChats(single_activity?.chats as Chats[]);
+    });
   }, [dispatch, user?.email, id, single_activity, initConnection]);
 
   return (
     <Stack
       direction="column"
       justifyContent="space-between"
-      spacing={5}
+      ref={main_stack}
+      spacing={1}
       sx={{ mb: 0.25 }}
     >
       <SelectedDiscussion

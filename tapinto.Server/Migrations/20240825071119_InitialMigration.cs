@@ -278,6 +278,7 @@ namespace tapinto.Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PostId = table.Column<int>(type: "int", nullable: false)
                 },

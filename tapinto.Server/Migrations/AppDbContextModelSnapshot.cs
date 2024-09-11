@@ -166,6 +166,9 @@ namespace tapinto.Server.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FullNames")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("PostId")
                         .HasColumnType("int");
 

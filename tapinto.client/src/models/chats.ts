@@ -4,4 +4,5 @@ export interface Chats {
     userEmail: string;
     timeStamp: string;
     postId: number;
+    fullNames: string;
 }

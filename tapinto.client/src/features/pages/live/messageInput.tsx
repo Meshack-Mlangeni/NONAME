@@ -23,7 +23,6 @@ export default function MessageInput(props: MessageInputProps) {
     <Box
       position={"fixed"}
       sx={{
-        "--Input-gap": "154px",
         "--Input-radius": "8px",
         "--Input-placeholderOpacity": 0.5,
         "--Input-minHeight": "163px",
@@ -45,7 +44,7 @@ export default function MessageInput(props: MessageInputProps) {
             }
           }}
           endDecorator={
-            <Button onClick={handleClick} endDecorator={<SendRoundedIcon />}>
+            <Button size="lg" onClick={handleClick} endDecorator={<SendRoundedIcon />}>
               Send
             </Button>
           }

@@ -55,8 +55,8 @@ namespace tapinto.Server.Data
             if (!context.Groups.Any())
             {
                 context.Groups.AddRange([
-                   new(){ GroupName = "Grade 12z", 
-                   Description="Group scrictly created for Mzimela Grade 12 physics" ,SchoolId = 1 
+                   new(){ GroupName = "Grade 12z",
+                   Description="Group scrictly created for Mzimela Grade 12 physics" ,SchoolId = 1
                    , UserEmail="meshackmlangeni@hotmail.com"},
                     new(){ GroupName = "Merien", SchoolId = 1 , UserEmail="njabulo261@gmail.com"},
                 ]);
@@ -90,8 +90,7 @@ namespace tapinto.Server.Data
                     if ((await userManager.FindByEmailAsync(user.Email)) == null)
                         if ((await userManager.CreateAsync(user, password)).Succeeded)
                             await userManager.AddToRolesAsync(user, user.Email.Contains("njabulo") ? ["Teacher"] : ["Admin", "Student"]);
-           
-           context.SaveChanges();
+            context.SaveChanges();
         }
     }
 }

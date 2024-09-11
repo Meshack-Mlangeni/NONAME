@@ -11,7 +11,8 @@ namespace tapinto.Server.Models
         public int Id { get; set; }
         public string Content { get; set; }
         public string UserEmail { get; set; }
-        public DateTime TimeStamp { get; set; }= DateTime.Now;
+        public string FullNames { get; set; }
+        public DateTime TimeStamp { get; set; } = DateTime.Now;
         public int PostId { get; set; }
 
         [DeleteBehavior(DeleteBehavior.NoAction)]

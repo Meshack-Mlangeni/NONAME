@@ -22,7 +22,9 @@ export default function Bubble(props: BubbleProps) {
         spacing={2}
         sx={{ mb: 0.25 }}
       >
-        <Typography level="body-xs">{isYou ? "Me" : chat.userEmail}</Typography>
+        <Typography fontWeight={700} level="body-xs">
+          {isYou ? "Me" : chat.fullNames}
+        </Typography>
         <Typography level="body-xs">
           {convertToDateTimeAgo(chat.timeStamp)}
         </Typography>
@@ -34,7 +36,6 @@ export default function Bubble(props: BubbleProps) {
           sx={{
             p: 1.25,
             borderRadius: "lg",
-            boxShadow: "sm",
             borderTopRightRadius: isSent ? 0 : "lg",
             borderTopLeftRadius: isSent ? "lg" : 0,
             backgroundColor: isSent
@@ -43,7 +44,7 @@ export default function Bubble(props: BubbleProps) {
           }}
         >
           <Typography
-            level="body-sm"
+            level="title-lg"
             sx={{
               color: isSent
                 ? "var(--joy-palette-common-white)"

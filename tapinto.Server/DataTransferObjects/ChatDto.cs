@@ -16,10 +16,12 @@ namespace tapinto.Server.DataTransferObjects
             UserEmail = ch.UserEmail;
             TimeStamp = ch.TimeStamp;
             PostId = ch.PostId;
+            FullNames = ch.FullNames;
         }
         public int Id { get; set; }
         public string Content { get; set; }
         public string UserEmail { get; set; }
+        public string FullNames { get; set; }
         public DateTime TimeStamp { get; set; } = DateTime.Now;
         public int PostId { get; set; }
     }
