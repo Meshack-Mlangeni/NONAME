@@ -3,11 +3,11 @@ import { KeyboardArrowDown, Visibility } from "@mui/icons-material";
 import { FieldValues, UseFormRegister } from "react-hook-form";
 import { Select, Option, selectClasses } from "@mui/joy";
 
-interface IShowTo {
+interface IShowActivityTo {
   register: UseFormRegister<FieldValues>;
 }
 
-export default function ShowTo({ register }: IShowTo) {
+export default function ShowActivityTo({ register }: IShowActivityTo) {
   const { user } = useAppSelector((state) => state.account);
   const _showto: string[] | null = user && user?.groups.map((g) => g.groupName);
 
@@ -18,7 +18,7 @@ export default function ShowTo({ register }: IShowTo) {
         // @ts-expect-error
         <Select
           variant="plain"
-          placeholder="Post to"
+          placeholder="Activity to"
           {...register("groupName", {
             setValueAs(value) {
               if (!value || value === undefined || value === "")

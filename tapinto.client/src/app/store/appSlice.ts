@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface IApp {
-    Loading: boolean
+    Loading: boolean;
 }
 
 const initialState: IApp = {

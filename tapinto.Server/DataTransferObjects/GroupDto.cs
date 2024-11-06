@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using tapinto.Server.Models;
 
 namespace tapinto.Server.DataTransferObjects
@@ -10,7 +6,7 @@ namespace tapinto.Server.DataTransferObjects
     {
         public GroupDto(Group group)
         {
-            GroupId = group.Id;
+            GroupId = group.GroupId;
             GroupName = group.GroupName;
             UserEmail = group.UserEmail;
             if (group.School != null)

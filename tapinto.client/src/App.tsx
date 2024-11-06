@@ -13,8 +13,7 @@ import { routes } from "./app/router/Routes";
 import {
   getallActivityAsync,
   getAllSchoolUserGroupsAsync,
-  getLabelsAsync,
-} from "./features/pages/homepage/subs/posts/postSlice";
+} from "./features/pages/homepage/subs/activity/activitySlice";
 import { getAllSchoolsAsync } from "./features/pages/homepage/subs/myschool/schoolSlice";
 
 function App() {
@@ -24,19 +23,15 @@ function App() {
 
   const initApp = useCallback(async () => {
     try {
-      await dispatch(fetchLoggedInUser())
-        .then(() => {
-          routes.navigate("/home/posts");
-        })
-        .finally(async () => {
-          await dispatch(getLabelsAsync());
-          await dispatch(getallActivityAsync(5));
-          await dispatch(getAllSchoolUserGroupsAsync());
-          await dispatch(getAllSchoolsAsync());
-          dispatch(setLoading(false));
-        });
+      await dispatch(fetchLoggedInUser()).then(async () => {
+        await dispatch(getallActivityAsync(5));
+        await dispatch(getAllSchoolUserGroupsAsync());
+        await dispatch(getAllSchoolsAsync());
+        routes.navigate("/home/activity");
+        dispatch(setLoading(false));
+      });
     } catch (error) {
-      routes.navigate("/login");
+      routes.navigate("/home/activity");
     }
   }, [dispatch]);
 
@@ -50,7 +45,7 @@ function App() {
         position="bottom-center"
         autoClose={5000}
         limit={5}
-        hideProgressBar={false}
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
         rtl={false}

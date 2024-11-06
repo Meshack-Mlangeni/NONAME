@@ -9,11 +9,11 @@ import { store } from "./app/store/store.ts";
 import { AppThemeContextProvider } from "./app/theme/AppThemeContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <AppThemeContextProvider>
-        <RouterProvider router={routes} />
-      </AppThemeContextProvider>
-    </Provider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
+    <AppThemeContextProvider>
+      <RouterProvider router={routes} />
+    </AppThemeContextProvider>
+  </Provider>
+  // </React.StrictMode>
 );

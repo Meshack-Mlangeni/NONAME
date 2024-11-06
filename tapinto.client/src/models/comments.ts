@@ -1,7 +1,7 @@
 export interface Comments {
-    id: number;
+    commentId: number;
     commentContent: string;
-    postId: number;
+    activityId: number;
     userEmail: string;
     timeStamp: string;
     verified: boolean;

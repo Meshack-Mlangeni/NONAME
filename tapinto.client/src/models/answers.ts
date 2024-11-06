@@ -1,6 +1,6 @@
 export interface Answer {
-    id: number;
+    answerId: number;
     answer: string;
     isAnswer: boolean;
-    postId: number;
+    activityId: number;
 }

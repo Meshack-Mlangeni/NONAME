@@ -23,17 +23,28 @@ import {
   MenuButton,
   MenuItem,
 } from "@mui/joy";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import TabsNav from "./TabsNav";
 import NavSpacingComponent from "./NavSpacingComponent";
 import AppLogo from "./AppLogo";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { signOutUser } from "../../features/pages/account/accountSlice";
+import { signUserOutAsync } from "../../features/pages/account/accountSlice";
 
 export default function TabDesktopNavBar() {
+  const location = useLocation();
+  const getInitIndex = () => {
+    if (location.pathname.includes("home")) return 0;
+    else if (location.pathname.includes("myschool")) return 1;
+    else if (location.pathname.includes("settings")) return 2;
+    else if (location.pathname.includes("profile")) return 3;
+    else return 0;
+  };
+
+  const [index, setIndex] = React.useState(getInitIndex());
+
   const { user } = useAppSelector((state) => state.account);
   const dispatch = useAppDispatch();
-  const [index, setIndex] = React.useState(0);
+
   return (
     <>
       <Sheet
@@ -107,9 +118,10 @@ export default function TabDesktopNavBar() {
                 </Tab>
                 <Tab
                   disableIndicator
+                  disabled={!user}
                   orientation="vertical"
                   component={NavLink}
-                  to={"/home/myschool"} //not yet available
+                  to={"/myschool"} //not yet available
                   {...(index === 1 && { color: "primary" })}
                 >
                   <ListItemDecorator sx={{ mb: "1px" }}>
@@ -120,6 +132,7 @@ export default function TabDesktopNavBar() {
                 <Tab
                   disableIndicator
                   orientation="vertical"
+                  disabled={!user}
                   component={NavLink}
                   to={"/settings"}
                   {...(index === 2 && { color: "primary" })}
@@ -132,6 +145,7 @@ export default function TabDesktopNavBar() {
                 <Tab
                   disableIndicator
                   orientation="vertical"
+                  disabled={!user}
                   component={NavLink}
                   to={"/mobprofile"}
                   {...(index === 3 && { color: "primary" })}
@@ -181,7 +195,7 @@ export default function TabDesktopNavBar() {
                     <MenuItem
                       component={NavLink}
                       to="/login"
-                      onClick={() => dispatch(signOutUser())}
+                      onClick={() => dispatch(signUserOutAsync())}
                     >
                       <Logout />
                       Logout

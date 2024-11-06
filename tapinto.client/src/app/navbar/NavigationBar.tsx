@@ -5,18 +5,18 @@ import TabDesktopNavBar from "./TabDesktopNavBar";
 import NavSpacingComponent from "./NavSpacingComponent";
 
 export default function NavigationBar() {
-  const Tablet_Desktops = useMediaQuery("(min-width:700px)");
+    const Tablet_Desktops = useMediaQuery("(min-width:700px)");
 
-  return (
-    <>
-      {Tablet_Desktops ? (
-        <TabDesktopNavBar />
-      ) : (
+    return (
         <>
-          <MobileNavBar />
+            {Tablet_Desktops ? (
+                <TabDesktopNavBar />
+            ) : (
+                <>
+                    <MobileNavBar />
+                </>
+            )}
+            <NavSpacingComponent />
         </>
-      )}
-      <NavSpacingComponent/>
-    </>
-  );
+    );
 }

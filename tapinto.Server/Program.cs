@@ -1,12 +1,5 @@
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Text;
-using tapinto.Server.Controllers;
 using tapinto.Server.Data;
+using tapinto.Server.Helpers;
 using tapinto.Server.Middleware;
 using tapinto.Server.Models;
 using tapinto.Server.Services;
@@ -17,89 +10,25 @@ namespace tapinto.Server
     {
         public static async Task Main(string[] args)
         {
+            string CORS = string.Empty;
             var builder = WebApplication.CreateBuilder(args);
-
-            // Add services to the container.
-
-            builder.Services.AddSignalRCore();
-            builder.Services.AddSignalR();
-            builder.Services.AddControllers();
-            builder.Services.AddScoped<AuthController>();
-
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen(s =>
-            {
-                var jwtSecurityScheme = new OpenApiSecurityScheme
+            //builder.Logging.AddConfiguration(builder.Configuration.GetSection("Logging")).AddConsole();
+            builder.Services
+                .AddScopedServices()
+                .Configure<CloudinaryConfig>(builder.Configuration.GetSection("CloudinaryConfig"))
+                .ConfigureSwaggerAndEndPoints()
+                .AddDatabaseConnection(builder: builder, connString: "AppConnection")
+                .ConfigureApplicationCORS(out CORS)
+                .ConfigureIdentityCore<User>()
+                .ConfigureAuthenticationAndAthorization(builder: builder, secretKey: "secretKey")
+                .AddResponseCaching(options =>
                 {
-                    BearerFormat = "JWT",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme,
-                    Description = "Put Bearer + your token in the box below",
-                    Reference = new OpenApiReference
-                    {
-                        Id = JwtBearerDefaults.AuthenticationScheme,
-                        Type = ReferenceType.SecurityScheme
-                    }
-                };
-                s.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-                s.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        jwtSecurityScheme, Array.Empty<string>()
-                    }
+                    options.MaximumBodySize = 1024;
+                    options.UseCaseSensitivePaths = true;
                 });
-            });
-            builder.Services.AddDbContext<AppDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("AppConnection"));
-            });
-            const string CORS = "APPCORS";
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy(name: CORS, builder =>
-                {
-                    builder
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .WithOrigins("https://localhost:5000")
-                    .AllowCredentials();
-                });
-            });
-            builder.Services.AddIdentityCore<User>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireDigit = true;
-            })
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>();
-            var secretKey = builder.Configuration.GetValue<string>("secretKey");
-
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme
-                ).AddJwtBearer(opts =>
-            {
-                opts.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey ?? string.Empty)),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true
-                };
-            });
-
-            builder.Services.AddAuthorization();
-            builder.Services.AddResponseCaching(options =>
-            {
-                options.MaximumBodySize = 1024;
-                options.UseCaseSensitivePaths = true;
-            });
 
             var app = builder.Build();
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCors(CORS);
@@ -127,12 +56,6 @@ namespace tapinto.Server
             }
 
             app.UseMiddleware<ExceptionMiddleware>();
-
-            // app.UseCors(opt =>
-            //  {
-            //      opt.AllowAnyHeader().AllowCredentials().AllowAnyMethod().WithOrigins("https://localhost:5000");
-            //  });
-
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();

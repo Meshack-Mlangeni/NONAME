@@ -1,12 +1,12 @@
 import { Answer } from "./answers";
 import { Chats } from "./chats";
 
-
-export interface PostDto {
+export interface Activity {
+    imageUrl: string;
     id: number;
     groupId: number;
-    postType: number;
-    postContent: string;
+    activityType: number;
+    activityContent: string;
     groupName: string;
     userFullNames: string;
     userEmail: string;
@@ -15,7 +15,7 @@ export interface PostDto {
     comments: number;
     chats: Chats[];
     answers: Answer[];
-    labels: string;
     currentUserLiked: boolean;
     verified: boolean;
+    file?: Blob;
 }

@@ -3,7 +3,6 @@ import App from "../../App";
 import Settings from "../../features/pages/settings/Settings";
 import AboutPage from "../../features/pages/about/AboutPage";
 import HomePage from "../../features/pages/homepage/HomePage";
-import Posts from "../../features/pages/homepage/subs/posts/mainPosts";
 import Tests from "../../features/pages/homepage/subs/tests/tests";
 import Results from "../../features/pages/homepage/subs/results/results";
 import Login from "../../features/pages/account/login";
@@ -12,6 +11,7 @@ import School from "../../features/pages/homepage/subs/myschool/mySchool";
 import Live from "../../features/pages/live/live";
 import Groups from "../../features/pages/homepage/subs/groups/Groups";
 import MobileProfilePage from "../../features/pages/account/mobileProfilePage";
+import ShowActivitiesOnHomePage from "../../features/pages/homepage/subs/activity/showActivitiesOnHomepage";
 
 export const routes = createBrowserRouter([
   {
@@ -22,15 +22,16 @@ export const routes = createBrowserRouter([
         path: "/home",
         element: <HomePage />,
         children: [
-          { path: "/home/posts", element: <Posts /> },
+          { path: "/home/activity", element: <ShowActivitiesOnHomePage /> },
           { path: "/home/groups", element: <Groups /> },
-          { path: "/home/myschool", element: <School /> },
           { path: "/home/tests", element: <Tests /> },
           { path: "/home/results", element: <Results /> },
           { path: "/home/live", element: <Live /> },
         ],
       },
       { path: "/settings", element: <Settings /> },
+
+      { path: "/myschool", element: <School /> },
       { path: "/about", element: <AboutPage /> },
       { path: "/login", element: <Login /> },
       { path: "/register", element: <Register /> },

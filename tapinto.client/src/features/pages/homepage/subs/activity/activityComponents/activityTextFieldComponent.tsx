@@ -2,44 +2,31 @@
 import {
   Box,
   Button,
-  Chip,
-  ChipDelete,
   Divider,
-  IconButton,
   Sheet,
   Textarea,
   Typography,
   Input,
 } from "@mui/joy";
-import Labels from "../../../../../components/labelctr";
 import {
   Add,
-  AttachFileOutlined,
+  CardMembershipRounded,
   JoinFullTwoTone,
   LoginTwoTone,
-  PhotoCameraOutlined,
   Send,
 } from "@mui/icons-material";
 import {
   useAppDispatch,
   useAppSelector,
 } from "../../../../../../app/store/store";
-import {
-  createActivityAsync,
-  getallActivityAsync,
-  getLabelsAsync,
-  removeLabel,
-  resetLabels,
-} from "../postSlice";
-import { toast } from "react-toastify";
+import { createActivityAsync, getallActivityAsync } from "../activitySlice";
 import { FieldValues, useFieldArray, useForm } from "react-hook-form";
-import ShowTo from "./postVisibilityComponent";
+import ShowTo from "./activityVisibilityComponent";
 import { useMediaQuery } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import * as React from "react";
 import Radio from "@mui/joy/Radio";
 import RadioGroup from "@mui/joy/RadioGroup";
-import { PostType } from "../../../../../../models/posttype";
 import {
   CommentRounded,
   PollRounded,
@@ -48,8 +35,10 @@ import {
 import Theme from "../../../../../../app/theme/theme";
 import { Answer } from "../../../../../../models/answers";
 import { useNavigate } from "react-router-dom";
+import UpLoadFileButton from "./uploadfilebutton";
+import { _ActivityType } from "./_ActivityType";
 
-export default function PostTextField() {
+export default function ActivityTextField() {
   //Poll Start
   const navigate = useNavigate();
   const [pollAnswer, setPollAnswer] = useState<string>("");
@@ -58,25 +47,22 @@ export default function PostTextField() {
   const handleAddAnswer = (questionText: string) => {
     setAnswers((prev) => [
       ...prev,
-      { id: prev.length + 1, answer: questionText, isAnswer: false, postId: 0 },
+      {
+        answerId: prev.length + 1,
+        answer: questionText,
+        isAnswer: false,
+        activityId: 0,
+      },
     ]);
     setPollAnswer("");
   };
 
   //PollEnd
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      console.log(file.name);
-    }
-  };
-
   const { user } = useAppSelector((state) => state.account);
 
   const Mobile = useMediaQuery("(min-width:600px)");
   const dispatch = useAppDispatch();
-  const { selectedLabels } = useAppSelector((state) => state.activities);
   const {
     register,
     handleSubmit,
@@ -87,15 +73,25 @@ export default function PostTextField() {
     mode: "onTouched",
   });
 
-  const { fields, append, prepend, remove } = useFieldArray({
+  // eslint-disable-next-line no-empty-pattern
+  const {} = useFieldArray({
     name: "pans",
     control,
   });
   const onSubmit = (data: FieldValues) => {
-    dispatch(createActivityAsync({...data, "answers": answers} as FieldValues))
+    console.log("data in PRFC: ", data);
+    const formData = new FormData();
+    formData.append("File", data.file);
+    console.log(data);
+    dispatch(
+      createActivityAsync({
+        ...data,
+        answers: answers,
+      } as FieldValues)
+    )
       .finally(() => {
         setAnswers([]);
-        dispatch(resetLabels());
+        control._reset();
         reset();
       })
       .then(() => {
@@ -103,19 +99,17 @@ export default function PostTextField() {
       });
   };
 
-  useEffect(() => {
-    dispatch(getLabelsAsync());
-  }, [dispatch]);
   const [defaultValue, setDefaultValue] = useState<number>(0);
-  const [submitBtnText, setSubmitBtnText] = useState<string>("Create Post");
+  const [submitBtnText, setSubmitBtnText] = useState<string>("Create Activity");
   const [pollValid, setPollValid] = useState<boolean>(false);
   const data = [
-    ["Post", <PostAddRounded />],
+    ["Activity", <PostAddRounded />],
     ["Discussion", <CommentRounded />],
     ["Poll", <PollRounded />],
+    ["Flash Card", <CardMembershipRounded />],
   ];
 
-  const postTFComponent = (
+  const activityTFComponent = (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box
@@ -151,9 +145,9 @@ export default function PostTextField() {
                 })}
                 color="neutral"
                 value={(() => {
-                  if (item[0] === "Post") return 0 as PostType;
-                  else if (item[0] === "Discussion") return 1 as PostType;
-                  else return 2 as PostType;
+                  if (item[0] === "Activity") return 0 as _ActivityType;
+                  else if (item[0] === "Discussion") return 1 as _ActivityType;
+                  else return 2 as _ActivityType;
                 })()}
                 disableIcon
                 label={
@@ -211,32 +205,6 @@ export default function PostTextField() {
                     console.log("Is Poll Valid: ", pollValid);
                   },
                 })}
-                startDecorator={
-                  submitBtnText.toLowerCase().includes("post") && (
-                    <Box sx={{ display: "flex", gap: 0.5, flex: 1 }}>
-                      <Labels />
-                      <>
-                        {selectedLabels.map((lbl, idx) => (
-                          <Chip
-                            endDecorator={
-                              <ChipDelete
-                                onDelete={() => {
-                                  dispatch(removeLabel(lbl.name));
-                                  toast.warn(`${lbl.name} label removed`);
-                                }}
-                              />
-                            }
-                            // @ts-expect-error
-                            color={lbl.color ?? "danger"}
-                            key={idx}
-                          >
-                            {lbl.name}
-                          </Chip>
-                        ))}
-                      </>
-                    </Box>
-                  )
-                }
                 sx={{
                   minWidth: 300,
                   width: "100%",
@@ -268,7 +236,7 @@ export default function PostTextField() {
                   onChange={(e) => setPollAnswer(e.target.value)}
                 />
 
-                {answers.length > 0 && (
+                {answers && answers.length > 0 && (
                   <Box sx={{ width: "100%" }}>
                     <RadioGroup
                       size="sm"
@@ -292,7 +260,7 @@ export default function PostTextField() {
                             onChange={() => {
                               answers.forEach((ans) => {
                                 setPollValid(true);
-                                if (ans.id !== index + 1) ans.isAnswer = false;
+                                if (ans.answerId !== index + 1) ans.isAnswer = false;
                                 else ans.isAnswer = true;
                               });
                             }}
@@ -328,65 +296,20 @@ export default function PostTextField() {
               </>
             </Sheet>
           ) : (
-            <Textarea
-              placeholder={"What's on your mind..."}
-              minRows={1}
-              maxRows={4}
-              {...register("postContent", {
-                required: "Cannot send an empty post",
-              })}
-              startDecorator={
-                submitBtnText.toLowerCase().includes("post") && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 0.5,
-                      flex: 1,
-                      maxHeight: 42,
-                      overflowX: "auto",
-                    }}
-                  >
-                    <Box>
-                      <label>
-                        <IconButton size="sm" color="warning">
-                          <AttachFileOutlined />
-                        </IconButton>
-                      </label>
-                      <label>
-                        <IconButton size="sm" color="success">
-                          <PhotoCameraOutlined />
-                        </IconButton>
-                      </label>
-                    </Box>
-                    <Divider orientation="vertical" sx={{ ml: 1, mr: 1 }} />
-                    <Labels />
-                    <>
-                      {selectedLabels.map((lbl, idx) => (
-                        <Chip
-                          endDecorator={
-                            <ChipDelete
-                              onDelete={() => {
-                                dispatch(removeLabel(lbl.name));
-                                toast.warn(`${lbl.name} label removed`);
-                              }}
-                            />
-                          }
-                          // @ts-expect-error
-                          color={lbl.color ?? "danger"}
-                          key={idx}
-                        >
-                          {lbl.name}
-                        </Chip>
-                      ))}
-                    </>
-                  </Box>
-                )
-              }
-              sx={{
-                minWidth: 300,
-                width: "100%",
-              }}
-            />
+            <>
+              <Textarea
+                placeholder={"What's on your mind..."}
+                minRows={1}
+                maxRows={4}
+                {...register("activityContent", {
+                  required: "Cannot send an empty activity",
+                })}
+                sx={{
+                  minWidth: 300,
+                  width: "100%",
+                }}
+              />
+            </>
           )}
         </Box>
         <Box sx={{ mt: 3 }} display="flex" alignItems="center">
@@ -404,6 +327,7 @@ export default function PostTextField() {
             >
               <Send /> &nbsp; {submitBtnText}
             </Button>
+            <UpLoadFileButton control={control} />
           </>
           {Mobile && <br />}
           <>
@@ -420,8 +344,8 @@ export default function PostTextField() {
         <LoginTwoTone />,
         "You have to sign in to post something"
       )
-    : user.groups.length > 0
-    ? postTFComponent
+    : user.groups && user.groups.length > 0
+    ? activityTFComponent
     : checkUserAndGroups(
         <JoinFullTwoTone />,
         "Please join atleast one group in your school",

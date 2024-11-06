@@ -1,20 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace tapinto.Server.Models
 {
     public class ChatHistory
     {
-        public int Id { get; set; }
+        [Key]
+        public int ChatHistoryId { get; set; }
         public string Content { get; set; }
         public string UserEmail { get; set; }
-        public DateTime TimeStamp { get; set; }= DateTime.Now;
-        public int PostId { get; set; }
+        public DateTime TimeStamp { get; set; } = DateTime.Now;
+        [ForeignKey("Activity")]
+        public int ActivityId { get; set; }
 
         [DeleteBehavior(DeleteBehavior.NoAction)]
-        public Post Post { get; set; }
+        public Activity Activity { get; set; }
     }
 }
