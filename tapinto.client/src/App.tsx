@@ -13,6 +13,7 @@ import { routes } from "./app/router/Routes";
 import {
   getallActivityAsync,
   getAllSchoolUserGroupsAsync,
+  resetActivities,
 } from "./features/pages/homepage/subs/activity/activitySlice";
 import { getAllSchoolsAsync } from "./features/pages/homepage/subs/myschool/schoolSlice";
 
@@ -24,6 +25,7 @@ function App() {
   const initApp = useCallback(async () => {
     try {
       await dispatch(fetchLoggedInUser()).then(async () => {
+        await dispatch(resetActivities());
         await dispatch(getallActivityAsync(5));
         await dispatch(getAllSchoolUserGroupsAsync());
         await dispatch(getAllSchoolsAsync());

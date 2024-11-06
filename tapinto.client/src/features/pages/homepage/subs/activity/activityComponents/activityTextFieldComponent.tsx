@@ -106,7 +106,6 @@ export default function ActivityTextField() {
     ["Activity", <PostAddRounded />],
     ["Discussion", <CommentRounded />],
     ["Poll", <PollRounded />],
-    ["Flash Card", <CardMembershipRounded />],
   ];
 
   const activityTFComponent = (
