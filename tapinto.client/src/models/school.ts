@@ -1,7 +1,7 @@
 import { Group } from "./group";
 
 export interface School {
-    id: number;
+    schoolId: number;
     schoolName: string;
     userEmail: string;
     groups: Group[];

@@ -12,15 +12,15 @@ using tapinto.Server.Data;
 namespace tapinto.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240814152020_mbdadad")]
-    partial class mbdadad
+    [Migration("20241102213208_InitialMindMetaMigration")]
+    partial class InitialMindMetaMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -158,7 +158,7 @@ namespace tapinto.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("tapinto.Server.Models.ChatHistory", b =>
+            modelBuilder.Entity("tapinto.Server.Models.Activity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -166,13 +166,16 @@ namespace tapinto.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ActivityType")
+                        .HasColumnType("int");
+
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PostId")
+                    b.Property<int?>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("TimeStamp")
+                    b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserEmail")
@@ -180,24 +183,75 @@ namespace tapinto.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PostId");
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("Activity");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.ActivityImage", b =>
+                {
+                    b.Property<int>("ImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImageId"));
+
+                    b.Property<string>("AbsoluteUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImageId");
+
+                    b.HasIndex("ActivityId");
+
+                    b.ToTable("ActivityImages");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.ChatHistory", b =>
+                {
+                    b.Property<int>("ChatHistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ChatHistoryId"));
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("TimeStamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ChatHistoryId");
+
+                    b.HasIndex("ActivityId");
 
                     b.ToTable("ChatHistory");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.Comments", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CommentId"));
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
 
                     b.Property<string>("CommentContent")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
@@ -205,20 +259,42 @@ namespace tapinto.Server.Migrations
                     b.Property<string>("UserEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("CommentId");
 
-                    b.HasIndex("PostId");
+                    b.HasIndex("ActivityId");
 
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("tapinto.Server.Models.Group", b =>
+            modelBuilder.Entity("tapinto.Server.Models.Contributions", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ContributionsId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ContributionsId"));
+
+                    b.Property<double>("ContributionRating")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("DateContributed")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ContributionsId");
+
+                    b.ToTable("Contributions");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.Group", b =>
+                {
+                    b.Property<int>("GroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GroupId"));
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -232,68 +308,49 @@ namespace tapinto.Server.Migrations
                     b.Property<string>("UserEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("GroupId");
 
                     b.HasIndex("SchoolId");
 
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("tapinto.Server.Models.Label", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Labels");
-                });
-
             modelBuilder.Entity("tapinto.Server.Models.Like", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("LikeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LikeId"));
 
-                    b.Property<int>("PostId")
+                    b.Property<int>("ActivityId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("LikeId");
 
-                    b.HasIndex("PostId");
+                    b.HasIndex("ActivityId");
 
                     b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.Membership", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("MembershipId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MembershipId"));
 
-                    b.Property<int?>("GroupId")
+                    b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("MembershipId");
 
                     b.HasIndex("GroupId");
 
@@ -302,68 +359,35 @@ namespace tapinto.Server.Migrations
 
             modelBuilder.Entity("tapinto.Server.Models.PossibleAnswer", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("PossibleAnswerId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PossibleAnswerId"));
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Answer")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("isAnswer")
                         .HasColumnType("bit");
 
-                    b.HasKey("Id");
+                    b.HasKey("PossibleAnswerId");
 
-                    b.HasIndex("PostId");
+                    b.HasIndex("ActivityId");
 
                     b.ToTable("PossibleAnswers");
                 });
 
-            modelBuilder.Entity("tapinto.Server.Models.Post", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Labels")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PostType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserEmail")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("Posts");
-                });
-
             modelBuilder.Entity("tapinto.Server.Models.School", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("SchoolId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SchoolId"));
 
                     b.Property<string>("SchoolName")
                         .HasColumnType("nvarchar(max)");
@@ -371,18 +395,18 @@ namespace tapinto.Server.Migrations
                     b.Property<string>("UserEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("SchoolId");
 
                     b.ToTable("Schools");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.TeacherRequests", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("TeacherRequestId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TeacherRequestId"));
 
                     b.Property<bool>("Approved")
                         .HasColumnType("bit");
@@ -399,7 +423,7 @@ namespace tapinto.Server.Migrations
                     b.Property<string>("UserEmail")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("TeacherRequestId");
 
                     b.ToTable("Requests");
                 });
@@ -454,6 +478,9 @@ namespace tapinto.Server.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("ProfileImageUrl")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Rating")
                         .HasColumnType("float");
@@ -538,26 +565,47 @@ namespace tapinto.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("tapinto.Server.Models.ChatHistory", b =>
+            modelBuilder.Entity("tapinto.Server.Models.Activity", b =>
                 {
-                    b.HasOne("tapinto.Server.Models.Post", "Post")
-                        .WithMany("Chats")
-                        .HasForeignKey("PostId")
+                    b.HasOne("tapinto.Server.Models.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.ActivityImage", b =>
+                {
+                    b.HasOne("tapinto.Server.Models.Activity", "Activity")
+                        .WithMany()
+                        .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Post");
+                    b.Navigation("Activity");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.ChatHistory", b =>
+                {
+                    b.HasOne("tapinto.Server.Models.Activity", "Activity")
+                        .WithMany("Chats")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.Comments", b =>
                 {
-                    b.HasOne("tapinto.Server.Models.Post", "Post")
+                    b.HasOne("tapinto.Server.Models.Activity", "Activity")
                         .WithMany()
-                        .HasForeignKey("PostId")
+                        .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Post");
+                    b.Navigation("Activity");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.Group", b =>
@@ -573,13 +621,13 @@ namespace tapinto.Server.Migrations
 
             modelBuilder.Entity("tapinto.Server.Models.Like", b =>
                 {
-                    b.HasOne("tapinto.Server.Models.Post", "Post")
+                    b.HasOne("tapinto.Server.Models.Activity", "Activity")
                         .WithMany("Likes")
-                        .HasForeignKey("PostId")
+                        .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Post");
+                    b.Navigation("Activity");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.Membership", b =>
@@ -587,44 +635,35 @@ namespace tapinto.Server.Migrations
                     b.HasOne("tapinto.Server.Models.Group", "Group")
                         .WithMany("groupUserBridge")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Group");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.PossibleAnswer", b =>
                 {
-                    b.HasOne("tapinto.Server.Models.Post", "Post")
+                    b.HasOne("tapinto.Server.Models.Activity", "Activity")
                         .WithMany("Answers")
-                        .HasForeignKey("PostId")
+                        .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Post");
+                    b.Navigation("Activity");
                 });
 
-            modelBuilder.Entity("tapinto.Server.Models.Post", b =>
-                {
-                    b.HasOne("tapinto.Server.Models.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.Navigation("Group");
-                });
-
-            modelBuilder.Entity("tapinto.Server.Models.Group", b =>
-                {
-                    b.Navigation("groupUserBridge");
-                });
-
-            modelBuilder.Entity("tapinto.Server.Models.Post", b =>
+            modelBuilder.Entity("tapinto.Server.Models.Activity", b =>
                 {
                     b.Navigation("Answers");
 
                     b.Navigation("Chats");
 
                     b.Navigation("Likes");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.Group", b =>
+                {
+                    b.Navigation("groupUserBridge");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.School", b =>

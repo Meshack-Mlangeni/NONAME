@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace tapinto.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class mbdadad : Migration
+    public partial class InitialMindMetaMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,6 +36,7 @@ namespace tapinto.Server.Migrations
                     Verified = table.Column<bool>(type: "bit", nullable: false),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<double>(type: "float", nullable: false),
+                    ProfileImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -57,24 +58,25 @@ namespace tapinto.Server.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Labels",
+                name: "Contributions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    ContributionsId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Color = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    DateContributed = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ContributionRating = table.Column<double>(type: "float", nullable: false),
+                    UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Labels", x => x.Id);
+                    table.PrimaryKey("PK_Contributions", x => x.ContributionsId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Requests",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    TeacherRequestId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageData = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -84,21 +86,21 @@ namespace tapinto.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Requests", x => x.Id);
+                    table.PrimaryKey("PK_Requests", x => x.TeacherRequestId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Schools",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    SchoolId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SchoolName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Schools", x => x.Id);
+                    table.PrimaryKey("PK_Schools", x => x.SchoolId);
                 });
 
             migrationBuilder.CreateTable(
@@ -211,7 +213,7 @@ namespace tapinto.Server.Migrations
                 name: "Groups",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    GroupId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GroupName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -220,53 +222,72 @@ namespace tapinto.Server.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Groups", x => x.Id);
+                    table.PrimaryKey("PK_Groups", x => x.GroupId);
                     table.ForeignKey(
                         name: "FK_Groups_Schools_SchoolId",
                         column: x => x.SchoolId,
                         principalTable: "Schools",
-                        principalColumn: "Id");
+                        principalColumn: "SchoolId");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Membership",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GroupId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Membership", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Membership_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Posts",
+                name: "Activity",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Labels = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PostType = table.Column<int>(type: "int", nullable: false),
+                    ActivityType = table.Column<int>(type: "int", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     GroupId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Posts", x => x.Id);
+                    table.PrimaryKey("PK_Activity", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_Groups_GroupId",
+                        name: "FK_Activity_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
+                        principalColumn: "GroupId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Membership",
+                columns: table => new
+                {
+                    MembershipId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Membership", x => x.MembershipId);
+                    table.ForeignKey(
+                        name: "FK_Membership_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "GroupId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ActivityImages",
+                columns: table => new
+                {
+                    ImageId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AbsoluteUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActivityId = table.Column<int>(type: "int", nullable: false),
+                    PublicId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ActivityImages", x => x.ImageId);
+                    table.ForeignKey(
+                        name: "FK_ActivityImages_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
                         principalColumn: "Id");
                 });
 
@@ -274,20 +295,20 @@ namespace tapinto.Server.Migrations
                 name: "ChatHistory",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    ChatHistoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: false)
+                    ActivityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ChatHistory", x => x.Id);
+                    table.PrimaryKey("PK_ChatHistory", x => x.ChatHistoryId);
                     table.ForeignKey(
-                        name: "FK_ChatHistory_Posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Posts",
+                        name: "FK_ChatHistory_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
                         principalColumn: "Id");
                 });
 
@@ -295,20 +316,20 @@ namespace tapinto.Server.Migrations
                 name: "Comments",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    CommentId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CommentContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: false)
+                    ActivityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.CommentId);
                     table.ForeignKey(
-                        name: "FK_Comments_Posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Posts",
+                        name: "FK_Comments_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
                         principalColumn: "Id");
                 });
 
@@ -316,18 +337,18 @@ namespace tapinto.Server.Migrations
                 name: "Likes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    LikeId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PostId = table.Column<int>(type: "int", nullable: false)
+                    ActivityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Likes", x => x.Id);
+                    table.PrimaryKey("PK_Likes", x => x.LikeId);
                     table.ForeignKey(
-                        name: "FK_Likes_Posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Posts",
+                        name: "FK_Likes_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
                         principalColumn: "Id");
                 });
 
@@ -335,21 +356,31 @@ namespace tapinto.Server.Migrations
                 name: "PossibleAnswers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    PossibleAnswerId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Answer = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     isAnswer = table.Column<bool>(type: "bit", nullable: false),
-                    PostId = table.Column<int>(type: "int", nullable: false)
+                    ActivityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PossibleAnswers", x => x.Id);
+                    table.PrimaryKey("PK_PossibleAnswers", x => x.PossibleAnswerId);
                     table.ForeignKey(
-                        name: "FK_PossibleAnswers_Posts_PostId",
-                        column: x => x.PostId,
-                        principalTable: "Posts",
+                        name: "FK_PossibleAnswers_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
                         principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activity_GroupId",
+                table: "Activity",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ActivityImages_ActivityId",
+                table: "ActivityImages",
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -391,14 +422,14 @@ namespace tapinto.Server.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChatHistory_PostId",
+                name: "IX_ChatHistory_ActivityId",
                 table: "ChatHistory",
-                column: "PostId");
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_PostId",
+                name: "IX_Comments_ActivityId",
                 table: "Comments",
-                column: "PostId");
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Groups_SchoolId",
@@ -406,9 +437,9 @@ namespace tapinto.Server.Migrations
                 column: "SchoolId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Likes_PostId",
+                name: "IX_Likes_ActivityId",
                 table: "Likes",
-                column: "PostId");
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Membership_GroupId",
@@ -416,19 +447,17 @@ namespace tapinto.Server.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PossibleAnswers_PostId",
+                name: "IX_PossibleAnswers_ActivityId",
                 table: "PossibleAnswers",
-                column: "PostId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Posts_GroupId",
-                table: "Posts",
-                column: "GroupId");
+                column: "ActivityId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ActivityImages");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -451,7 +480,7 @@ namespace tapinto.Server.Migrations
                 name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "Labels");
+                name: "Contributions");
 
             migrationBuilder.DropTable(
                 name: "Likes");
@@ -472,7 +501,7 @@ namespace tapinto.Server.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Posts");
+                name: "Activity");
 
             migrationBuilder.DropTable(
                 name: "Groups");

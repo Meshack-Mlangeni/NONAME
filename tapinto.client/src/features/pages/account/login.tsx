@@ -15,7 +15,7 @@ import { Sheet, Switch, useColorScheme } from "@mui/joy";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import AppLogo from "../../../app/navbar/AppLogo";
 import { setLoading } from "../../../app/store/appSlice";
-import { getallActivityAsync } from "../homepage/subs/posts/postSlice";
+import { getallActivityAsync } from "../homepage/subs/activity/activitySlice";
 //generously borrowed from MUI sign up template
 
 export default function Login() {
@@ -29,9 +29,7 @@ export default function Login() {
   const onLoginSubmit = async (data: FieldValues) => {
     dispatch(setLoading(true));
     await dispatch(loginAsync(data)).then(
-      async (data) =>
-        data &&
-        (await dispatch(getallActivityAsync(5)))
+      async (data) => data && (await dispatch(getallActivityAsync(5)))
     );
     dispatch(setLoading(false));
   };

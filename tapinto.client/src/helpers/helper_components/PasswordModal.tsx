@@ -10,33 +10,33 @@ import DialogContent from "@mui/joy/DialogContent";
 import Stack from "@mui/joy/Stack";
 
 interface IModal {
-  isOpen?: boolean;
+    isOpen?: boolean;
 }
 
 export default function PasswordModal({ isOpen = false }: IModal) {
-  const [open, setOpen] = React.useState<boolean>(isOpen);
-  return (
-    <React.Fragment>
-      <Modal open={open} onClose={() => setOpen(false)}>
-        <ModalDialog>
-          <DialogTitle>Results</DialogTitle>
-          <DialogContent>Please enter password to access results</DialogContent>
-          <form
-            onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
-              event.preventDefault();
-              setOpen(false);
-            }}
-          >
-            <Stack spacing={2}>
-              <FormControl>
-                <FormLabel>Password</FormLabel>
-                <Input type="password" autoFocus required />
-              </FormControl>
-              <Button type="submit">Submit</Button>
-            </Stack>
-          </form>
-        </ModalDialog>
-      </Modal>
-    </React.Fragment>
-  );
+    const [open, setOpen] = React.useState<boolean>(isOpen);
+    return (
+        <React.Fragment>
+            <Modal open={open} onClose={() => setOpen(false)}>
+                <ModalDialog>
+                    <DialogTitle>Results</DialogTitle>
+                    <DialogContent>Please enter password to access results</DialogContent>
+                    <form
+                        onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
+                            event.preventDefault();
+                            setOpen(false);
+                        }}
+                    >
+                        <Stack spacing={2}>
+                            <FormControl>
+                                <FormLabel>Password</FormLabel>
+                                <Input type="password" autoFocus required />
+                            </FormControl>
+                            <Button type="submit">Submit</Button>
+                        </Stack>
+                    </form>
+                </ModalDialog>
+            </Modal>
+        </React.Fragment>
+    );
 }

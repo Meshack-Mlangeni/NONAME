@@ -1,27 +1,27 @@
 ﻿:root {
-  -mm-default-padding: "58px";
+    -mm-default-padding: "58px";
 }
 
 @font-face {
-  font-family: "Rockybilly";
-  src: url("./assets/fonts/Righteous.ttf") format("truetype");
+    font-family: "Rockybilly";
+    src: url("./assets/fonts/Righteous.ttf") format("truetype");
 }
 
 .comments-css {
-  display: block !important;
+    display: block !important;
 }
 
 .fade-in {
-  animation-name: fade-in;
-  animation-duration: 1s;
+    animation-name: fade-in;
+    animation-duration: 1s;
 }
 
 @keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
+    0% {
+        opacity: 0;
+    }
 
-  100% {
-    opacity: 1;
-  }
+    100% {
+        opacity: 1;
+    }
 }

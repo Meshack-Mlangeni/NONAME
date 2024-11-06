@@ -8,6 +8,7 @@ namespace tapinto.Server.Data
     {
         private static readonly string[] roles = ["Admin", "Student", "Teacher"];
         private static readonly string password = "@Meshack123";
+
         private static readonly User[] preAddedUsers = [
             new User{
                 FirstName = "Mncedisi",
@@ -27,6 +28,7 @@ namespace tapinto.Server.Data
                 UserName = "User"
             }
         ];
+
         public static async Task EnsurePopulated(IApplicationBuilder app)
         {
             AppDbContext context = app.ApplicationServices.CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
@@ -55,8 +57,8 @@ namespace tapinto.Server.Data
             if (!context.Groups.Any())
             {
                 context.Groups.AddRange([
-                   new(){ GroupName = "Grade 12z", 
-                   Description="Group scrictly created for Mzimela Grade 12 physics" ,SchoolId = 1 
+                   new(){ GroupName = "Grade 12z",
+                   Description="Group scrictly created for Mzimela Grade 12 physics" ,SchoolId = 1
                    , UserEmail="meshackmlangeni@hotmail.com"},
                     new(){ GroupName = "Merien", SchoolId = 1 , UserEmail="njabulo261@gmail.com"},
                 ]);
@@ -73,25 +75,13 @@ namespace tapinto.Server.Data
             }
             context.SaveChanges();
 
-            if (!context.Labels.Any())
-            {
-                context.Labels.AddRange([
-                   new(){ Name="Help wanted", Color="primary" },
-                   new(){ Name="Suggestion", Color="warning" },
-                   new(){ Name="Quiz", Color="danger" },
-                   new(){ Name="Announcement", Color="danger" }
-                ]);
-            }
-
-            context.SaveChanges();
-
             if (!userManager.Users.Any())
                 foreach (var user in preAddedUsers)
                     if ((await userManager.FindByEmailAsync(user.Email)) == null)
                         if ((await userManager.CreateAsync(user, password)).Succeeded)
                             await userManager.AddToRolesAsync(user, user.Email.Contains("njabulo") ? ["Teacher"] : ["Admin", "Student"]);
-           
-           context.SaveChanges();
+
+            context.SaveChanges();
         }
     }
 }

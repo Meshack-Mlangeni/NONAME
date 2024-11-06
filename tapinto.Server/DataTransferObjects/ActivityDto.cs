@@ -1,28 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 using tapinto.Server.Models;
 
 namespace tapinto.Server.DataTransferObjects
 {
-    public class PostDto
+    public class ActivityDto
     {
-        public PostDto(Post post)
+        public ActivityDto(Activity activity)
         {
-            Id = post.Id;
-            PostContent = post.Content;
-            TimeStamp = post.Timestamp;
-            Labels = post.Labels;
-            PostType = (int)post.PostType;
-            UserEmail = post.UserEmail;
+            Id = activity.Id;
+            ActivityContent = activity.Content;
+            TimeStamp = activity.Timestamp;
+            ActivityType = (int)activity.ActivityType;
+            UserEmail = activity.UserEmail;
         }
-        public PostDto() { }
+
+        public ActivityDto()
+        { }
+
         public int Id { get; set; }
         public string GroupName { get; set; }
-        public int PostType { get; set; }
-        public string PostContent { get; set; }
+        public int ActivityType { get; set; }
+        public string ActivityContent { get; set; }
         public string UserEmail { get; set; }
         public string UserFullNames { get; set; }
         public int Likes { get; set; }
@@ -30,8 +27,9 @@ namespace tapinto.Server.DataTransferObjects
         public int Comments { get; set; }
         public ChatHistory[] Chats { get; set; }
         public PossibleAnswerDto[] Answers { get; set; }
-        public string Labels { get; set; }
         public bool CurrentUserLiked { get; set; } = false;
         public bool Verified { get; set; }
+        public string ImageUrl { get; set; }
+        public IFormFile File { get; set; }
     }
 }

@@ -1,18 +1,11 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Grid, useMediaQuery } from "@mui/material";
-import Post from "./posts_components/postCreateComponent";
-import Bio from "./posts_components/bioComponent";
-import {
-  Box,
-  Button,
-  Chip,
-  CircularProgress,
-  ColorPaletteProp,
-  Typography,
-} from "@mui/joy";
-import PostComponent from "./posts_components/postComponent";
-import MyGroups from "./posts_components/myGroupsComponent";
-import { getallActivityAsync, postSelector } from "./postSlice";
+import Post from "./activityComponents/createActivityComponent";
+import Bio from "./activityComponents/bioComponent";
+import { Box, Button, CircularProgress, Typography } from "@mui/joy";
+import PostComponent from "./activityComponents/activityComponent";
+import MyGroups from "./activityComponents/myGroupsComponent";
+import { getallActivityAsync, resetActivities } from "./activitySlice";
 import { useAppDispatch, useAppSelector } from "../../../../../app/store/store";
 import convertToDateTimeAgo from "../../../../../helpers/convertToDateTimeAgo";
 import { NavLink } from "react-router-dom";
@@ -24,12 +17,11 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 
-export default function Posts() {
+export default function ShowActivitiesOnHomePage() {
   const Tablet = useMediaQuery("(min-width:1100px)");
-  const posts = useAppSelector(postSelector.selectAll);
+  const { activities } = useAppSelector((state) => state.activities);
   const dispatch = useAppDispatch();
   const [hasMoreData, setHasMoreData] = useState<boolean>(true);
-  const { labels } = useAppSelector((state) => state.activities);
   const [hasScrolled, setHasScrolled] = useState(false);
 
   window.onscroll = function () {
@@ -69,9 +61,9 @@ export default function Posts() {
               <ArrowUpwardTwoTone />
             </Button>
             <InfiniteScroll
-              dataLength={posts.length}
+              dataLength={activities.length}
               next={async () => {
-                const offset = posts.length + 5;
+                const offset = activities.length + 5;
                 await dispatch(getallActivityAsync(offset)).then((data) => {
                   if (!((data.payload as []).length > 0)) {
                     setHasMoreData(false);
@@ -84,8 +76,8 @@ export default function Posts() {
                   <b>🎊 Hooray! You have seen it all</b>
                 </p>
               }
-              // below props only if you need pull down functionality
               refreshFunction={async () => {
+                await dispatch(resetActivities());
                 await dispatch(getallActivityAsync(5));
               }}
               loader={
@@ -116,40 +108,24 @@ export default function Posts() {
             >
               <Post />
 
-              {posts.length > 0 ? (
-                posts.map((post, index) => {
+              {activities.length > 0 ? (
+                activities.map((activity, index) => {
                   return (
                     <PostComponent
-                      id={post.id}
-                      key={post.id + "-" + index}
-                      groupName={post.groupName}
-                      timestamp={convertToDateTimeAgo(post.timeStamp)}
-                      post_content={post.postContent}
-                      likes={post.likes}
-                      PostType={post.postType}
-                      answers = {post.answers}
-                      userFullNames={post.userFullNames}
-                      userPostEmail={post.userEmail}
-                      verified={post.verified}
-                      comments_no={post.comments}
-                      currentUserLiked={post.currentUserLiked}
-                      Labels={(() => {
-                        const lblChips = post.labels.split(",").map((l) => {
-                          const getFromLabels = labels.find(
-                            (lbl) => lbl.id === +l
-                          );
-                          if (!getFromLabels) return <></>;
-                          return (
-                            <Chip
-                              key={getFromLabels?.id}
-                              color={getFromLabels?.color as ColorPaletteProp}
-                            >
-                              {getFromLabels?.name}
-                            </Chip>
-                          );
-                        });
-                        return lblChips || null;
-                      })()}
+                      id={activity.id}
+                      key={activity.id + "-" + index}
+                      groupName={activity.groupName}
+                      timestamp={convertToDateTimeAgo(activity.timeStamp)}
+                      activityContent={activity.activityContent}
+                      likes={activity.likes}
+                      ActivityType={activity.activityType}
+                      activityImage={activity.imageUrl}
+                      answers={activity.answers}
+                      userFullNames={activity.userFullNames}
+                      userActivityEmail={activity.userEmail}
+                      verified={activity.verified}
+                      comments_no={activity.comments}
+                      currentUserLiked={activity.currentUserLiked}
                     />
                   );
                 })

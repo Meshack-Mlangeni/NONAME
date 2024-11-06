@@ -27,10 +27,11 @@ import {
   MenuItem,
   Menu,
   Input,
+  Link,
 } from "@mui/joy";
-import React, { useRef, useState } from "react";
+import { useRef, useState } from "react";
 import PopQuizComponent from "./popQuizComponent";
-import { _PostType } from "./_PostType";
+import { _ActivityType } from "./_ActivityType";
 import { NavLink } from "react-router-dom";
 import abbreviateNumber from "../../../../../../helpers/abbreviateNumber";
 import convertFullNamesToInitials from "../../../../../../helpers/convertFullNameToInitials";
@@ -40,56 +41,57 @@ import {
 } from "../../../../../../app/store/store";
 import {
   commentOnActivityAsync,
-  getAllActivityComments,
+  getAllActivityCommentsAsync,
   likeActivityAsync,
   resetComments,
-} from "../postSlice";
+} from "../activitySlice";
 import { toast } from "react-toastify";
 import { FieldValues, useForm } from "react-hook-form";
 import convertToDateTimeAgo from "../../../../../../helpers/convertToDateTimeAgo";
 import { Answer } from "../../../../../../models/answers";
+import Theme from "../../../../../../app/theme/theme";
 
-interface IPostProps {
+interface IActivityProps {
   id: number;
   hasLiveDiscussion?: boolean;
-  Labels?: React.ReactNode;
-  PostType?: _PostType;
+  ActivityType?: _ActivityType;
   timestamp: string;
+  activityImage: string;
   comments_no: number;
   likes: number;
   answers: Answer[];
-  post_content?: string;
+  activityContent?: string;
   groupName: string;
   userFullNames: string;
-  userPostEmail: string;
+  userActivityEmail: string;
   currentUserLiked: boolean;
   verified: boolean;
 }
 
-export default function PostComponent({
+export default function ActivityComponent({
   id,
-  Labels,
-  PostType = _PostType.Post,
+  ActivityType = _ActivityType.Activity,
   timestamp = "",
   likes = 0,
-  post_content = "",
+  activityContent = "",
   groupName,
   userFullNames,
-  userPostEmail,
+  userActivityEmail,
   currentUserLiked,
   verified,
+  activityImage,
   answers,
   comments_no,
-}: IPostProps) {
+}: IActivityProps) {
   const [Like, setLike] = useState<number>(likes);
   const [noOfComments, setNoOfComments] = useState<{
-    postId: number;
+    activityId: number;
     numberOfComments: number;
-  }>({ postId: id, numberOfComments: comments_no });
+  }>({ activityId: id, numberOfComments: comments_no });
   const [hasUserLiked, setHasUserLiked] = useState<boolean>(currentUserLiked);
   const { user } = useAppSelector((state) => state.account);
   const dispatch = useAppDispatch();
-  const { post_comments } = useAppSelector((state) => state.activities);
+  const { activityComments } = useAppSelector((state) => state.activities);
   const {
     register,
     reset,
@@ -99,21 +101,24 @@ export default function PostComponent({
 
   const onCommentSubmit = async (data: FieldValues) => {
     await dispatch(
-      commentOnActivityAsync({ ...data, postId: id } as FieldValues)
-    ).then(async () => {
-      await fetchCommentsForPost(id);
+      commentOnActivityAsync({ ...data, activityId: id } as FieldValues)
+    ).then(async (data) => {
       setNoOfComments({
-        postId: id,
+        activityId: id,
         numberOfComments: noOfComments.numberOfComments + 1,
       });
+      if (data !== undefined) {
+        //@ts-expect-error
+        const currentActivityID = data.payload && data.payload.data.activityId;
+        await dispatch(getAllActivityCommentsAsync(currentActivityID));
+      }
     });
     reset();
   };
 
   const self = useRef<HTMLDivElement>(null);
-  const fetchCommentsForPost = async (id: number) => {
-    dispatch(resetComments());
-    return await dispatch(getAllActivityComments(id));
+  const fetchCommentsForActivity = async (id: number) => {
+    return await dispatch(getAllActivityCommentsAsync(id));
   };
 
   self.current &&
@@ -122,38 +127,44 @@ export default function PostComponent({
     });
 
   /*
-      Hello I'm a big component I have
+        Hello I'm a big component I have
 
-      PopQuizComponent
-      Picture and Content Start
-      check If its a post include like and comment else the Join Disc Button
-      This is the comments modal
-      Like and comment buttons
-      Beginning of a live discussion component
-      ************* All in order as written ************
-  */
+        PopQuizComponent
+        Picture and Content Start
+        check If its a post include like and comment else the Join Disc Button
+        This is the comments modal
+        Like and comment buttons
+        Beginning of a live discussion component
+        ************* All in order as written ************
+    */
 
-  const post_avatar = (
+  const activity_avatar = (
     verified: boolean,
     fullnames: string,
     type: string,
     timestamp: string,
     groupName?: string
   ) => {
-    return type === "Post" ? (
+    return type === "Activity" ? (
       <Box sx={{ display: "flex", gap: 1.5, mt: "auto" }}>
         <Avatar
-          sx={{ boxShadow: "sm", mt: 0.6 }}
+          sx={{ boxShadow: "sm", mt: 0.2 }}
           alt={userFullNames}
           variant="solid"
           color="neutral"
-          size="md"
+          size="lg"
         >
           {convertFullNamesToInitials(fullnames)}
         </Avatar>
         <div>
-          <Typography level={"body-md"}>
-            {fullnames}
+          <Typography level={"title-lg"}>
+            <Link
+              //@ts-expect-error
+              color={Theme.palette.common.black}
+              href="google.com"
+            >
+              {fullnames}
+            </Link>
             {verified && (
               <Verified
                 sx={{ fontSize: "sm", mt: -0.2, ml: 0.3 }}
@@ -161,9 +172,9 @@ export default function PostComponent({
               />
             )}
           </Typography>
-          <Typography level="body-sm">
+          <Typography color="neutral" variant="plain" level="title-md">
             {groupName && <strong>{groupName}</strong>}
-            {(groupName ? " | " : "") + timestamp}
+            <span style={{fontWeight: 300}}>{(groupName ? " | " : "") + timestamp}</span>
           </Typography>
         </div>
       </Box>
@@ -195,28 +206,34 @@ export default function PostComponent({
     );
   };
 
-  const poll = <PopQuizComponent question={post_content} answers={answers} />;
-  // The !!0 is to temporaly hide the image
-  const postOrdisc = (
+  const poll = (
+    <PopQuizComponent question={activityContent} answers={answers} />
+  );
+  const activityOrdiscussion = (
     <>
       {/* Picture and Content Start */}
-      {!!0 && (
-        <CardOverflow>
+      {activityImage && (
+        <CardOverflow sx={{ m: 0.5, boxShadow: "sm" }}>
           <AspectRatio>
-            <img src="../public/test.jpg" alt="" loading="lazy" />
+            <img
+              style={{ objectFit: "fill" }}
+              src={activityImage}
+              alt="This is the image of the post"
+              loading="lazy"
+            />
           </AspectRatio>
         </CardOverflow>
       )}
-      <Box sx={{ display: "flex", gap: 1.5, mt: "1" }}>
+      <Box sx={{ display: "flex", gap: 1.5, mt: 1, mb: 1,ml: 0.5 }}>
         <CardContent orientation="horizontal">
-          <Typography level="body-lg">{post_content}</Typography>
+          <Typography level="title-lg">{activityContent}</Typography>
         </CardContent>
       </Box>
       {/* Picture and Content End */}
 
       {/* If its a post include like and comment else the Join Disc Button */}
       {/* Start */}
-      {PostType === _PostType.Post ? (
+      {ActivityType === _ActivityType.Activity ? (
         <>
           <Sheet
             variant="soft"
@@ -244,6 +261,7 @@ export default function PostComponent({
                 "--Button-gap": "13px",
               }}
               onClick={() => {
+                console.log("TJos is the id: ", id);
                 dispatch(likeActivityAsync(id));
                 if (hasUserLiked) setLike(Like - 1);
                 else setLike(Like + 1);
@@ -264,7 +282,7 @@ export default function PostComponent({
               onClick={() => {
                 if (self.current !== null) {
                   if (!self.current.classList.contains("comments-css")) {
-                    fetchCommentsForPost(id).then(
+                    fetchCommentsForActivity(id).then(
                       () => {
                         self.current!.classList.add("comments-css");
                         self.current!.classList.add("fade-in");
@@ -296,7 +314,7 @@ export default function PostComponent({
                   maxHeight: "300px",
                 }}
               >
-                {post_comments.map((c) => (
+                {activityComments.map((c) => (
                   <Box
                     sx={(theme) => ({
                       mt: 1,
@@ -309,7 +327,7 @@ export default function PostComponent({
                       } dashed`,
                     })}
                   >
-                    {post_avatar(
+                    {activity_avatar(
                       c.verified,
                       c.fullNames,
                       "Comment",
@@ -382,46 +400,53 @@ export default function PostComponent({
         sx={{ alignItems: "center", gap: 1 }}
       >
         {/* Avatar Box Start */}
-        {post_avatar(verified, userFullNames, "Post", timestamp, groupName)}
+        {activity_avatar(
+          verified,
+          userFullNames,
+          "Activity",
+          timestamp,
+          groupName
+        )}
         {/* Avatar Box End */}
         {/* Post Dropdown Start */}
-        {userPostEmail.toLowerCase() === user?.email.toLowerCase() && (
-          <>
-            <Dropdown>
-              <MenuButton
-                variant="plain"
-                color="neutral"
-                size="sm"
-                sx={{ ml: "auto" }}
-                slots={{ root: IconButton }}
-                slotProps={{ root: { variant: "outlined", color: "neutral" } }}
-              >
-                <MoreVert />
-              </MenuButton>
-              <Menu placement="bottom-end">
-                <MenuItem variant="soft">
-                  <ListItemDecorator>
-                    <DeleteForever />
-                  </ListItemDecorator>{" "}
-                  Delete
-                </MenuItem>
-              </Menu>
-            </Dropdown>
-          </>
-        )}
+        {userActivityEmail &&
+          user &&
+          userActivityEmail.toLowerCase() === user?.email.toLowerCase() && (
+            <>
+              <Dropdown>
+                <MenuButton
+                  variant="plain"
+                  color="neutral"
+                  size="sm"
+                  sx={{ ml: "auto" }}
+                  slots={{ root: IconButton }}
+                  slotProps={{
+                    root: { variant: "outlined", color: "neutral" },
+                  }}
+                >
+                  <MoreVert />
+                </MenuButton>
+                <Menu placement="bottom-end">
+                  <MenuItem variant="soft">
+                    <ListItemDecorator>
+                      <DeleteForever />
+                    </ListItemDecorator>{" "}
+                    Delete
+                  </MenuItem>
+                </Menu>
+              </Dropdown>
+            </>
+          )}
         {/* Post Dropdown End */}
       </CardContent>
 
-      {/* Post Labels Start */}
-      {Labels && <CardContent orientation="horizontal">{Labels}</CardContent>}
-      {/* Post Labels End */}
-
       {/* Poll Component Start */}
-      {PostType === _PostType.Poll && poll}
+      {ActivityType === _ActivityType.Poll && poll}
       {/* Poll Component End */}
       {/* Post or Discussion Component Start */}
-      {(PostType === _PostType.Post || PostType === _PostType.Discussion) &&
-        postOrdisc}
+      {(ActivityType === _ActivityType.Activity ||
+        ActivityType === _ActivityType.Discussion) &&
+        activityOrdiscussion}
       {/* Post or Discussion Component End */}
     </Card>
   );
