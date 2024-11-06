@@ -139,7 +139,7 @@ namespace tapinto.Server.Controllers
                         .ConfigActivity(activity)
                         .HasImage(id: activity.Id)
                         .AssignGroupActivityIsIn(id: activity.GroupId)
-                        .SetUpUserInfo(email: user.Email)
+                        .SetUpUserInfo(email: activity.UserEmail)
                         .SetupLikesAndCommentsCount(id: activity.Id)
                         .CheckIfUserLikedTheActivity(lultp: activity.Likes != null
                                     && activity.Likes.Any(p => p.UserEmail == user.Email))
@@ -238,7 +238,7 @@ namespace tapinto.Server.Controllers
                 dbContext.Likes.Remove(like);
             }
             dbContext.SaveChanges();
-            response.ResponseSuccessWithMessage("Like For Post Changed Successfully", data: like);
+            response.ResponseSuccessWithMessage("Like For Post Changed Successfully", data: like ?? new Like() { ActivityId = id, UserEmail = user.Email });
             return Ok(response);
         }
 

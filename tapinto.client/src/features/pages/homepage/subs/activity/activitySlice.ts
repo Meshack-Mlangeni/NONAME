@@ -9,8 +9,9 @@ import { Group } from "../../../../../models/group";
 import { Comments } from "../../../../../models/comments";
 import { response } from "../../../../../models/response/response";
 import { toast } from "react-toastify";
+import { Like } from "../../../../../models/like";
 
-export const likeActivityAsync = createAsyncThunk<response<Activity>, number>(
+export const likeActivityAsync = createAsyncThunk<response<Like>, number>(
     "activity/likeActivityAsync",
     async (id: number, thunkAPI) => {
         try {
@@ -178,6 +179,7 @@ export const ActivitySlice = createSlice({
         builder.addCase(getAllActivityCommentsAsync.fulfilled, (state, action) => {
             state.activityComments = [...action.payload.data as Comments[]];
         });
+
     }
 });
 
