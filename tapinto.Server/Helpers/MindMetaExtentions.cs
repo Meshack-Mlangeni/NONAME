@@ -1,3 +1,4 @@
+using System.Globalization;
 using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Identity;
 using tapinto.Server.DataTransferObjects;
@@ -16,6 +17,17 @@ namespace tapinto.Server.Helpers
                 return userEmail;
             }
             return null;
+        }
+
+        public static ILogger<T> LogInfoWithDefault<T>(this ILogger<T> logger, string log)
+        {
+            logger.LogInformation(log);
+            return logger;
+        }
+
+        public static string ToTitleCase(this string value)
+        {
+            return value == "" ? "" : CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value); ;
         }
     }
 }

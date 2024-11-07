@@ -10,7 +10,6 @@ import {
 } from "@mui/joy";
 import {
   Add,
-  CardMembershipRounded,
   JoinFullTwoTone,
   LoginTwoTone,
   Send,

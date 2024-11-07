@@ -17,13 +17,13 @@ namespace tapinto.Server.Helpers
             Message = message;
             RequestSuccessful = requestSuccessful;
         }
-        public void ResponseSuccessWithMessage(string message = "Success", T data = default)
+        public void ResponseSuccessWithMessage(string message = "Request Success", T data = default)
         {
             RequestSuccessful = true;
             Message = message;
             Data = data;
         }
-        public void ResponseFailedWithMessage(string message = "Success")
+        public void ResponseFailedWithMessage(string message = "Request Failed")
         {
             RequestSuccessful = false;
             Message = message;

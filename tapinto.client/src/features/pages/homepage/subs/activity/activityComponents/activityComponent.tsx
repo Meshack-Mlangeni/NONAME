@@ -45,7 +45,6 @@ import {
   likeActivityAsync,
   resetComments,
 } from "../activitySlice";
-import { toast } from "react-toastify";
 import { FieldValues, useForm } from "react-hook-form";
 import convertToDateTimeAgo from "../../../../../../helpers/convertToDateTimeAgo";
 import { Answer } from "../../../../../../models/answers";
@@ -102,17 +101,14 @@ export default function ActivityComponent({
   const onCommentSubmit = async (data: FieldValues) => {
     await dispatch(
       commentOnActivityAsync({ ...data, activityId: id } as FieldValues)
-    ).then(async (data) => {
-      setNoOfComments({
-        activityId: id,
-        numberOfComments: noOfComments.numberOfComments + 1,
-      });
-      if (data !== undefined) {
-        //@ts-expect-error
-        const currentActivityID = data.payload && data.payload.data.activityId;
-        await dispatch(getAllActivityCommentsAsync(currentActivityID));
-      }
-    });
+    )
+      .then(() => {
+        setNoOfComments({
+          activityId: id,
+          numberOfComments: noOfComments.numberOfComments + 1,
+        });
+      })
+      .finally(async() => await dispatch(getAllActivityCommentsAsync(id)));
     reset();
   };
 
@@ -174,7 +170,9 @@ export default function ActivityComponent({
           </Typography>
           <Typography color="neutral" variant="plain" level="title-md">
             {groupName && <strong>{groupName}</strong>}
-            <span style={{fontWeight: 300}}>{(groupName ? " | " : "") + timestamp}</span>
+            <span style={{ fontWeight: 300 }}>
+              {(groupName ? " | " : "") + timestamp}
+            </span>
           </Typography>
         </div>
       </Box>
@@ -224,7 +222,7 @@ export default function ActivityComponent({
           </AspectRatio>
         </CardOverflow>
       )}
-      <Box sx={{ display: "flex", gap: 1.5, mt: 1, mb: 1,ml: 0.5 }}>
+      <Box sx={{ display: "flex", gap: 1.5, mt: 1, mb: 1, ml: 0.5 }}>
         <CardContent orientation="horizontal">
           <Typography level="title-lg">{activityContent}</Typography>
         </CardContent>
@@ -279,16 +277,21 @@ export default function ActivityComponent({
               sx={{
                 "--Button-gap": "13px",
               }}
-              onClick={() => {
-                if (self.current !== null) {
+              onClick={async () => {
+                if (self.current) {
+                  const someElementsOpened =
+                    document.getElementsByClassName("comments-css");
+                  Array.from(someElementsOpened).forEach((elementOpened) => {
+                    if (elementOpened !== self.current) {
+                      elementOpened.classList.remove("comments-css");
+                    }
+                  });
+                  dispatch(resetComments());
                   if (!self.current.classList.contains("comments-css")) {
-                    fetchCommentsForActivity(id).then(
-                      () => {
-                        self.current!.classList.add("comments-css");
-                        self.current!.classList.add("fade-in");
-                      },
-                      () => toast.error("There was an error fetching comments")
-                    );
+                    await fetchCommentsForActivity(id).then(() => {
+                      self.current!.classList.add("comments-css");
+                      self.current!.classList.add("fade-in");
+                    });
                   } else {
                     self.current.classList.remove("comments-css");
                     dispatch(resetComments());

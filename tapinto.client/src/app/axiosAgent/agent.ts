@@ -42,13 +42,15 @@ const account = {
 const activity = {
     create: <T>(data: object) => requests.post_form<T>("activity/create", data),
     getallactivity: <T>(skip: number) => requests.get<T>(`activity/getall?skip=${skip}`),
-    getallschoolgroups: <T>() => requests.get<T>("activity/getallgroups"),
-    createGroup: <T>(data: object) => requests.put<T>("activity/creategroup", data),
     like_activity: <T>(id: number) => requests.post<T>(`activity/likeactivity?id=${id}`, {}),
     comment: <T>(data: object) => requests.put<T>("activity/comment", data),
     getallactivitycomments: <T>(id: number) => requests.get<T>(`activity/getcomments?id=${id}`),
 };
-
+const group = {
+    create: <T>(data: object) => requests.put<T>("group/creategroup", data),
+    getallschoolgroups: <T>() => requests.get<T>("group/getallgroups"),
+    joinorexitgroup: <T>(groupId: number, action: string) => requests.put<T>(`group/joinexitgroup?groupId=${groupId}&action=${action}`, {})
+}
 const school = {
     getallschools: <T>() => requests.get<T>("school/getallschools"),
 };
@@ -56,5 +58,6 @@ const school = {
 export const agent = {
     account,
     activity,
-    school
+    school,
+    group
 };

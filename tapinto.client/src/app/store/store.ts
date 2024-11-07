@@ -4,12 +4,14 @@ import { ActivitySlice } from "../../features/pages/homepage/subs/activity/activ
 import { accountSlice } from "../../features/pages/account/accountSlice";
 import { AppSlice } from "./appSlice";
 import { schoolSlice } from "../../features/pages/homepage/subs/myschool/schoolSlice";
+import { groupSlice } from "../../features/pages/homepage/subs/groups/groupSlice";
 
 export const store = configureStore({
     reducer: {
         app: AppSlice.reducer,
         activities: ActivitySlice.reducer,
         account: accountSlice.reducer,
+        group: groupSlice.reducer,
         school: schoolSlice.reducer,
     }
 });
