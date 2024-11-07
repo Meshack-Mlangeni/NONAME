@@ -23,12 +23,11 @@ import { loginAsync } from "../../../../account/accountSlice";
 import AppLogo from "../../../../../../app/navbar/AppLogo";
 import { EmailRounded, Verified } from "@mui/icons-material";
 import { setLoading } from "../../../../../../app/store/appSlice";
-import { getallActivityAsync, postSelector } from "../postSlice";
+import { getallActivityAsync } from "../activitySlice";
 
 export default function Bio() {
   const { user } = useAppSelector((state) => state.account);
   const dispatch = useAppDispatch();
-  const posts = useAppSelector(postSelector.selectAll);
 
   const {
     register,
@@ -84,7 +83,9 @@ export default function Bio() {
                 <Typography level="body-xs" fontWeight="lg">
                   Posts
                 </Typography>
-                <Typography fontWeight="lg">{user?.numberOfPosts ?? 0}</Typography>
+                <Typography fontWeight="lg">
+                  {user?.numberOfActivities ?? 0}
+                </Typography>
               </div>
               <div>
                 <Typography level="body-xs" fontWeight="lg">
@@ -100,6 +101,9 @@ export default function Bio() {
                 </Typography>
                 <Typography fontWeight="lg">0.0</Typography>
               </div>
+            </Sheet>
+            <Sheet sx={{}}>
+              {/*{Array.of([1,2,3,4,5]).map(i => <img key={i} style={{ height: "24px", width: "24px" }} src="\Achievement (8).png" />)}*/}
             </Sheet>
           </>
         ) : (

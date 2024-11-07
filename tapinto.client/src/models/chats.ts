@@ -1,7 +1,7 @@
 export interface Chats {
-    id: number;
+    chatHistoryId: number;
     content: string;
     userEmail: string;
     timeStamp: string;
-    postId: number;
+    activityId: number;
 }

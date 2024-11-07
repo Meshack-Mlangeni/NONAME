@@ -2,7 +2,7 @@ import Box from '@mui/joy/Box';
 import Stack from '@mui/joy/Stack';
 import Sheet from '@mui/joy/Sheet';
 import Typography from '@mui/joy/Typography';
-import { MessageProps } from '../types';
+import { MessageProps } from "../../../models/types";
 
 type BubbleProps = MessageProps & {
     variant: 'sent' | 'received';

@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
-using System.Text.Json;
-using System.Text.Json.Nodes;
 using tapinto.Server.Exceptions;
 using tapinto.Server.Models.ExceptionModels;
 
@@ -25,7 +23,7 @@ namespace tapinto.Server.Middleware
             }
             catch (Exception ex)
             {
-               await HandleExceptionAsync(httpContext, ex);
+                await HandleExceptionAsync(httpContext, ex);
             }
         }
 
@@ -54,7 +52,6 @@ namespace tapinto.Server.Middleware
             httpContext.Response.StatusCode = (int)statusCode;
 
             return httpContext.Response.WriteAsync(response);
-
         }
     }
 }

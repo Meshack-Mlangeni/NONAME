@@ -1,3 +1,3 @@
 export default function GetSelectedTheme() {
-    return  document.documentElement.getAttribute('data-theme') ?? 'light'
+    return document.documentElement.getAttribute('data-theme') ?? 'light';
 }

@@ -1,4 +1,3 @@
-import * as React from "react";
 import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
@@ -11,9 +10,9 @@ import Add from "@mui/icons-material/Add";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { useAppDispatch } from "../../../../../app/store/store";
-import { createGroupAsync } from "../posts/postSlice";
 import { setLoading } from "../../../../../app/store/appSlice";
 import { DialogContent } from "@mui/joy";
+import { createGroupAsync } from "./groupSlice";
 
 export default function CreateGroupModal() {
   const [open, setOpen] = useState<boolean>(false);

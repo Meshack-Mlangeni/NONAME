@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using CloudinaryDotNet.Actions;
 using Microsoft.AspNetCore.Identity;
+using tapinto.Server.DataTransferObjects;
 using tapinto.Server.Models;
 
-namespace tapinto.Server.HelperFunctions
+namespace tapinto.Server.Helpers
 {
     public class HelperFunctions
     {
@@ -14,7 +12,11 @@ namespace tapinto.Server.HelperFunctions
             var user = await userManager.FindByEmailAsync(email);
             return $"{user.FirstName} {user.LastName}";
         }
+
         public async Task<bool> GetVerification(string email, UserManager<User> userManager) =>
             (await userManager.FindByEmailAsync(email))?.Verified ?? false;
+
+        public static bool activityHasImageFile(ActivityDto activity) => activity.File != null && activity.File.Length > 0;
+        public static bool imageUploadSuccessful(ImageUploadResult imageUploadResults) => imageUploadResults != null && imageUploadResults.Error is null;
     }
 }

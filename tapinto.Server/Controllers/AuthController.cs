@@ -22,8 +22,7 @@ namespace tapinto.Server.Controllers
         }
 
         [HttpPost]
-
-        public async Task<Token> Auntheticate(User user)
+        public async Task<Token> Authenticate(User user)
         {
             //verify credential
             if (user != null)
@@ -45,17 +44,14 @@ namespace tapinto.Server.Controllers
 
                 var expiresAt = DateTime.UtcNow.AddDays(1);
 
-
                 return new Token
                 {
                     accessToken = CreateToken(claims, expiresAt),
                 };
-
             }
 
             ModelState.AddModelError("Unauthorized", "Missing credentials");
             return null;
-
         }
 
         private string CreateToken(IEnumerable<Claim> claims, DateTime expiresAt)

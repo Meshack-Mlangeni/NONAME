@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using tapinto.Server.Models;
 
 namespace tapinto.Server.DataTransferObjects
@@ -10,17 +6,15 @@ namespace tapinto.Server.DataTransferObjects
     {
         public SchoolDto(School school)
         {
-            Id = school.Id;
+            SchoolId = school.SchoolId;
             SchoolName = school.SchoolName;
             UserEmail = school.UserEmail;
         }
         public SchoolDto()
         { }
-
-        public int Id { get; set; }
+        public int SchoolId { get; set; }
         public string SchoolName { get; set; }
-        public string UserEmail { get; set; } //admin
-
+        public string UserEmail { get; set; }
         public GroupDto[] Groups { get; set; }
     }
 }

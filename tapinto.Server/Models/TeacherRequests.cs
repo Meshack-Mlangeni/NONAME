@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace tapinto.Server.Models
 {
     public class TeacherRequests
     {
-        public int Id { get; set; }
+        [Key]
+        public int TeacherRequestId { get; set; }
         public string UserEmail { get; set; }
         public string ImageData { get; set; }
         public bool Approved { get; set; }

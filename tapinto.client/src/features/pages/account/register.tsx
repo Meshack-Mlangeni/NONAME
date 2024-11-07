@@ -24,7 +24,7 @@ import AppLogo from "../../../app/navbar/AppLogo";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import { registerAsync } from "./accountSlice";
 import { setLoading } from "../../../app/store/appSlice";
-import { getallActivityAsync } from "../homepage/subs/posts/postSlice";
+import { getallActivityAsync } from "../homepage/subs/activity/activitySlice";
 import { useEffect, useState } from "react";
 import MyCamera from "./takeImage";
 import { getAllSchoolsAsync } from "../homepage/subs/myschool/schoolSlice";

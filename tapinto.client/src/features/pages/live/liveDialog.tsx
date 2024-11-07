@@ -4,9 +4,6 @@ import Modal from "@mui/joy/Modal";
 import ModalDialog, { ModalDialogProps } from "@mui/joy/ModalDialog";
 import Stack from "@mui/joy/Stack";
 import { Chip, LinearProgress } from "@mui/joy";
-import MessagesPanel from "./messagesPanel";
-import { chats } from "../../../models/ddata";
-import SelectedDiscussion from "./selectedDiscussion";
 
 export default function LiveDialog() {
   const [layout, setLayout] = React.useState<
@@ -40,9 +37,7 @@ export default function LiveDialog() {
           setLayout(undefined);
         }}
       >
-        <ModalDialog layout={layout}>
-    
-        </ModalDialog>
+        <ModalDialog layout={layout}></ModalDialog>
       </Modal>
     </React.Fragment>
   );

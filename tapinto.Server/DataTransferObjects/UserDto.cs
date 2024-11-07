@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using tapinto.Server.Models;
 
 namespace tapinto.Server.DataTransferObjects
@@ -17,7 +13,10 @@ namespace tapinto.Server.DataTransferObjects
             Bio = user.Bio;
             Verified = user.Verified;
         }
-        public UserDto() { }
+
+        public UserDto()
+        { }
+
         public string UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -27,7 +26,6 @@ namespace tapinto.Server.DataTransferObjects
         public string Bio { get; set; }
         public bool Verified { get; set; }
         public GroupDto[] Groups { get; set; }
-        public int NumberOfPosts { get; set; }
-
+        public int NumberOfActivities { get; set; }
     }
 }
