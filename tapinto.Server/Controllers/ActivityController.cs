@@ -31,17 +31,17 @@ namespace tapinto.Server.Controllers
         [HttpPost("create")]
         public async Task<ActionResult> CreateAsync([FromForm] ActivityDto activity)
         {
-            logger.LogInformation("{0} - {1} CREATING ACTIVITY", await User.Identity.EmailAsync(userManager), DateTime.Now.ToLongDateString());
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
             var response = new DataResponse<ActivityDto>();
             try
             {
-                var user = await userManager.FindByNameAsync(User.Identity.Name);
                 var group = dbContext.Groups.FirstOrDefault(g => g.GroupName == activity.GroupName);
                 if (group == null && user == null)
                 {
                     response.ResponseFailedWithMessage("User or Groups Not Found, Report Issue.");
                     return Ok(response);
                 }
+                logger.LogInformation("{0} - {1} CREATING ACTIVITY", user.Email, DateTime.Now.ToLongDateString());
 
                 ImageUploadResult imageUploadResults = null;
                 var newActivity = new Activity(activity)
@@ -118,14 +118,14 @@ namespace tapinto.Server.Controllers
         [HttpGet("getall")]
         public async Task<ActionResult<List<ActivityDto>>> GetAllActivities(int skip) //offset is skip
         {
-            logger.LogInformation("{0} - {1} FETCH ACTIVITIES", DateTime.Now.ToLongDateString(), await User.Identity.EmailAsync(userManager));
-            var response = new DataResponse<List<ActivityDto>>();
             var user = await userManager.FindByNameAsync(User.Identity.Name);
+            var response = new DataResponse<List<ActivityDto>>();
             if (user == null)
             {
                 response.ResponseFailedWithMessage("Could Find User, Please Report Issue");
                 return Ok(response);
             }
+            logger.LogInformation("{0} - {1} FETCH ACTIVITIES", DateTime.Now.ToLongDateString(), user.Email);
             var groupsUserIsIn = dbContext.Membership.Where(gu => gu.UserEmail == user.Email)
                 .Include(g => g.Group).ToList();
 
@@ -152,78 +152,17 @@ namespace tapinto.Server.Controllers
         }
 
         [Authorize]
-        [HttpGet("getallgroups")]
-        public async Task<ActionResult> GetAllGroups()
-        {
-            logger.LogInformation("{0} - {1} FETCH GROUPS", DateTime.Now.ToLongDateString(), await User.Identity.EmailAsync(userManager));
-            var response = new DataResponse<List<GroupDto>>();
-            var user = await userManager.FindByNameAsync(User.Identity.Name);
-            if (user == null)
-            {
-                response.ResponseFailedWithMessage("Could Not Fetch Groups, Please Report this Issue.");
-                return Ok(response);
-            }
-            var groupsInUsersSchool = dbContext.Groups.Include(s => s.School).Where(g => g.SchoolId == user.SchoolId).Include(g => g.groupUserBridge).ToList();
-            response.ResponseSuccessWithMessage("Successfully Fetched Groups", data: groupsInUsersSchool.Select(g => new GroupDto(g)
-            {
-                Users = g.groupUserBridge.Select(ue => ue.UserEmail).Select(t => new UserDto(dbContext.Users.FirstOrDefault(u => u.Email == t))).ToArray()
-            }).ToList());
-            return Ok(response);
-        }
-
-        [Authorize]
-        [HttpPut("creategroup")]
-        public async Task<ActionResult<GroupDto>> CreateGroup(Group group)
-        {
-            logger.LogInformation("{0} - {1} CREATING GROUP", DateTime.Now.ToLongDateString(), await User.Identity.EmailAsync(userManager));
-            var response = new DataResponse<GroupDto>();
-            var _group = group;
-            var groupAdmin = await userManager.FindByNameAsync(User.Identity.Name);
-            if (group == null && groupAdmin == null && _group.GroupName == "" && dbContext.Groups.Any(g => g.GroupName == group.GroupName))
-            {
-                response.ResponseFailedWithMessage("An Error Occured While Creating Group, Please Report This Issue");
-                return Ok(response);
-            }
-            if (dbContext.Groups.Where(g => g.UserEmail == groupAdmin.Email).ToList().Count <= 10)
-            {
-                _group.UserEmail = groupAdmin.Email;
-                _group.SchoolId = groupAdmin.SchoolId;
-                dbContext.Add(_group);
-                dbContext.SaveChanges();
-
-                var membership = new Membership
-                {
-                    UserEmail = groupAdmin.Email,
-                    GroupId = _group.GroupId,
-                };
-                dbContext.Membership.Add(membership);
-                dbContext.SaveChanges();
-
-                var contributionHelper = new ContributionHelper(dbContext, groupAdmin.Email, contributionType.CreatedAGroup);
-                contributionHelper.CreateContribution();
-
-                response.ResponseSuccessWithMessage("Group Added Successfully", data: new GroupDto(group));
-                return Ok(response);
-            }
-            else
-            {
-                response.ResponseFailedWithMessage("You Have Reached Your Group Maximum");
-                return Ok(response);
-            }
-        }
-
-        [Authorize]
         [HttpPost("likeactivity/")]
         public async Task<IActionResult> LikeActivity(int id)
         {
-            logger.LogInformation("{0} - {1} LIKED ACTIVITY WITH ID: {2}", DateTime.Now.ToLongDateString(), await User.Identity.EmailAsync(userManager), id);
-            var response = new DataResponse<Like>();
             var user = await userManager.FindByNameAsync(User.Identity.Name);
+            var response = new DataResponse<Like>();
             if (user == null)
             {
                 response.ResponseFailedWithMessage("Could Not Find User, Please Report This Issue.");
                 return Ok(response);
             }
+            logger.LogInformation("{0} - {1} LIKED ACTIVITY WITH ID: {2}", DateTime.Now.ToLongDateString(), user.Email, id);
             var like = dbContext.Likes.FirstOrDefault(l => l.UserEmail == user.Email && l.ActivityId == id);
             if (like == null)
             {
@@ -246,14 +185,14 @@ namespace tapinto.Server.Controllers
         [HttpPut("comment")]
         public async Task<IActionResult> CommentOnActivity(CommentsDto comment)
         {
-            logger.LogInformation("{0} - {1} COMMENTED ON ACTIVITY WITH ID: {2}", DateTime.Now.ToLongDateString(), await User.Identity.EmailAsync(userManager), comment.ActivityId);
-            var response = new DataResponse<CommentsDto>();
             var user = await userManager.FindByNameAsync(User.Identity.Name);
+            var response = new DataResponse<CommentsDto>();
             if (user == null)
             {
                 response.ResponseFailedWithMessage("Could Not Find User, Please Report This Issue.");
                 return Ok(response);
             }
+            logger.LogInformation("{0} - {1} COMMENTED ON ACTIVITY WITH ID: {2}", DateTime.Now.ToLongDateString(), user.Email, comment.ActivityId);
             var Comment = new Comments
             {
                 CommentContent = comment.CommentContent,
@@ -263,7 +202,10 @@ namespace tapinto.Server.Controllers
             };
             dbContext.Comments.Add(Comment);
             dbContext.SaveChanges();
-            response.ResponseSuccessWithMessage("Comment On Activity Successfull.", data: new CommentsDto(Comment));
+            response.ResponseSuccessWithMessage("Comment On Activity Successfull.", data: new CommentsDto(Comment)
+            {
+                FullNames = await new HelperFunctions().GetFullNames(user.Email, userManager)
+            });
             return Ok(response);
         }
 

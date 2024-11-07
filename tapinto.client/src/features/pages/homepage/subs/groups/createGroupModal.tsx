@@ -10,9 +10,9 @@ import Add from "@mui/icons-material/Add";
 import { useState } from "react";
 import { FieldValues, useForm } from "react-hook-form";
 import { useAppDispatch } from "../../../../../app/store/store";
-import { createGroupAsync } from "../activity/activitySlice";
 import { setLoading } from "../../../../../app/store/appSlice";
 import { DialogContent } from "@mui/joy";
+import { createGroupAsync } from "./groupSlice";
 
 export default function CreateGroupModal() {
   const [open, setOpen] = useState<boolean>(false);

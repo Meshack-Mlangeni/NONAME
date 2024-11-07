@@ -1,12 +1,15 @@
 import { Button, Divider, Sheet, Table, Typography } from "@mui/joy";
 import { useAppDispatch, useAppSelector } from "../../../../../app/store/store";
 import { useEffect } from "react";
-import { getAllSchoolUserGroupsAsync } from "../activity/activitySlice";
 import Input, { InputProps } from "@mui/joy/Input";
 import Box from "@mui/joy/Box";
 import React from "react";
 import CreateGroupModal from "./createGroupModal";
 import { Group } from "../../../../../models/group";
+import {
+  getAllSchoolUserGroupsAsync,
+  joinOrExitGroupAsync,
+} from "./groupSlice";
 
 //Debounced code kindly borrowed from MUI
 
@@ -25,24 +28,33 @@ function DebounceInput(props: InputProps & DebounceProps) {
       handleDebounce(event.target.value);
     }, debounceTimeout);
   };
-
   return <Input {...rest} onChange={handleChange} />;
 }
 
 export default function Groups() {
   const { user } = useAppSelector((state) => state.account);
+  const dispatch = useAppDispatch();
+
   function isAdmin(group: Group) {
     if (user) return user!.email === group.userEmail;
     else return false;
   }
-  const { groups } = useAppSelector((state) => state.activities);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function isAlreadyAParticipant(group: Group) {
+    if (user) return group.users.some((gu) => gu.email == user.email);
+    else return false;
+  }
+
+  const handleJoinExitGroup = (data: { groupId: number; action: string }) => {
+    dispatch(joinOrExitGroupAsync(data));
+    dispatch(getAllSchoolUserGroupsAsync());
+  };
+
+  const { groups } = useAppSelector((state) => state.group);
   const [debouncedVal, setDebouncedValue] = React.useState("");
   const handleDebounce = (value: string) => {
     setDebouncedValue(value);
   };
 
-  const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(getAllSchoolUserGroupsAsync());
   }, [dispatch]);
@@ -117,9 +129,34 @@ export default function Groups() {
                       </Button>
                     </td>
                     <td>
-                      <Button disabled={isAdmin(g)} sx={{ m: 1 }}>
-                        Join
-                      </Button>
+                      {isAlreadyAParticipant(g) ? (
+                        <Button
+                          color="danger"
+                          disabled={isAdmin(g)}
+                          sx={{ m: 1 }}
+                          onClick={() =>
+                            handleJoinExitGroup({
+                              groupId: g.groupId,
+                              action: "e",
+                            })
+                          }
+                        >
+                          Exit
+                        </Button>
+                      ) : (
+                        <Button
+                          disabled={isAdmin(g)}
+                          sx={{ m: 1 }}
+                          onClick={() =>
+                            handleJoinExitGroup({
+                              groupId: g.groupId,
+                              action: "j",
+                            })
+                          }
+                        >
+                          Join
+                        </Button>
+                      )}
                       <Button disabled={!isAdmin(g)} sx={{ m: 1 }}>
                         Remove Group
                       </Button>

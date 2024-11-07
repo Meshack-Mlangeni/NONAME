@@ -12,10 +12,10 @@ import { fetchLoggedInUser } from "./features/pages/account/accountSlice";
 import { routes } from "./app/router/Routes";
 import {
   getallActivityAsync,
-  getAllSchoolUserGroupsAsync,
   resetActivities,
 } from "./features/pages/homepage/subs/activity/activitySlice";
 import { getAllSchoolsAsync } from "./features/pages/homepage/subs/myschool/schoolSlice";
+import { getAllSchoolUserGroupsAsync } from "./features/pages/homepage/subs/groups/groupSlice";
 
 function App() {
   const appLocation = useLocation();

@@ -35,7 +35,7 @@ namespace tapinto.Server.Helpers
 
             if (contr != null)
             {
-                contr.ContributionRating += (double)ContributionType;
+                contr.ContributionRating += (int)ContributionType * 1.0;
                 context.Contributions.Update(contr);
             }
             else
