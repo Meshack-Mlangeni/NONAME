@@ -182,7 +182,11 @@ export default function Settings() {
                       id={value}
                       value={value}
                       onChange={(e) =>
-                        setMode(e.target.value.split(" ")[0].toLowerCase())
+                        setMode(
+                          e.target.value.split(" ")[0].toLowerCase() === "dark"
+                            ? "dark"
+                            : "light"
+                        )
                       }
                       checked={mode === value.split(" ")[0].toLowerCase()}
                       checkedIcon={<CheckCircleOutlineRounded />}
