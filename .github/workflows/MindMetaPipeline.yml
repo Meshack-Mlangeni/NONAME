@@ -1,0 +1,54 @@
+name: ASP.NET Core with React CI
+
+on:
+  push:
+    branches:
+      - "**" # Apply to all branches
+  pull_request:
+    branches:
+      - "**" # Apply to all branches
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Backend: ASP.NET Core
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: "8.0.x" # Use .NET 8
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore
+
+      - name: Test Backend
+        run: dotnet test --no-build --verbosity normal
+
+      # Frontend: TypeScript with React
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Install dependencies
+        working-directory: ./NONAME/tapinto.client
+        run: npm install
+
+      - name: Run Lint
+        working-directory: ./NONAME/tapinto.client
+        run: npm run lint
+
+      - name: Build Frontend
+        working-directory: ./NONAME/tapinto.client
+        run: npm run build
+
+      - name: Test Frontend
+        working-directory: ./NONAME/tapinto.client
+        run: npm test
