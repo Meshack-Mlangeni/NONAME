@@ -38,17 +38,20 @@ jobs:
           node-version: "14"
 
       - name: Install dependencies
-        working-directory: ./NONAME/tapinto.client
+        working-directory: ./tapinto.client
         run: npm install
 
       - name: Run Lint
-        working-directory: ./NONAME/tapinto.client
+        working-directory: ./tapinto.client
         run: npm run lint
 
       - name: Build Frontend
-        working-directory: ./NONAME/tapinto.client
+        working-directory: ./tapinto.client
         run: npm run build
 
       - name: Test Frontend
-        working-directory: ./NONAME/tapinto.client
+        working-directory: ./tapinto.client
         run: npm test
+
+      - name: Success
+        run: echo $?
