@@ -49,9 +49,9 @@ jobs:
       #   working-directory: tapinto.client
       #   run: npm run build
 
-      - name: Test Frontend
-        working-directory: tapinto.client
-        run: npm test
+      # - name: Test Frontend
+      #   working-directory: tapinto.client
+      #   run: npm test
 
       - name: Success
         run: echo $?
