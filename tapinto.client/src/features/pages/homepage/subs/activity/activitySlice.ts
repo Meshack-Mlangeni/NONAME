@@ -49,11 +49,12 @@ export const getallActivityAsync = createAsyncThunk<response<Activity[]>, number
     }
 );
 
-export const commentOnActivityAsync = createAsyncThunk<response<Comments>, FieldValues>(
+export const commentOnActivityAsync = createAsyncThunk<response<Comments[]>, FieldValues>(
     "activity/commentOnActivityAsync",
     async (data, thunkAPI) => {
         try {
-            const response = await agent.activity.comment<response<Comments>>(data);
+            const response = await agent.activity.comment<response<Comments[]>>(data);
+            await setInterval(() => { }, 3000);
             return response;
         } catch (error: any) {
             return thunkAPI.rejectWithValue({ error: error.data });
@@ -130,7 +131,7 @@ export const ActivitySlice = createSlice({
         builder.addCase(commentOnActivityAsync.pending, () => {
         });
         builder.addCase(commentOnActivityAsync.fulfilled, (state, action) => {
-            state.activityComments = [action.payload.data as Comments, ...state.activityComments];
+            state.activityComments = [...new Set([...action.payload.data as Comments[]])]
             toast.success(action.payload.message);
         });
 
@@ -141,7 +142,8 @@ export const ActivitySlice = createSlice({
         builder.addCase(getAllActivityCommentsAsync.pending, () => {
         });
         builder.addCase(getAllActivityCommentsAsync.fulfilled, (state, action) => {
-            state.activityComments = [...action.payload.data as Comments[]];
+            state.activityComments = [...new Set([...action.payload.data as Comments[]])]
+            toast.success(action.payload.message);
         });
 
     }

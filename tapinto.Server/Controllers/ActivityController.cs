@@ -186,7 +186,7 @@ namespace tapinto.Server.Controllers
         public async Task<IActionResult> CommentOnActivity(CommentsDto comment)
         {
             var user = await userManager.FindByNameAsync(User.Identity.Name);
-            var response = new DataResponse<CommentsDto>();
+            var response = new DataResponse<List<CommentsDto>>();
             if (user == null)
             {
                 response.ResponseFailedWithMessage("Could Not Find User, Please Report This Issue.");
@@ -202,10 +202,13 @@ namespace tapinto.Server.Controllers
             };
             dbContext.Comments.Add(Comment);
             dbContext.SaveChanges();
-            response.ResponseSuccessWithMessage("Comment On Activity Successfull.", data: new CommentsDto(Comment)
+
+            var getAllCommentsWithNewOnes = await dbContext.Comments.Where(c => c.ActivityId == comment.ActivityId).ToListAsync();
+            response.ResponseSuccessWithMessage("Comment On Activity Successful.",
+            data: getAllCommentsWithNewOnes.Select(c => new CommentsDto(c)
             {
-                FullNames = await new HelperFunctions().GetFullNames(user.Email, userManager)
-            });
+                FullNames = new HelperFunctions().GetFullNames(c.UserEmail, userManager).Result
+            }).OrderByDescending(d => d.TimeStamp).ToList());
             return Ok(response);
         }
 
