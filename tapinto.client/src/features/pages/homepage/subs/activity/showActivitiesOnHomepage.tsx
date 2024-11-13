@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Grid, useMediaQuery } from "@mui/material";
 import Post from "./activityComponents/createActivityComponent";
 import Bio from "./activityComponents/bioComponent";
