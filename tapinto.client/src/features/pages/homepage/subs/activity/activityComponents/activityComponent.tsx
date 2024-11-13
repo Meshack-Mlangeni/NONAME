@@ -99,23 +99,22 @@ export default function ActivityComponent({
   } = useForm();
 
   const onCommentSubmit = async (data: FieldValues) => {
+    await dispatch(resetComments());
     await dispatch(
       commentOnActivityAsync({ ...data, activityId: id } as FieldValues)
-    )
-      .then(() => {
-        setNoOfComments({
-          activityId: id,
-          numberOfComments: noOfComments.numberOfComments + 1,
-        });
-      })
-      .finally(async() => await dispatch(getAllActivityCommentsAsync(id)));
+    );
+    setNoOfComments((prevState) => ({
+      activityId: id,
+      numberOfComments: prevState.numberOfComments + 1,
+    }));
     reset();
   };
 
-  const self = useRef<HTMLDivElement>(null);
-  const fetchCommentsForActivity = async (id: number) => {
-    return await dispatch(getAllActivityCommentsAsync(id));
+  const fetchCommentsForActivity = (id: number) => {
+    return dispatch(getAllActivityCommentsAsync(id));
   };
+
+  const self = useRef<HTMLDivElement>(null);
 
   self.current &&
     self.current?.addEventListener("animationend", () => {
@@ -308,7 +307,7 @@ export default function ActivityComponent({
               })}
               ref={self}
             >
-              <Typography sx={{ ml: 2, mt: 1 }} level="title-lg">
+              <Typography sx={{ ml: 2, mt: 2, mb: 2 }} level="title-lg">
                 Comments
               </Typography>
               <Stack
@@ -337,7 +336,7 @@ export default function ActivityComponent({
                       convertToDateTimeAgo(c.timeStamp),
                       undefined
                     )}
-                    <Typography sx={{ m: 1, mb: 2 }} level="title-sm">
+                    <Typography sx={{ m: 1, mb: 2 }} level="title-lg">
                       {c.commentContent}
                     </Typography>
                   </Box>

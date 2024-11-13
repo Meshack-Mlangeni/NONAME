@@ -5,6 +5,8 @@ import { FieldValues } from "react-hook-form";
 import { agent } from "../../../app/axiosAgent/agent";
 import { routes } from "../../../app/router/Routes";
 import { response } from "../../../models/response/response";
+import { store } from "../../../app/store/store";
+import { resetActivities, resetComments } from "../homepage/subs/activity/activitySlice";
 
 interface IAccount { user: User | null; }
 const initialState: IAccount = { user: null, };
@@ -71,6 +73,8 @@ export const accountSlice = createSlice({
             state.user = action.payload;
         },
         signUserOutAsync: (state) => {
+            store.dispatch(resetActivities());
+            store.dispatch(resetComments());
             state.user = null;
             localStorage.removeItem("user");
             routes.navigate("/login");

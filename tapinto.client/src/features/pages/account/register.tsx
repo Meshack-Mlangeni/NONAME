@@ -19,14 +19,13 @@ import {
   Sheet,
 } from "@mui/joy";
 import { FieldValues, useForm } from "react-hook-form";
-import { DarkMode, LightMode, WarningAmberRounded } from "@mui/icons-material";
+import { DarkMode, LightMode } from "@mui/icons-material";
 import AppLogo from "../../../app/navbar/AppLogo";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import { registerAsync } from "./accountSlice";
 import { setLoading } from "../../../app/store/appSlice";
 import { getallActivityAsync } from "../homepage/subs/activity/activitySlice";
-import { useEffect, useState } from "react";
-import MyCamera from "./takeImage";
+import { useEffect } from "react";
 import { getAllSchoolsAsync } from "../homepage/subs/myschool/schoolSlice";
 //generously borrowed from MUI sign up template
 
@@ -47,8 +46,6 @@ export default function Register() {
     dispatch(setLoading(false));
   };
   const { mode, setMode } = useColorScheme();
-  const [isTeacher, setIsTeacher] = useState<boolean>(false);
-  const [imageData, setImageData] = useState<string>("");
 
   useEffect(() => {
     if (!schools || schools === undefined) {
@@ -139,12 +136,7 @@ export default function Register() {
                   <FormLabel>Register As</FormLabel>
                   <RadioGroup
                     {...register("registeras", {
-                      required: true,
-                      onChange: (event) =>
-                        setIsTeacher(
-                          (event?.target?.value as string).toLowerCase() ===
-                            "teacher"
-                        ),
+                      required: true
                     })}
                     orientation="horizontal"
                   >
@@ -213,63 +205,6 @@ export default function Register() {
                     Administrators if its valid.
                   </FormHelperText>
                 </FormControl>
-
-                {isTeacher && (
-                  <Sheet
-                    variant="soft"
-                    color="neutral"
-                    sx={(theme) => ({
-                      p: 2,
-                      mt: 2,
-                      mb: 2,
-                      borderRadius: "sm",
-                      border: `2px ${
-                        theme.palette.mode === "dark"
-                          ? imageData
-                            ? theme.palette.success[700]
-                            : theme.palette.neutral[700]
-                          : imageData
-                          ? theme.palette.success[300]
-                          : theme.palette.neutral[300]
-                      } dashed`,
-                    })}
-                  >
-                    <FormLabel sx={{ mb: 2, fontWeight: 600 }}>
-                      <img
-                        width={24}
-                        height={24}
-                        alt="SACE Logo"
-                        src="../_sace.png"
-                      />
-                      &nbsp;Upload SACE for Verification ({"<"} 72 hours)
-                    </FormLabel>
-                    <Box sx={{ m: 1 }}>
-                      <FormControl error={!!errors.imageData}>
-                        <Input
-                          type="text"
-                          placeholder={
-                            (errors.imageData?.message as string) ??
-                            "Image Data"
-                          }
-                          value={imageData}
-                          endDecorator={
-                            <MyCamera imageData={[imageData, setImageData]} />
-                          }
-                          readOnly
-                          {...register("imageData", {
-                            required: "Please upload SACE",
-                          })}
-                        />
-                      </FormControl>
-                    </Box>
-                    <FormHelperText sx={{ mt: 2 }}>
-                      <WarningAmberRounded />
-                      <Typography level="body-sm">
-                        Your Sensitive Files Are Treated with Utmost Secrecy.
-                      </Typography>
-                    </FormHelperText>
-                  </Sheet>
-                )}
 
                 <Divider sx={{ mt: 3, mb: 1 }}>
                   <Chip variant="soft" color="neutral" size="sm">
