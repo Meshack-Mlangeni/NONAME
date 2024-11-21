@@ -223,6 +223,9 @@ namespace tapinto.Server.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("FullNames")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("datetime2");
 

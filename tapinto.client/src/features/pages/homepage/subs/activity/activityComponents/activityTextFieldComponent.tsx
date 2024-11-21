@@ -7,12 +7,7 @@ import {
   Typography,
   Input,
 } from "@mui/joy";
-import {
-  Add,
-  JoinFullTwoTone,
-  LoginTwoTone,
-  Send,
-} from "@mui/icons-material";
+import { Add, JoinFullTwoTone, LoginTwoTone, Send } from "@mui/icons-material";
 import {
   useAppDispatch,
   useAppSelector,
@@ -136,7 +131,7 @@ export default function ActivityTextField() {
               <Radio
                 key={index}
                 checked={index === defaultValue}
-                {...register("postType", {
+                {...register("activityType", {
                   required: true,
                   onChange: (e) => setDefaultValue(+e.target.defaultValue),
                 })}
@@ -257,7 +252,8 @@ export default function ActivityTextField() {
                             onChange={() => {
                               answers.forEach((ans) => {
                                 setPollValid(true);
-                                if (ans.answerId !== index + 1) ans.isAnswer = false;
+                                if (ans.answerId !== index + 1)
+                                  ans.isAnswer = false;
                                 else ans.isAnswer = true;
                               });
                             }}

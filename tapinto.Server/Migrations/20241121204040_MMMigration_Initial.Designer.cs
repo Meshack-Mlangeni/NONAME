@@ -12,8 +12,8 @@ using tapinto.Server.Data;
 namespace tapinto.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241102213208_InitialMindMetaMigration")]
-    partial class InitialMindMetaMigration
+    [Migration("20241121204040_MMMigration_Initial")]
+    partial class MMMigration_Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -224,6 +224,9 @@ namespace tapinto.Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullNames")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("TimeStamp")

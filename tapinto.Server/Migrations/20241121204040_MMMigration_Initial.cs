@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace tapinto.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMindMetaMigration : Migration
+    public partial class MMMigration_Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -299,6 +299,7 @@ namespace tapinto.Server.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimeStamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ActivityId = table.Column<int>(type: "int", nullable: false)
                 },

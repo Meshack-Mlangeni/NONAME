@@ -373,7 +373,7 @@ export default function ActivityComponent({
               variant="soft"
               color="danger"
               component={NavLink}
-              to={"/home/live"}
+              to={`/home/live/${id}`}
             >
               <Chip color="danger">
                 LIVE

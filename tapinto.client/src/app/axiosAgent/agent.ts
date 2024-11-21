@@ -42,6 +42,7 @@ const account = {
 const activity = {
     create: <T>(data: object) => requests.post_form<T>("activity/create", data),
     getallactivity: <T>(skip: number) => requests.get<T>(`activity/getall?skip=${skip}`),
+    getactivity: <T>(id: number) => requests.get<T>(`activity/getsingleactivity?activityId=${id}`),
     like_activity: <T>(id: number) => requests.post<T>(`activity/likeactivity?id=${id}`, {}),
     comment: <T>(data: object) => requests.put<T>("activity/comment", data),
     getallactivitycomments: <T>(id: number) => requests.get<T>(`activity/getcomments?id=${id}`),

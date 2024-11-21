@@ -152,7 +152,34 @@ namespace tapinto.Server.Controllers
         }
 
         [Authorize]
-        [HttpPost("likeactivity/")]
+        [HttpGet("getsingleactivity")]
+        public async Task<IActionResult> GetSingleActivity(int activityId)
+        {
+            var response = new DataResponse<ActivityDto>();
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            if (activityId <= 0 || user == null)
+            {
+                response.ResponseFailedWithMessage("Error Fetching Activity, Please Report Issue");
+                return Ok(response);
+            }
+            logger.LogInformation("{0} - {1} FETCH ACTIVITY", DateTime.Now.ToLongDateString(), user.Email);
+
+            var activity = dbContext.Activity.Find(activityId);
+            var activityDto = new ActivityBuilder(dbContext, userManager)
+                        .ConfigActivity(activity)
+                        .HasImage(id: activity.Id)
+                        .AssignGroupActivityIsIn(id: activity.GroupId)
+                        .SetUpUserInfo(email: activity.UserEmail)
+                        .SetupLikesAndCommentsCount(id: activity.Id)
+                        .CheckIfUserLikedTheActivity(lultp: activity.Likes != null
+                                    && activity.Likes.Any(p => p.UserEmail == user.Email))
+                        .BuildActivity();
+            response.ResponseSuccessWithMessage("Successfully Fetched Single Activity", data: activityDto);
+            return Ok(response);
+        }
+
+        [Authorize]
+        [HttpPost("likeactivity")]
         public async Task<IActionResult> LikeActivity(int id)
         {
             var user = await userManager.FindByNameAsync(User.Identity.Name);
