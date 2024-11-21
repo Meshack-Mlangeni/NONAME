@@ -30,7 +30,7 @@ namespace tapinto.Server
             var app = builder.Build();
 
             app.UseDefaultFiles();
-            app.UseStaticFiles();
+            //app.UseStaticFiles();
             app.UseCors(CORS);
             app.UseResponseCaching();
             app.Use(async (context, next) =>
@@ -59,7 +59,6 @@ namespace tapinto.Server
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
-
             app.MapFallbackToFile("/index.html");
             await SeedData.EnsurePopulated(app);
             app.MapHub<LiveHub>("/live");

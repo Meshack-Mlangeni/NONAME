@@ -23,12 +23,15 @@ jobs:
           dotnet-version: "8.0.x" # Use .NET 8
 
       - name: Restore dependencies
+        working-directory: tapinto.Server
         run: dotnet restore
 
       - name: Build
+        working-directory: tapinto.Server
         run: dotnet build --no-restore
 
       - name: Test Backend
+        working-directory: tapinto.Server
         run: dotnet test --no-build --verbosity normal
 
       # Frontend: TypeScript with React

@@ -62,7 +62,7 @@ export default function Settings() {
               }
               title="Roles"
               discr="Switch Between Roles"
-              size="h3"
+              size="h4"
             >
               <Sheet
                 variant="soft"
@@ -125,7 +125,7 @@ export default function Settings() {
 
             <SubSection
               hasDivider
-              size={"h3"}
+              size={"h4"}
               icon={
                 <ColorLensRounded
                   style={{ marginTop: "-10px", marginRight: "8px" }}
@@ -206,7 +206,7 @@ export default function Settings() {
               }
               hasDivider
               discr="Sorry To See You Go!"
-              size="h3"
+              size="h4"
               title="Deactivate Account"
             ></SubSection>
 

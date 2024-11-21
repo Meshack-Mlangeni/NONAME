@@ -32,6 +32,7 @@ namespace tapinto.Server.Services
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .WithOrigins("https://localhost:5000")
+                    .WithOrigins("https://localhost:5000/livehub")
                     .AllowCredentials();
                 });
             });
@@ -105,6 +106,7 @@ namespace tapinto.Server.Services
 
         public static IServiceCollection AddScopedServices(this IServiceCollection services)
         {
+            //services.AddFeatureManagement();
             services.AddSignalRCore();
             services.AddSignalR();
             services.AddControllers();

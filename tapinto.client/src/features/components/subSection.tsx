@@ -20,7 +20,7 @@ export default function SubSection({
   size,
 }: ISubSection) {
   return (
-    <div style={{ margin: 16 }}>
+    <div style={{}}>
       <Typography level={size} sx={{ fontWeight: "700" }}>
         {icon}
         {title}

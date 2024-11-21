@@ -48,6 +48,20 @@ export const getallActivityAsync = createAsyncThunk<response<Activity[]>, number
     }
 );
 
+export const getSingleActivityAsync = createAsyncThunk<response<Activity>, number>(
+    "activities/getSingleActivityAsync",
+    async (id, thunkAPI) => {
+        try {
+            thunkAPI.dispatch(setLoading(true));
+            const response = await agent.activity.getactivity<response<Activity>>(id);
+            thunkAPI.dispatch(setLoading(false));
+            return response;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.data });
+        }
+    }
+);
+
 export const commentOnActivityAsync = createAsyncThunk<response<Comments[]>, FieldValues>(
     "activity/commentOnActivityAsync",
     async (data, thunkAPI) => {
@@ -74,13 +88,15 @@ export const getAllActivityCommentsAsync = createAsyncThunk<response<Comments[]>
 
 interface ActivityType {
     numberOfActivity: number,
-    activityComments: Comments[];
-    activities: Activity[]
+    activityComments: Comments[],
+    activities: Activity[],
+    single_activity: Activity | null,
 }
 const initialState: ActivityType = {
     numberOfActivity: 0,
     activityComments: [],
-    activities: []
+    activities: [],
+    single_activity: null
 }
 
 export const ActivitySlice = createSlice({
@@ -143,6 +159,15 @@ export const ActivitySlice = createSlice({
         builder.addCase(getAllActivityCommentsAsync.fulfilled, (state, action) => {
             state.activityComments = [...new Set([...action.payload.data as Comments[]])]
             toast.success(action.payload.message);
+        });
+
+        builder.addCase(getSingleActivityAsync.rejected, (_, action) => {
+            toast.error((action.payload as response<Activity>).message);
+        });
+        builder.addCase(getSingleActivityAsync.pending, () => {
+        });
+        builder.addCase(getSingleActivityAsync.fulfilled, (state, action) => {
+            state.single_activity = action.payload.data as Activity;
         });
 
     }

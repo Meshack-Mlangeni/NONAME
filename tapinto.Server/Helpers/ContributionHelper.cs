@@ -47,7 +47,7 @@ namespace tapinto.Server.Helpers
                     ContributionRating = 0.0d
                 };
                 context.Contributions.Add(contr);
-                context.SaveChanges();
+                //context.SaveChanges();
             }
         }
     }
