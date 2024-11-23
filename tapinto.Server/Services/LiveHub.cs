@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.HttpResults;
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using tapinto.Server.Data;
@@ -15,6 +11,7 @@ namespace tapinto.Server.Services
 {
     public class LiveHub : Hub
     {
+        private ConcurrentDictionary<int, string[]> _joinedUsers = new ConcurrentDictionary<int, string[]>();
         private readonly AppDbContext context;
         private readonly UserManager<User> userManager;
         public LiveHub(AppDbContext _context, UserManager<User> _userManager)
@@ -25,12 +22,15 @@ namespace tapinto.Server.Services
         }
         public async Task JoinLiveDiscussion(string userEmail, int discussionId)
         {
-            var user = await userManager.FindByEmailAsync(userEmail);
-            if (user == null)
+            if (userEmail == null)
                 return;
+            var user = await userManager.FindByEmailAsync(userEmail);
+            //_joinedUsers.AddOrUpdate(discussionId, [.._joinedUsers.Values, userEmail]);
             await Groups.AddToGroupAsync(Context.ConnectionId, discussionId.ToString());
             await Clients.Group(discussionId.ToString()).SendAsync("ReceiveMessage", $"{user.FirstName} {user.LastName}", $"{user.FirstName} {user.LastName} has joined");
         }
+
+        //public async Task ReceiveMessage
 
         public async Task SendMessage(string message, string userEmail, int discussionId)
         {
@@ -49,7 +49,7 @@ namespace tapinto.Server.Services
             context.SaveChanges();
 
             new ContributionHelper(context, userEmail, ContributionHelper.contributionType.CommentedOnAPost).CreateContribution();
-            await Clients.OthersInGroup(discussionId.ToString())
+            await Clients.Group(discussionId.ToString())
             .SendAsync("ReceiveMessage", $"{user.FirstName} {user.LastName}", new ChatHistoryDto(chatMessage));
         }
     }

@@ -15,9 +15,8 @@ export default function SelectedDiscussion({ onLeave, contentOnDiscussion }: Pro
             <Card
                 variant="outlined"
                 sx={{
-                    position: "fixed",
                     zIndex: 12,
-                    top: 100,
+                    bottom: 64,
                     left: 0,
                     right: 0,
                     boxShadow: "sm"
@@ -25,7 +24,7 @@ export default function SelectedDiscussion({ onLeave, contentOnDiscussion }: Pro
             >
                 <CardContent
                     orientation="horizontal"
-                    sx={{ alignItems: "center", gap: 1 }}
+                    sx={{ alignItems: "center", gap: 0.5 }}
                 >
                     <Typography level="body-xs">
                         {contentOnDiscussion}

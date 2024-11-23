@@ -46,7 +46,7 @@ function App() {
       <ToastContainer
         position="bottom-center"
         autoClose={5000}
-        limit={5}
+        limit={1}
         hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
@@ -57,7 +57,8 @@ function App() {
         theme={theme.colorScheme == "dark" ? "dark" : "light"}
       />
       {!appLocation.pathname.toLocaleLowerCase().includes("login") &&
-      !appLocation.pathname.toLocaleLowerCase().includes("register") ? (
+      !appLocation.pathname.toLocaleLowerCase().includes("register") &&
+      !appLocation.pathname.toLocaleLowerCase().includes("live") ? (
         <>
           <NavigationBar />
           <Grid container sx={{ flexGrow: 1 }}>

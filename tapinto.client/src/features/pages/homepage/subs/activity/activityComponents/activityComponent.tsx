@@ -41,6 +41,7 @@ import {
 } from "../../../../../../app/store/store";
 import {
   commentOnActivityAsync,
+  getAllActivityChatsAsync,
   getAllActivityCommentsAsync,
   likeActivityAsync,
   resetComments,
@@ -372,6 +373,7 @@ export default function ActivityComponent({
             <Button
               variant="soft"
               color="danger"
+              onClick={async () => await dispatch(getAllActivityChatsAsync(id))}
               component={NavLink}
               to={`/home/live/${id}`}
             >

@@ -8,6 +8,8 @@ import { Comments } from "../../../../../models/comments";
 import { response } from "../../../../../models/response/response";
 import { toast } from "react-toastify";
 import { Like } from "../../../../../models/like";
+import { ChatHistoryDto } from "../../../../../models/chatHistoryDto";
+import { Chats } from "../../../../../models/chats";
 
 export const likeActivityAsync = createAsyncThunk<response<Like>, number>(
     "activity/likeActivityAsync",
@@ -86,16 +88,29 @@ export const getAllActivityCommentsAsync = createAsyncThunk<response<Comments[]>
     }
 );
 
+export const getAllActivityChatsAsync = createAsyncThunk<response<ChatHistoryDto[]>, number>(
+    "activity/getAllActivityChatsAsync",
+    async (id: number, ThunkAPI) => {
+        try {
+            return await agent.activity.getallactivitychats<response<ChatHistoryDto[]>>(id);
+        } catch (error: any) {
+            return ThunkAPI.rejectWithValue({ error: error.data });
+        }
+    }
+);
+
 interface ActivityType {
     numberOfActivity: number,
     activityComments: Comments[],
     activities: Activity[],
+    chatHistory: Chats[],
     single_activity: Activity | null,
 }
 const initialState: ActivityType = {
     numberOfActivity: 0,
     activityComments: [],
     activities: [],
+    chatHistory: [],
     single_activity: null
 }
 
@@ -168,6 +183,15 @@ export const ActivitySlice = createSlice({
         });
         builder.addCase(getSingleActivityAsync.fulfilled, (state, action) => {
             state.single_activity = action.payload.data as Activity;
+        });
+
+        builder.addCase(getAllActivityChatsAsync.rejected, (_, action) => {
+            toast.error((action.payload as response<Activity>).message);
+        });
+        builder.addCase(getAllActivityChatsAsync.pending, () => {
+        });
+        builder.addCase(getAllActivityChatsAsync.fulfilled, (state, action) => {
+            state.chatHistory = [...action.payload.data as ChatHistoryDto[]];
         });
 
     }
