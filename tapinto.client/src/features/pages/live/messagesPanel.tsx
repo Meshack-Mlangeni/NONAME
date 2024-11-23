@@ -12,6 +12,7 @@ import convertFullNamesToInitials from "../../../helpers/convertFullNameToInitia
 type MessagesPaneProps = {
   user: User;
   id: number;
+  discussionQuestion: string;
   chats: Chats[];
   sendMessage: (message: string) => void;
 };
@@ -20,6 +21,7 @@ export default function MessagesPanel({
   user,
   chats,
   sendMessage,
+  discussionQuestion,
 }: MessagesPaneProps) {
   const [textAreaValue, setTextAreaValue] = useState("");
 
@@ -34,6 +36,16 @@ export default function MessagesPanel({
               : theme.colorSchemes.light.palette.background.body,
         })}
       >
+        <MessageInput
+          textAreaValue={textAreaValue}
+          discussionQuestion={discussionQuestion}
+          setTextAreaValue={setTextAreaValue}
+          joinedUsers={[]}
+          onSubmit={() => {
+            sendMessage(textAreaValue);
+            setTextAreaValue("");
+          }}
+        />
         <Box
           sx={{
             display: "flex",
@@ -44,13 +56,20 @@ export default function MessagesPanel({
             flexDirection: "column-reverse",
           }}
         >
-          <Stack spacing={4} justifyContent="flex-end">
+          <Stack
+            spacing={4}
+            justifyContent="flex-end"
+            sx={{ overflowY: "auto", mb: 18 }}
+          >
             {chats.map((chat: Chats, index: number) => {
               const joinNotification = chat.content.includes("has joined");
               const isYou = chat.userEmail === user.email;
               return joinNotification ? (
                 <>
-                  <Typography sx={{ alignSelf: "center" }} level="title-md">
+                  <Typography
+                    sx={{ alignSelf: "center", m: 2 }}
+                    level="title-md"
+                  >
                     {chat.content}
                   </Typography>
                 </>
@@ -76,14 +95,7 @@ export default function MessagesPanel({
             })}
           </Stack>
         </Box>
-        <MessageInput
-          textAreaValue={textAreaValue}
-          setTextAreaValue={setTextAreaValue}
-          onSubmit={() => {
-            sendMessage(textAreaValue);
-            setTextAreaValue("");
-          }}
-        />
+
         <Box sx={{ pt: 5, pb: 5 }}></Box>
       </Sheet>
     </>

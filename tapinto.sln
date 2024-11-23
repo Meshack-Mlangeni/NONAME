@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tapinto.Server", "tapinto.S
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "tapinto.client", "tapinto.client\tapinto.client.esproj", "{83697B7C-863A-426B-A382-2E547C4E1385}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tapinto.worker", "tapinto.worker\tapinto.worker.csproj", "{C6E8046F-0B96-4F63-90B9-E17E990FB272}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
