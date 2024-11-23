@@ -9,7 +9,10 @@ import {
   HubConnectionBuilder,
   LogLevel,
 } from "@microsoft/signalr";
-import { getSingleActivityAsync } from "../homepage/subs/activity/activitySlice";
+import {
+  getAllActivityChatsAsync,
+  getSingleActivityAsync,
+} from "../homepage/subs/activity/activitySlice";
 import AppLogo from "../../../app/navbar/AppLogo";
 import convertToDateTimeAgo from "../../../helpers/convertToDateTimeAgo";
 
@@ -17,10 +20,12 @@ export default function Live() {
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
   const { user } = useAppSelector((state) => state.account);
-  const { single_activity } = useAppSelector((state) => state.activities);
+  const { single_activity, chatHistory } = useAppSelector(
+    (state) => state.activities
+  );
   const main_stack = useRef<HTMLDivElement>(null);
   const [connection, setConnection] = useState<HubConnection | null>(null);
-  const [chats, setChats] = useState<Chats[]>([]);
+  const [chats, setChats] = useState<Chats[]>(chatHistory ?? []);
 
   const InitializeConnection = useCallback(async () => {
     const _connection = new HubConnectionBuilder()
@@ -103,6 +108,7 @@ export default function Live() {
 
   useEffect(() => {
     dispatch(getSingleActivityAsync(+id!));
+    dispatch(getAllActivityChatsAsync(+id!));
   }, [dispatch, id]);
 
   return (
@@ -115,7 +121,7 @@ export default function Live() {
     >
       <Stack sx={{ alignItems: "center" }}>
         <AppLogo />
-        <Typography level="title-md">DISCUSSIONS</Typography>
+        <Typography level="title-lg">DISCUSSIONS</Typography>
       </Stack>
       <MessagesPanel
         sendMessage={sendMessage}

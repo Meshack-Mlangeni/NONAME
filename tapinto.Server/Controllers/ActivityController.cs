@@ -266,5 +266,24 @@ namespace tapinto.Server.Controllers
             response.ResponseSuccessWithMessage("Comments Fetched Successfully", data: comments.OrderByDescending(c => c.TimeStamp).ToList());
             return Ok(response);
         }
+
+        [Authorize]
+        [HttpGet("getchathistory")]
+        public IActionResult GetActivityChatHistory(int activityId)
+        {
+            logger.LogInformation("{0} - FETCHING CHAT HISTORY FOR ACTIVITY : {1}", DateTime.Now.ToLongDateString(), activityId);
+            var response = new DataResponse<List<ChatHistoryDto>>();
+
+            if (activityId <= 0)
+            {
+                response.ResponseFailedWithMessage("An Error Occurred, Please Report This Issue");
+                return Ok(response);
+            }
+
+            var allChatHistory = dbContext.ChatHistory.Where(c => c.ActivityId == activityId).ToList();
+            var allChatsDto = allChatHistory.OrderByDescending(c => c.TimeStamp).Select(c => new ChatHistoryDto(c)).ToList();
+            response.ResponseSuccessWithMessage("Successfully Fetched Past Discussions", data: allChatsDto);
+            return Ok(response);
+        }
     }
 }

@@ -3,7 +3,7 @@ import { store } from "../store/store";
 
 axios.defaults.baseURL = "http://localhost:5169/api";
 axios.defaults.withCredentials = true;
-//axios.defaults.timeout = 30000; //Allow 30 second timeout
+axios.defaults.timeout = 30000; //Allow 30 second timeout
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -46,6 +46,7 @@ const activity = {
     like_activity: <T>(id: number) => requests.post<T>(`activity/likeactivity?id=${id}`, {}),
     comment: <T>(data: object) => requests.put<T>("activity/comment", data),
     getallactivitycomments: <T>(id: number) => requests.get<T>(`activity/getcomments?id=${id}`),
+    getallactivitychats: <T>(id: number) => requests.get<T>(`activity/getchathistory?activityId=${id}`),
 };
 const group = {
     create: <T>(data: object) => requests.put<T>("group/creategroup", data),

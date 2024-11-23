@@ -59,7 +59,7 @@ export default function MessagesPanel({
           <Stack
             spacing={4}
             justifyContent="flex-end"
-            sx={{ overflowY: "auto", mb: 18 }}
+            sx={{ overflowY: "auto", mb: 32 }}
           >
             {chats.map((chat: Chats, index: number) => {
               const joinNotification = chat.content.includes("has joined");
@@ -67,6 +67,7 @@ export default function MessagesPanel({
               return joinNotification ? (
                 <>
                   <Typography
+                    key={"N" + index.toString()}
                     sx={{ alignSelf: "center", m: 2 }}
                     level="title-md"
                   >
@@ -94,9 +95,8 @@ export default function MessagesPanel({
               );
             })}
           </Stack>
+          <Box sx={{ pt: 5, pb: 5 }}></Box>
         </Box>
-
-        <Box sx={{ pt: 5, pb: 5 }}></Box>
       </Sheet>
     </>
   );

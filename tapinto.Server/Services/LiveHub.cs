@@ -1,9 +1,4 @@
-using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using tapinto.Server.Data;
@@ -27,10 +22,10 @@ namespace tapinto.Server.Services
         }
         public async Task JoinLiveDiscussion(string userEmail, int discussionId)
         {
+            if (userEmail == null)
+                return;
             var user = await userManager.FindByEmailAsync(userEmail);
             //_joinedUsers.AddOrUpdate(discussionId, [.._joinedUsers.Values, userEmail]);
-            if (user == null)
-                return;
             await Groups.AddToGroupAsync(Context.ConnectionId, discussionId.ToString());
             await Clients.Group(discussionId.ToString()).SendAsync("ReceiveMessage", $"{user.FirstName} {user.LastName}", $"{user.FirstName} {user.LastName} has joined");
         }
