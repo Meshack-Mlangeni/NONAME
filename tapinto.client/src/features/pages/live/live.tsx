@@ -15,6 +15,7 @@ import {
 } from "../homepage/subs/activity/activitySlice";
 import AppLogo from "../../../app/navbar/AppLogo";
 import convertToDateTimeAgo from "../../../helpers/convertToDateTimeAgo";
+import { response } from "../../../models/response/response";
 
 export default function Live() {
   const dispatch = useAppDispatch();
@@ -26,6 +27,18 @@ export default function Live() {
   const main_stack = useRef<HTMLDivElement>(null);
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [chats, setChats] = useState<Chats[]>(chatHistory ?? []);
+  const [usersJoined, setUsersJoined] = useState<string[]>([]);
+
+  useEffect(() => {
+    dispatch(getAllActivityChatsAsync(+id!)).then((data) => {
+      if (
+        (data.payload as response<Chats[]>) &&
+        ((data.payload as response<Chats[]>).data as Chats[])
+      ) {
+        setChats((data.payload as response<Chats[]>).data as Chats[]);
+      }
+    });
+  }, [dispatch, id]);
 
   const InitializeConnection = useCallback(async () => {
     const _connection = new HubConnectionBuilder()
@@ -33,8 +46,11 @@ export default function Live() {
       .configureLogging(LogLevel.Information)
       .build();
 
+    _connection.on("UpdateParticipants", (participants) => {
+      setUsersJoined(participants);
+      console.log(participants)
+    });
     _connection.on("ReceiveMessage", (user, message) => {
-      console.log("Receive Message: ", message);
       let chat: Chats;
       if (typeof message === "string") {
         chat = {
@@ -108,7 +124,6 @@ export default function Live() {
 
   useEffect(() => {
     dispatch(getSingleActivityAsync(+id!));
-    dispatch(getAllActivityChatsAsync(+id!));
   }, [dispatch, id]);
 
   return (
@@ -119,14 +134,17 @@ export default function Live() {
       spacing={1}
       sx={{ mb: 0.25 }}
     >
-      <Stack sx={{ alignItems: "center" }}>
+      <Stack sx={{ alignItems: "center", pt: 3 }}>
         <AppLogo />
-        <Typography level="title-lg">DISCUSSIONS</Typography>
+        <Typography sx={{ fontWeight: 700 }} level="title-lg">
+          DISCUSSIONS
+        </Typography>
       </Stack>
       <MessagesPanel
         sendMessage={sendMessage}
         discussionQuestion={single_activity?.activityContent ?? "-1"}
         id={+id!}
+        usersJoined={usersJoined!}
         chats={chats}
         user={user!}
       />

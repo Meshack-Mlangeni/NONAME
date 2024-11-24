@@ -14,6 +14,7 @@ type MessagesPaneProps = {
   id: number;
   discussionQuestion: string;
   chats: Chats[];
+  usersJoined?: string[];
   sendMessage: (message: string) => void;
 };
 
@@ -21,11 +22,10 @@ export default function MessagesPanel({
   user,
   chats,
   sendMessage,
+  usersJoined = [],
   discussionQuestion,
 }: MessagesPaneProps) {
   const [textAreaValue, setTextAreaValue] = useState("");
-
-  console.log("Chats in messagePanel: ", chats);
   return (
     <>
       <Sheet
@@ -40,7 +40,7 @@ export default function MessagesPanel({
           textAreaValue={textAreaValue}
           discussionQuestion={discussionQuestion}
           setTextAreaValue={setTextAreaValue}
-          joinedUsers={[]}
+          joinedUsers={usersJoined!}
           onSubmit={() => {
             sendMessage(textAreaValue);
             setTextAreaValue("");
