@@ -11,22 +11,28 @@ namespace tapinto.Server.Services
 {
     public class LiveHub : Hub
     {
-        private ConcurrentDictionary<int, string[]> _joinedUsers = new ConcurrentDictionary<int, string[]>();
+        private static readonly ConcurrentDictionary<int, HashSet<string>> _joinedUsers = new ConcurrentDictionary<int, HashSet<string>>();
         private readonly AppDbContext context;
         private readonly UserManager<User> userManager;
         public LiveHub(AppDbContext _context, UserManager<User> _userManager)
         {
             userManager = _userManager;
             context = _context;
-
         }
         public async Task JoinLiveDiscussion(string userEmail, int discussionId)
         {
             if (userEmail == null)
                 return;
             var user = await userManager.FindByEmailAsync(userEmail);
-            //_joinedUsers.AddOrUpdate(discussionId, [.._joinedUsers.Values, userEmail]);
+            if (user == null) return;
+            _joinedUsers.AddOrUpdate(discussionId, new HashSet<string> { user.FirstName + " " + user.LastName }, (key, existingVal) =>
+            {
+                existingVal.Add(user.FirstName + " " + user.LastName);
+                return existingVal;
+            });
             await Groups.AddToGroupAsync(Context.ConnectionId, discussionId.ToString());
+            var participantList = _joinedUsers[discussionId].ToList();
+            await Clients.Group(discussionId.ToString()).SendAsync("UpdateParticipants", participantList);
             await Clients.Group(discussionId.ToString()).SendAsync("ReceiveMessage", $"{user.FirstName} {user.LastName}", $"{user.FirstName} {user.LastName} has joined");
         }
 

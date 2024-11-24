@@ -281,7 +281,7 @@ namespace tapinto.Server.Controllers
             }
 
             var allChatHistory = dbContext.ChatHistory.Where(c => c.ActivityId == activityId).ToList();
-            var allChatsDto = allChatHistory.OrderByDescending(c => c.TimeStamp).Select(c => new ChatHistoryDto(c)).ToList();
+            var allChatsDto = allChatHistory.OrderBy(c => c.TimeStamp).Select(c => new ChatHistoryDto(c)).ToList();
             response.ResponseSuccessWithMessage("Successfully Fetched Past Discussions", data: allChatsDto);
             return Ok(response);
         }

@@ -3,7 +3,6 @@ import Button from "@mui/joy/Button";
 import FormControl from "@mui/joy/FormControl";
 import { Avatar, AvatarGroup, Input, Sheet, Typography } from "@mui/joy";
 import SendRoundedIcon from "@mui/icons-material/SendRounded";
-import { FieldValues, useForm } from "react-hook-form";
 import { useAppSelector } from "../../../app/store/store";
 import convertFullNamesToInitials from "../../../helpers/convertFullNameToInitials";
 
@@ -11,17 +10,25 @@ export type MessageInputProps = {
   textAreaValue: string;
   setTextAreaValue: (value: string) => void;
   discussionQuestion?: string;
-  joinedUsers?: { fullnames: string; isLive: boolean }[];
+  joinedUsers?: { fullnames: string; isLive: boolean }[] | string[];
   onSubmit: () => void;
 };
 
 export default function MessageInput(props: MessageInputProps) {
-  const { register } = useForm({ mode: "onTouched" });
   const { user } = useAppSelector((state) => state.account);
-  const { setTextAreaValue, discussionQuestion, joinedUsers, onSubmit } = props;
-  const handleClick = (data: FieldValues) => {
-    console.log(data);
+  const {
+    setTextAreaValue,
+    discussionQuestion,
+    joinedUsers,
+    onSubmit,
+    textAreaValue,
+  } = props;
+
+  console.log(joinedUsers);
+
+  const handleClick = () => {
     onSubmit();
+    setTextAreaValue("");
   };
   return (
     <Box
@@ -47,7 +54,7 @@ export default function MessageInput(props: MessageInputProps) {
           <Typography sx={{ mb: 1 }} level="title-lg">
             {discussionQuestion}
           </Typography>
-          <AvatarGroup sx={{ mb: 1.2 }} size="sm">
+          {/* <AvatarGroup sx={{ mb: 1.2 }} size="sm">
             {[
               {
                 fullnames: user?.firstName + " " + user?.lastName,
@@ -63,24 +70,35 @@ export default function MessageInput(props: MessageInputProps) {
                 {convertFullNamesToInitials(user.fullnames)}
               </Avatar>
             ))}
+          </AvatarGroup> */}
+          <AvatarGroup sx={{ mb: 1.2 }} size="sm">
+            {(joinedUsers as string[]).map((user) => (
+              <Avatar color={"success"} alt={user} variant="solid">
+                {convertFullNamesToInitials(user)}
+              </Avatar>
+            ))}
           </AvatarGroup>
         </Sheet>
         <FormControl>
           <Input
+            value={textAreaValue}
             autoComplete={"none"}
             onKeyDown={(event) => {
               if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
-                handleClick({} as FieldValues);
+                handleClick();
               }
             }}
             endDecorator={
-              <Button onClick={handleClick} endDecorator={<SendRoundedIcon />}>
+              <Button
+                disabled={textAreaValue.length <= 0}
+                onClick={handleClick}
+                endDecorator={<SendRoundedIcon />}
+              >
                 Send
               </Button>
             }
-            placeholder="What's your opinion..."
+            placeholder={`What's your opinion on this ${user?.firstName}...`}
             autoFocus
-            {...register("message", { required: true })}
             onChange={(e) => {
               setTextAreaValue(e.target.value);
             }}
