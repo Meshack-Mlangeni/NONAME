@@ -27,7 +27,17 @@ namespace tapinto.Server.Helpers
 
         public static string ToTitleCase(this string value)
         {
-            return value == "" ? "" : CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value); ;
+            return value == "" || value == null || string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value) ? "" : CultureInfo.CurrentCulture.TextInfo.ToTitleCase(value); ;
+        }
+        public static string ConvertTextToTitleCase(this string value)
+        {
+            string[] words = value.Split(' ');
+            string newText = "";
+            foreach (string word in words)
+            {
+                newText += word.ToTitleCase() + " ";
+            }
+            return newText.Trim();
         }
     }
 }

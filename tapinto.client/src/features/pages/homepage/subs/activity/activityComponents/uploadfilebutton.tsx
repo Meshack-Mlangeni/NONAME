@@ -18,63 +18,64 @@ const VisuallyHiddenInput = styled("input")`
 `;
 
 interface IFBProps {
-    control: any;
+  control: any;
+  size?: any;
 }
 
-export default function UpLoadFileButton({ control }: IFBProps) {
-    const [fileList, setFileList] = useState<File[] | null>(null);
-    return (
-        <Controller
-            control={control}
-            name={"file"}
-            render={({ field: { value, onChange, ...field } }) => {
-                return (
-                    <Button
-                        size={"sm"}
-                        component="label"
-                        role={undefined}
-                        tabIndex={-1}
-                        variant="soft"
-                        color={fileList ? "success" : "neutral"}
-                        startDecorator={
-                            !fileList ? (
-                                <CloudUploadTwoTone />
-                            ) : (
-                                <AvatarGroup>
-                                    {fileList!.map((f) => {
-                                        try {
-                                            if ((f.type! as string).includes("image")) {
-                                                const url = URL.createObjectURL(f!);
-                                                return (
-                                                    <Avatar style={{ height: 20, width: 20 }} src={url} />
-                                                );
-                                            } else {
-                                                return (
-                                                    <Avatar style={{ height: 20, width: 20 }}>F</Avatar>
-                                                );
-                                            }
-                                        } catch (error) {
-                                            return;
-                                        }
-                                    })}{" "}
-                                </AvatarGroup>
-                            )
-                        }
-                    >
-                        {fileList ? "Staged" : "Upload"}
-                        <VisuallyHiddenInput
-                            {...field}
-                            value={value?.fileName}
-                            onChange={(event) => {
-                                event.target && setFileList([...event.target.files!]);
-                                onChange(event.target.files![0]);
-                            }}
-                            type="file"
-                            id="picture"
-                        />
-                    </Button>
-                );
-            }}
-        />
-    );
+export default function UpLoadFileButton({ control, size = "sm" }: IFBProps) {
+  const [fileList, setFileList] = useState<File[] | null>(null);
+  return (
+    <Controller
+      control={control}
+      name={"file"}
+      render={({ field: { value, onChange, ...field } }) => {
+        return (
+          <Button
+            size={size}
+            component="label"
+            role={undefined}
+            tabIndex={-1}
+            variant="soft"
+            color={fileList ? "success" : "neutral"}
+            startDecorator={
+              !fileList ? (
+                <CloudUploadTwoTone />
+              ) : (
+                <AvatarGroup>
+                  {fileList!.map((f) => {
+                    try {
+                      if ((f.type! as string).includes("image")) {
+                        const url = URL.createObjectURL(f!);
+                        return (
+                          <Avatar style={{ height: 20, width: 20 }} src={url} />
+                        );
+                      } else {
+                        return (
+                          <Avatar style={{ height: 20, width: 20 }}>F</Avatar>
+                        );
+                      }
+                    } catch (error) {
+                      return;
+                    }
+                  })}{" "}
+                </AvatarGroup>
+              )
+            }
+          >
+            {fileList ? "Staged" : "Upload"}
+            <VisuallyHiddenInput
+              {...field}
+              value={value?.fileName}
+              onChange={(event) => {
+                event.target && setFileList([...event.target.files!]);
+                onChange(event.target.files![0]);
+              }}
+              type="file"
+              id="picture"
+            />
+          </Button>
+        );
+      }}
+    />
+  );
 }

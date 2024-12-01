@@ -56,10 +56,14 @@ const group = {
 const school = {
     getallschools: <T>() => requests.get<T>("school/getallschools"),
 };
+const admin = {
+    uploadexcel: <T>(data: object) => requests.post_form<T>("admin/uploadschoolssheet", data)
+}
 
 export const agent = {
     account,
     activity,
     school,
-    group
+    group,
+    admin
 };

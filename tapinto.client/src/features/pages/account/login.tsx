@@ -65,7 +65,7 @@ export default function Login() {
           >
             <Box sx={{ gap: 2, display: "flex", alignItems: "center" }}>
               <AppLogo /> &nbsp;
-              <Button component={NavLink} to="/home/posts">
+              <Button component={NavLink} to="/home/activity">
                 Guest mode
               </Button>
               <Switch

@@ -1,6 +1,6 @@
 import MessagesPanel from "./messagesPanel";
 import { Stack, Typography } from "@mui/joy";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import { Chats } from "../../../models/chats";
@@ -24,6 +24,7 @@ export default function Live() {
   const { single_activity, chatHistory } = useAppSelector(
     (state) => state.activities
   );
+  const navigate = useNavigate();
   const main_stack = useRef<HTMLDivElement>(null);
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [chats, setChats] = useState<Chats[]>(chatHistory ?? []);
@@ -40,6 +41,21 @@ export default function Live() {
     });
   }, [dispatch, id]);
 
+  // onbeforeunload = function () {
+  //   connection?.invoke("LeaveDiscussion", +id!, user?.email as string);
+  //   connection?.stop().then(() => console.log("Connection was stopped!"));
+  //   return true;
+  // };
+
+  const onLeaveDiscussion = () => {
+    connection
+      ?.invoke("LeaveDiscussion", +id!, user?.email as string)
+      .then(() => {
+        connection?.stop().then(() => console.log("Connection was stopped!"));
+        navigate("/home/activity");
+      });
+  };
+
   const InitializeConnection = useCallback(async () => {
     const _connection = new HubConnectionBuilder()
       .withUrl("http://localhost:5169/live")
@@ -48,7 +64,7 @@ export default function Live() {
 
     _connection.on("UpdateParticipants", (participants) => {
       setUsersJoined(participants);
-      console.log(participants)
+      console.log(participants);
     });
     _connection.on("ReceiveMessage", (user, message) => {
       let chat: Chats;
@@ -68,11 +84,12 @@ export default function Live() {
           chatHistoryId: chats.length + 1,
           content: chat.content,
           userEmail: chat.userEmail,
-          timeStamp: convertToDateTimeAgo(chat.timeStamp),
+          timeStamp: chat.timeStamp,
           activityId: chat.activityId,
           fullNames: chat.fullNames,
         },
       ]);
+      console.log(chats);
     });
 
     try {
@@ -141,6 +158,7 @@ export default function Live() {
         </Typography>
       </Stack>
       <MessagesPanel
+        onLeave={onLeaveDiscussion}
         sendMessage={sendMessage}
         discussionQuestion={single_activity?.activityContent ?? "-1"}
         id={+id!}

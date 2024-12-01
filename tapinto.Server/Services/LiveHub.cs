@@ -36,7 +36,22 @@ namespace tapinto.Server.Services
             await Clients.Group(discussionId.ToString()).SendAsync("ReceiveMessage", $"{user.FirstName} {user.LastName}", $"{user.FirstName} {user.LastName} has joined");
         }
 
-        //public async Task ReceiveMessage
+        public async Task LeaveDiscussion(int discussionId, string userEmail)
+        {
+            if (userEmail == null) return;
+            var user = await userManager.FindByEmailAsync(userEmail);
+            if (_joinedUsers[discussionId].Contains(user.FirstName + " " + user.LastName))
+            {
+                _joinedUsers.AddOrUpdate(discussionId, new HashSet<string> { user.FirstName + " " + user.LastName }, (key, existingVal) =>
+                    {
+                        existingVal.Remove(user.FirstName + " " + user.LastName);
+                        return existingVal;
+                    });
+                var participantList = _joinedUsers[discussionId].ToList();
+                await Clients.Group(discussionId.ToString()).SendAsync("UpdateParticipants", participantList);
+                await Clients.Group(discussionId.ToString()).SendAsync("ReceiveMessage", $"{user.FirstName} {user.LastName}", $"{user.FirstName} {user.LastName} left the discussion");
+            }
+        }
 
         public async Task SendMessage(string message, string userEmail, int discussionId)
         {

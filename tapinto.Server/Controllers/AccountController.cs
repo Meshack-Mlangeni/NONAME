@@ -83,23 +83,8 @@ namespace tapinto.Server.Controllers
                     .FirstOrDefault(s => s.SchoolName == registerDto.SchoolName || s.SchoolName == registerDto.SchoolName + $" - Awaiting Approval");
                     user.SchoolId = getSchool?.SchoolId ?? 0;
                     var result = await userManager.CreateAsync(user, registerDto.Password);
-
-                    if (registerDto.RegisterAs == "Teacher" && registerDto.ImageData != null)
-                    {
-                        var teacherRequests = new TeacherRequests
-                        {
-                            Approved = false,
-                            Timestamp = DateTime.Now,
-                            UserEmail = user.Email,
-                            Reason = "",
-                            ImageData = registerDto.ImageData
-                        };
-                        await dbContext.Requests.AddAsync(teacherRequests);
-                        await dbContext.SaveChangesAsync();
-                    }
-
                     if (result.Succeeded)
-                        if ((await userManager.AddToRoleAsync(user, registerDto.RegisterAs)).Succeeded)
+                        if ((await userManager.AddToRoleAsync(user, "Student")).Succeeded)
                         {
                             var userDto = await GetUserDto(
                                 await userManager.Users.Where(u => u.Email == registerDto.Email).FirstOrDefaultAsync()

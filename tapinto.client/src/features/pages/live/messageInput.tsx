@@ -12,6 +12,7 @@ export type MessageInputProps = {
   discussionQuestion?: string;
   joinedUsers?: { fullnames: string; isLive: boolean }[] | string[];
   onSubmit: () => void;
+  onLeave: () => void;
 };
 
 export default function MessageInput(props: MessageInputProps) {
@@ -21,6 +22,7 @@ export default function MessageInput(props: MessageInputProps) {
     discussionQuestion,
     joinedUsers,
     onSubmit,
+    onLeave,
     textAreaValue,
   } = props;
 
@@ -71,12 +73,20 @@ export default function MessageInput(props: MessageInputProps) {
               </Avatar>
             ))}
           </AvatarGroup> */}
-          <AvatarGroup sx={{ mb: 1.2 }} size="sm">
+          <AvatarGroup sx={{ mb: 1.5 }} size="sm">
             {(joinedUsers as string[]).map((user) => (
               <Avatar color={"success"} alt={user} variant="solid">
                 {convertFullNamesToInitials(user)}
               </Avatar>
             ))}
+            <Button
+              sx={{ ml: 2, mr: 2 }}
+              onClick={() => onLeave()}
+              color="danger"
+              size="sm"
+            >
+              Leave Discussion
+            </Button>
           </AvatarGroup>
         </Sheet>
         <FormControl>

@@ -12,6 +12,7 @@ import Live from "../../features/pages/live/live";
 import Groups from "../../features/pages/homepage/subs/groups/Groups";
 import MobileProfilePage from "../../features/pages/account/mobileProfilePage";
 import ShowActivitiesOnHomePage from "../../features/pages/homepage/subs/activity/showActivitiesOnHomepage";
+import Home2 from "../../features/pages/homepage/subs/admin/home";
 
 export const routes = createBrowserRouter([
   {
@@ -29,8 +30,8 @@ export const routes = createBrowserRouter([
           { path: "/home/live/:id", element: <Live /> },
         ],
       },
+      { path: "/adminhome", element: <Home2 /> },
       { path: "/settings", element: <Settings /> },
-
       { path: "/myschool", element: <School /> },
       { path: "/about", element: <AboutPage /> },
       { path: "/login", element: <Login /> },
