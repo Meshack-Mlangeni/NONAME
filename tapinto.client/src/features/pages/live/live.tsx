@@ -88,7 +88,6 @@ export default function Live() {
           fullNames: chat.fullNames,
         },
       ]);
-      console.log(chats);
     });
 
     try {
