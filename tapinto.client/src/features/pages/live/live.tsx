@@ -14,7 +14,6 @@ import {
   getSingleActivityAsync,
 } from "../homepage/subs/activity/activitySlice";
 import AppLogo from "../../../app/navbar/AppLogo";
-import convertToDateTimeAgo from "../../../helpers/convertToDateTimeAgo";
 import { response } from "../../../models/response/response";
 
 export default function Live() {
