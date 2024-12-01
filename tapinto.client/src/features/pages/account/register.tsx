@@ -12,11 +12,10 @@ import {
   Divider,
   FormHelperText,
   Autocomplete,
-  RadioGroup,
-  Radio,
   Switch,
   useColorScheme,
   Sheet,
+  CircularProgress,
 } from "@mui/joy";
 import { FieldValues, useForm } from "react-hook-form";
 import { DarkMode, LightMode } from "@mui/icons-material";
@@ -25,14 +24,15 @@ import { useAppDispatch, useAppSelector } from "../../../app/store/store";
 import { registerAsync } from "./accountSlice";
 import { setLoading } from "../../../app/store/appSlice";
 import { getallActivityAsync } from "../homepage/subs/activity/activitySlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getAllSchoolsAsync } from "../homepage/subs/myschool/schoolSlice";
 //generously borrowed from MUI sign up template
 
 export default function Register() {
   const dispatch = useAppDispatch();
   const { schools } = useAppSelector((state) => state.school);
-  //let getSchoolNames = schools.map((s) => s.schoolName);
+  const [open, setOpen] = useState(false);
+  const loading = open && schools.length === 0;
   const {
     register,
     handleSubmit,
@@ -40,18 +40,27 @@ export default function Register() {
   } = useForm({ mode: "onTouched" });
   const onRegisterSubmit = async (data: FieldValues) => {
     dispatch(setLoading(true));
+    console.log(data);
     await dispatch(registerAsync(data)).then(
       async (data) => data && (await dispatch(getallActivityAsync(5)))
     );
     dispatch(setLoading(false));
   };
   const { mode, setMode } = useColorScheme();
+  console.log("Schools: ", schools);
+  // useEffect(() => {
+  //   dispatch(getAllSchoolsAsync());
+  // }, [dispatch]);
 
   useEffect(() => {
-    if (!schools || schools === undefined) {
-      dispatch(getAllSchoolsAsync());
+    if (!loading) {
+      return undefined;
     }
-  }, [dispatch, schools]);
+    (async () => {
+      await dispatch(getAllSchoolsAsync());
+    })();
+  }, [dispatch, loading]);
+
 
   return (
     <Sheet>
@@ -84,7 +93,7 @@ export default function Register() {
           >
             <Box sx={{ gap: 2, display: "flex", alignItems: "center" }}>
               <AppLogo /> &nbsp;
-              <Button component={NavLink} to="/home/posts">
+              <Button component={NavLink} to="/home/activity">
                 Guest mode
               </Button>
               <Switch
@@ -132,26 +141,6 @@ export default function Register() {
             </Stack>
             <Stack gap={4} sx={{ mt: 1 }}>
               <form onSubmit={handleSubmit(onRegisterSubmit)}>
-                <FormControl sx={{ mb: 2 }} error={!!errors.registeras}>
-                  <FormLabel>Register As</FormLabel>
-                  <RadioGroup
-                    {...register("registeras", {
-                      required: true
-                    })}
-                    orientation="horizontal"
-                  >
-                    <Radio
-                      value="Student"
-                      {...register("registeras")}
-                      label="Student"
-                    />
-                    <Radio
-                      value="Teacher"
-                      {...register("registeras")}
-                      label="Teacher"
-                    />
-                  </RadioGroup>
-                </FormControl>
                 <FormControl error={!!errors.firstname}>
                   <FormLabel>First name</FormLabel>
                   <Input
@@ -190,6 +179,22 @@ export default function Register() {
                 <FormControl error={!!errors.schoolName}>
                   <FormLabel>School name</FormLabel>
                   <Autocomplete
+                    open={open}
+                    onOpen={() => {
+                      setOpen(true);
+                    }}
+                    onClose={() => {
+                      setOpen(false);
+                    }}
+                    loading={loading}
+                    endDecorator={
+                      loading ? (
+                        <CircularProgress
+                          size="sm"
+                          sx={{ bgcolor: "background.surface" }}
+                        />
+                      ) : null
+                    }
                     options={schools
                       .map((s) => s.schoolName)
                       .sort((a, b) => -b.localeCompare(a))}

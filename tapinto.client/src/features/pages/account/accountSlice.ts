@@ -5,22 +5,23 @@ import { FieldValues } from "react-hook-form";
 import { agent } from "../../../app/axiosAgent/agent";
 import { routes } from "../../../app/router/Routes";
 import { response } from "../../../models/response/response";
-import { store } from "../../../app/store/store";
-import { resetActivities, resetComments } from "../homepage/subs/activity/activitySlice";
 
 interface IAccount { user: User | null; }
 const initialState: IAccount = { user: null, };
 
-export interface manageCache<T> { work: "add" | "remove" | "both" | "get", key: string, data: T | null; }
+export interface manageCache<T> { work: "add" | "remove" | "both" | "get" | "clear", key: string, data: T | null; }
 const ManageUserLocalCache = <T>({ work, key, data }: manageCache<T>) => {
     if (work === "add")
         localStorage.setItem(key, JSON.stringify(data));
     else if (work === "remove")
-        localStorage.getItem(key) && localStorage.removeItem("user");
+        localStorage.getItem(key) && localStorage.removeItem(key);
     else if (work === "get")
         return localStorage.getItem(key);
+    else if (work === "clear")
+        localStorage.clear();
     else {
-        localStorage.getItem(key) && localStorage.removeItem("user")
+        if (localStorage.getItem(key))
+            localStorage.removeItem(key)
         localStorage.setItem(key, JSON.stringify(data));
     }
 }
@@ -73,10 +74,8 @@ export const accountSlice = createSlice({
             state.user = action.payload;
         },
         signUserOutAsync: (state) => {
-            store.dispatch(resetActivities());
-            store.dispatch(resetComments());
             state.user = null;
-            localStorage.removeItem("user");
+            ManageUserLocalCache({ work: "clear", key: "none", data: null });
             routes.navigate("/login");
         }
     },

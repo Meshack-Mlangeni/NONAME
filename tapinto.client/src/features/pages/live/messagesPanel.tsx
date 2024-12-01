@@ -15,6 +15,7 @@ type MessagesPaneProps = {
   discussionQuestion: string;
   chats: Chats[];
   usersJoined?: string[];
+  onLeave: () => void;
   sendMessage: (message: string) => void;
 };
 
@@ -22,6 +23,7 @@ export default function MessagesPanel({
   user,
   chats,
   sendMessage,
+  onLeave,
   usersJoined = [],
   discussionQuestion,
 }: MessagesPaneProps) {
@@ -37,6 +39,7 @@ export default function MessagesPanel({
         })}
       >
         <MessageInput
+          onLeave={onLeave}
           textAreaValue={textAreaValue}
           discussionQuestion={discussionQuestion}
           setTextAreaValue={setTextAreaValue}
@@ -62,9 +65,11 @@ export default function MessagesPanel({
             sx={{ overflowY: "auto", mb: 32 }}
           >
             {chats.map((chat: Chats, index: number) => {
-              const joinNotification = chat.content.includes("has joined");
+              const joinOrleftNotification =
+                chat.content.includes("has joined") ||
+                chat.content.includes("left the discussion");
               const isYou = chat.userEmail === user.email;
-              return joinNotification ? (
+              return joinOrleftNotification ? (
                 <>
                   <Typography
                     key={"N" + index.toString()}

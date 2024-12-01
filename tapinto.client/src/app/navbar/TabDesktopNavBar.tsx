@@ -1,13 +1,13 @@
 import * as React from "react";
 import Box from "@mui/joy/Box";
-import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import Tabs from "@mui/joy/Tabs";
 import TabList from "@mui/joy/TabList";
-import Tab, { tabClasses } from "@mui/joy/Tab";
+import { tabClasses } from "@mui/joy/Tab";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import Person from "@mui/icons-material/Person";
 import {
   AccountBoxOutlined,
+  AdminPanelSettings,
   AppRegistration,
   Key,
   Login,
@@ -29,6 +29,7 @@ import NavSpacingComponent from "./NavSpacingComponent";
 import AppLogo from "./AppLogo";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import { signUserOutAsync } from "../../features/pages/account/accountSlice";
+import TBTabComponent from "./TDTabComponent";
 
 export default function TabDesktopNavBar() {
   const location = useLocation();
@@ -37,6 +38,7 @@ export default function TabDesktopNavBar() {
     else if (location.pathname.includes("myschool")) return 1;
     else if (location.pathname.includes("settings")) return 2;
     else if (location.pathname.includes("profile")) return 3;
+    else if (location.pathname.includes("adminhome")) return 4;
     else return 0;
   };
 
@@ -104,57 +106,45 @@ export default function TabDesktopNavBar() {
                 disableUnderline
                 sx={{ borderRadius: "lg", p: 0 }}
               >
-                <Tab
-                  disableIndicator
-                  orientation="vertical"
-                  component={NavLink}
+                <TBTabComponent
+                  name="Home"
+                  MUIcon={<HomeRoundedIcon />}
+                  val={0}
+                  index={index}
                   to={"/home/activity"}
-                  {...(index === 0 && { color: "primary" })}
-                >
-                  <ListItemDecorator sx={{ mb: "1px" }}>
-                    <HomeRoundedIcon />
-                    &nbsp;Home
-                  </ListItemDecorator>
-                </Tab>
-                <Tab
-                  disableIndicator
-                  disabled={!user}
-                  orientation="vertical"
-                  component={NavLink}
-                  to={"/myschool"} //not yet available
-                  {...(index === 1 && { color: "primary" })}
-                >
-                  <ListItemDecorator sx={{ mb: "1px" }}>
-                    <SchoolRounded />
-                    &nbsp;School
-                  </ListItemDecorator>
-                </Tab>
-                <Tab
-                  disableIndicator
-                  orientation="vertical"
-                  disabled={!user}
-                  component={NavLink}
+                />
+
+                <TBTabComponent
+                  name="School"
+                  MUIcon={<SchoolRounded />}
+                  val={1}
+                  index={index}
+                  to={"/myschool"}
+                />
+
+                <TBTabComponent
+                  name="Settings"
+                  MUIcon={<Settings />}
+                  val={2}
+                  index={index}
                   to={"/settings"}
-                  {...(index === 2 && { color: "primary" })}
-                >
-                  <ListItemDecorator sx={{ mb: "1px" }}>
-                    <Settings />
-                    &nbsp;Settings
-                  </ListItemDecorator>
-                </Tab>
-                <Tab
-                  disableIndicator
-                  orientation="vertical"
-                  disabled={!user}
-                  component={NavLink}
+                />
+
+                <TBTabComponent
+                  name="Profile"
+                  MUIcon={<Person />}
+                  val={3}
+                  index={index}
                   to={"/mobprofile"}
-                  {...(index === 3 && { color: "primary" })}
-                >
-                  <ListItemDecorator sx={{ mb: "1px" }}>
-                    <Person />
-                    &nbsp;Profile
-                  </ListItemDecorator>
-                </Tab>
+                />
+
+                <TBTabComponent
+                  name="Admin"
+                  MUIcon={<AdminPanelSettings />}
+                  val={4}
+                  index={index}
+                  to={"/adminhome"}
+                />
               </TabList>
             </Tabs>
           </Box>
