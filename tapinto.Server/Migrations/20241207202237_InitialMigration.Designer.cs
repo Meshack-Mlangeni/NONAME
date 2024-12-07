@@ -12,8 +12,8 @@ using tapinto.Server.Data;
 namespace tapinto.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241201160804_UpdatedSchool_Migration")]
-    partial class UpdatedSchool_Migration
+    [Migration("20241207202237_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -360,6 +360,32 @@ namespace tapinto.Server.Migrations
                     b.ToTable("Membership");
                 });
 
+            modelBuilder.Entity("tapinto.Server.Models.PollActivity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SelectedAnswerId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.HasIndex("SelectedAnswerId");
+
+                    b.ToTable("PollActivities");
+                });
+
             modelBuilder.Entity("tapinto.Server.Models.PossibleAnswer", b =>
                 {
                     b.Property<int>("PossibleAnswerId")
@@ -660,6 +686,25 @@ namespace tapinto.Server.Migrations
                         .IsRequired();
 
                     b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("tapinto.Server.Models.PollActivity", b =>
+                {
+                    b.HasOne("tapinto.Server.Models.Activity", "Activity")
+                        .WithMany()
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("tapinto.Server.Models.PossibleAnswer", "PossibleAnswer")
+                        .WithMany()
+                        .HasForeignKey("SelectedAnswerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("PossibleAnswer");
                 });
 
             modelBuilder.Entity("tapinto.Server.Models.PossibleAnswer", b =>

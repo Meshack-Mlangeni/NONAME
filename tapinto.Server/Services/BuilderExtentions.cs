@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using tapinto.Server.Controllers;
 using tapinto.Server.Data;
+using tapinto.Server.Helpers;
 using tapinto.Server.Models;
 
 namespace tapinto.Server.Services
@@ -107,6 +108,7 @@ namespace tapinto.Server.Services
         public static IServiceCollection AddScopedServices(this IServiceCollection services)
         {
             //services.AddFeatureManagement();
+            services.AddAutoMapper(typeof(MapperProfile).Assembly);
             services.AddSignalRCore();
             services.AddSignalR();
             services.AddControllers();
