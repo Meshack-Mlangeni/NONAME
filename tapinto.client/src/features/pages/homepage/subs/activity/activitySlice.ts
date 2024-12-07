@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { Like } from "../../../../../models/like";
 import { ChatHistoryDto } from "../../../../../models/chatHistoryDto";
 import { Chats } from "../../../../../models/chats";
+import { PollActivity } from "../../../../../models/pollActivity";
 
 export const likeActivityAsync = createAsyncThunk<response<Like>, number>(
     "activity/likeActivityAsync",
@@ -49,6 +50,16 @@ export const getallActivityAsync = createAsyncThunk<response<Activity[]>, number
         }
     }
 );
+
+export const submitPollAnswerAsync = createAsyncThunk<response<PollActivity>, FieldValues>(
+    "activity/submitPollAnswerAsync", async (data, ThunkApi) => {
+        try {
+            return await agent.activity.submitpollanswer(data);
+        } catch (error: any) {
+            return ThunkApi.rejectWithValue({ error: error.data })
+        }
+    }
+)
 
 export const getSingleActivityAsync = createAsyncThunk<response<Activity>, number>(
     "activities/getSingleActivityAsync",

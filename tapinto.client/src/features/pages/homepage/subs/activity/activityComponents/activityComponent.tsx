@@ -83,6 +83,7 @@ export default function ActivityComponent({
   answers,
   comments_no,
 }: IActivityProps) {
+  console.log("Answers in act: ", answers);
   const [Like, setLike] = useState<number>(likes);
   const [noOfComments, setNoOfComments] = useState<{
     activityId: number;
@@ -205,7 +206,11 @@ export default function ActivityComponent({
   };
 
   const poll = (
-    <PopQuizComponent question={activityContent} answers={answers} />
+    <PopQuizComponent
+      activityId={id}
+      question={activityContent}
+      answers={answers}
+    />
   );
   const activityOrdiscussion = (
     <>

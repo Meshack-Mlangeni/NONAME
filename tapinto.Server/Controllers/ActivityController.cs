@@ -130,7 +130,7 @@ namespace tapinto.Server.Controllers
                 .Include(g => g.Group).ToList();
 
             List<ActivityDto> ActivityDto = new List<ActivityDto>();
-            var allActivities = dbContext.Activity.OrderByDescending(a => a.Timestamp).Include(l => l.Likes).ToList();
+            var allActivities = dbContext.Activity.OrderByDescending(a => a.Timestamp).ToList();
             foreach (var activity in allActivities)
             {
                 if (groupsUserIsIn.Select(g => g.GroupId).Any(gr => gr == activity.GroupId))
@@ -148,6 +148,32 @@ namespace tapinto.Server.Controllers
                 }
             }
             response.ResponseSuccessWithMessage("Successfully Fetched Activities", data: ActivityDto.Skip(skip - 5).Take(5).ToList());
+            return Ok(response);
+        }
+
+        [Authorize]
+        [HttpPost("sendpollanswer")]
+        public async Task<IActionResult> SendPollAnswer(PollActivityDto pollActivity)
+        {
+            var user = await userManager.FindByNameAsync(User.Identity.Name);
+            var response = new DataResponse<PollActivityDto>();
+            if (user == null)
+            {
+                response.ResponseFailedWithMessage("Could Not Find User, Please Report This Issue");
+                return Ok(response);
+            }
+            pollActivity.UserEmail = user.Email;
+            pollActivity.SelectedAnswerId = dbContext.PossibleAnswers.FirstOrDefault(pa => pa.ActivityId == pollActivity.ActivityId && pa.Answer == pollActivity.SelectedAnswer).PossibleAnswerId;
+            var _pollActivity = new PollActivity(pollActivity);
+            dbContext.PollActivities.Add(_pollActivity);
+            dbContext.SaveChanges();
+
+            if (dbContext.PossibleAnswers.FirstOrDefault(pa => pa.Answer == pollActivity.SelectedAnswer && pa.ActivityId == pollActivity.ActivityId).isAnswer)
+                pollActivity.chosenAnswerCorrect = true;
+            else
+                pollActivity.SelectedAnswer = dbContext.PossibleAnswers.FirstOrDefault(pa => pa.ActivityId == pollActivity.ActivityId).Answer;
+
+            response.ResponseSuccessWithMessage("Answer Picked Successfully", data: pollActivity);
             return Ok(response);
         }
 

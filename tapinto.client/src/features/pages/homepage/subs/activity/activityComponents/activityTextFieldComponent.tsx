@@ -191,7 +191,7 @@ export default function ActivityTextField() {
                 placeholder={"Please type poll question..."}
                 minRows={1}
                 maxRows={4}
-                {...register("postContent", {
+                {...register("activityContent", {
                   required: "Cannot send an empty post",
                   onChange: () => {
                     console.log("Is Poll Valid: ", pollValid);

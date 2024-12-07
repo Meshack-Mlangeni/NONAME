@@ -11,4 +11,5 @@ export interface User {
     verified: boolean;
     groups: Group[];
     numberOfActivities: number;
+    roles: string[]
 }

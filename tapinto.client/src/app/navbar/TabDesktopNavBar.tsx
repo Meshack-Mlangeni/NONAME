@@ -139,6 +139,7 @@ export default function TabDesktopNavBar() {
                 />
 
                 <TBTabComponent
+                  show={user?.roles.includes("Admin")}
                   name="Admin"
                   MUIcon={<AdminPanelSettings />}
                   val={4}

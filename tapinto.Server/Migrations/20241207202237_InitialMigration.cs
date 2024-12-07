@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace tapinto.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdatedSchool_Migration : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -379,6 +379,33 @@ namespace tapinto.Server.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "PollActivities",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ActivityId = table.Column<int>(type: "int", nullable: false),
+                    UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SelectedAnswerId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PollActivities", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PollActivities_Activity_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activity",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PollActivities_PossibleAnswers_SelectedAnswerId",
+                        column: x => x.SelectedAnswerId,
+                        principalTable: "PossibleAnswers",
+                        principalColumn: "PossibleAnswerId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Activity_GroupId",
                 table: "Activity",
@@ -454,6 +481,16 @@ namespace tapinto.Server.Migrations
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PollActivities_ActivityId",
+                table: "PollActivities",
+                column: "ActivityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PollActivities_SelectedAnswerId",
+                table: "PollActivities",
+                column: "SelectedAnswerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PossibleAnswers_ActivityId",
                 table: "PossibleAnswers",
                 column: "ActivityId");
@@ -496,7 +533,7 @@ namespace tapinto.Server.Migrations
                 name: "Membership");
 
             migrationBuilder.DropTable(
-                name: "PossibleAnswers");
+                name: "PollActivities");
 
             migrationBuilder.DropTable(
                 name: "Requests");
@@ -506,6 +543,9 @@ namespace tapinto.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "PossibleAnswers");
 
             migrationBuilder.DropTable(
                 name: "Activity");

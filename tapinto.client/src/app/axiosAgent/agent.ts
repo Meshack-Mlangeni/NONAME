@@ -47,6 +47,7 @@ const activity = {
     comment: <T>(data: object) => requests.put<T>("activity/comment", data),
     getallactivitycomments: <T>(id: number) => requests.get<T>(`activity/getcomments?id=${id}`),
     getallactivitychats: <T>(id: number) => requests.get<T>(`activity/getchathistory?activityId=${id}`),
+    submitpollanswer: <T>(data: object) => requests.post<T>("activity/sendpollanswer", data),
 };
 const group = {
     create: <T>(data: object) => requests.put<T>("group/creategroup", data),
